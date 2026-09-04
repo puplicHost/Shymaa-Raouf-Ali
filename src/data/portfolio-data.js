@@ -1,0 +1,224 @@
+export const portfolioData = {
+  projects: [
+    {
+      id: 'project-1',
+      name: 'Jarrash Sabia',
+      nameAr: 'جرش صبية',
+      industry: 'E-commerce',
+      industryAr: 'تجارة إلكترونية',
+      url: 'https://www.instagram.com/jarrash_sabia',
+      description: 'E-commerce project for Jarrash Sabia brand.',
+      descriptionAr: 'مشروع تجارة إلكترونية لعلامة جرش صبية التجارية.',
+    },
+    {
+      id: 'project-2',
+      name: 'Wagf Momnah',
+      nameAr: 'وقف ممنوع',
+      industry: 'Social/NGO',
+      industryAr: 'اجتماعي/جمعية',
+      url: 'https://www.instagram.com/wagfmomnah',
+      description: 'Social cause project for Wagf Momnah.',
+      descriptionAr: 'مشروع اجتماعي لوقف ممنوع.',
+    },
+    {
+      id: 'project-3',
+      name: 'Comfort Begins',
+      nameAr: 'كومفورت بيجنز',
+      industry: 'Cleaning Services',
+      industryAr: 'خدمات تنظيف',
+      url: 'https://www.instagram.com/comfort_begins',
+      description: 'Cleaning services brand content management.',
+      descriptionAr: 'إدارة محتوى علامة خدمات التنظيف.',
+    },
+    {
+      id: 'project-4',
+      name: 'Alwan Elhaz Elsaed',
+      nameAr: 'ألوان الحز��eid',
+      industry: 'Creative Services',
+      industryAr: 'خدمات إبداعية',
+      url: 'https://www.instagram.com/alwanelhaz_elsaed',
+      description: 'Creative services brand content.',
+      descriptionAr: 'محتوى علامة الخدمات الإبداعية.',
+    },
+    {
+      id: 'project-5',
+      name: 'Velora Cosmatics',
+      nameAr: 'فيلورا كوزماتكس',
+      industry: 'Beauty & E-commerce',
+      industryAr: 'جمال وتجارة إلكترونية',
+      url: 'https://www.instagram.com/veloracosmatic',
+      description: 'Beauty and cosmetics e-commerce brand.',
+      descriptionAr: 'علامة تجارة إلكترونية لمستحضرات التجميل.',
+    },
+    {
+      id: 'project-6',
+      name: 'Lazor',
+      nameAr: 'لازور',
+      industry: 'Services/E-commerce',
+      industryAr: 'خدمات/تجارة إلكترونية',
+      url: 'https://www.instagram.com/lazor_a6',
+      description: 'Services and e-commerce project.',
+      descriptionAr: 'مشروع خدمات وتجارة إلكترونية.',
+    },
+  ],
+
+  education: [
+    {
+      degree: 'BA French Language',
+      degreeAr: 'بكالوريوس اللغة الفرنسية',
+      university: 'Suez Canal University',
+      universityAr: 'جامعة قناة السويس',
+      year: '2024',
+      grade: 'Very Good',
+      gradeAr: 'جيد جداً',
+    },
+  ],
+
+  skills: [
+    'Social Media Management',
+    'Content Creation',
+    'Content Strategy',
+    'Content Calendars & Planning',
+    'Reels & Short-form Content',
+    'Copywriting & Captions',
+    'Creative Content Ideas',
+    'Audience & Competitor Research',
+    'Digital Marketing',
+    'AI-assisted Content Development',
+  ],
+
+  skillsAr: [
+    'إدارة وسائل التواصل الاجتماعي',
+    'إبداع المحتوى',
+    'استراتيجية المحتوى',
+    'تقويم المحتوى والتخطيط',
+    'الريلز والمحتوى القصير',
+    'كتابة النصوص والكابشنز',
+    'أفكار المحتوى الإبداعي',
+    'بحث الجمهور والمنافسين',
+    'التسويق الرقمي',
+    'تطوير المحتوى بمساعدة الذكاء الاصطناعي',
+  ],
+
+  certifications: [
+    'Google AI Professional Certificate',
+    'Generative AI for Digital Marketing Specialization',
+    'AI Content Mastery for Social Media',
+    'Meta Social Media Marketing Professional Certificate',
+    'Google Digital Marketing & E-commerce Certificate',
+    'HubSpot Content Marketing Certification',
+    'DELF B1 – French Language Certification',
+  ],
+
+  certificationsAr: [
+    'شهادة جوجل للمحترفين في الذكاء الاصطناعي',
+    'تخصص الذكاء الاصطناعي التوليدي للتسويق الرقمي',
+    'إتقان المحتوى بالذكاء الاصطناعي للسوشيال ميديا',
+    'شهادة ميتا المتخصصة في إدارة وسائل التواصل',
+    'شهادة جوجل في التسويق الرقمي والتجارة الإلكترونية',
+    'شهادة هب سبوت في تسويق المحتوى',
+    'شهادة DELF B1 في اللغة الفرنسية',
+  ],
+
+  industries: [
+    'Furniture & Home',
+    'Marble',
+    'Pharmacy & Healthcare',
+    'Education',
+    'Cleaning Services',
+    'Beauty & E-commerce',
+  ],
+
+  industriesAr: [
+    'الأثاث والمنزل',
+    'الرخام',
+    'الصيدلة والرعاية الصحية',
+    'التعليم',
+    'خدمات التنظيف',
+    'مستحضرات التجميل والتجارة الإلكترونية',
+  ],
+
+  contact: {
+    email: 'raoufshimaa587@gmail.com',
+    phone: '+01282354052',
+    linkedin: '',
+    snapchat: '',
+  },
+
+  approach: [
+    'Understand: brand, audience, competitors & goals',
+    'Plan: content strategy & monthly calendar',
+    'Create: clear, relevant, on-brand content',
+    'Optimize: analyze performance & improve',
+  ],
+
+  approachAr: [
+    'افهم: البراند والجمهور والمنافسين والأهداف',
+    'خطط: استراتيجية المحتوى والتقويم الشهري',
+    'اصنع: محتوى واضح وذو صلة وعلى البراند',
+    'حسّن: حلل الأداء وتحسن باستمرار',
+  ],
+
+  navigation: {
+    hero: {
+      phrases: ['ارجع لفوق', 'الرئيسية', 'البداية', 'فوق', 'go home', 'go to top', 'top', 'home', 'start'],
+      sectionId: 'hero',
+      response: 'حاضر، رجعتك للأعلى.',
+      responseEn: 'Done, scrolled to top.',
+    },
+    about: {
+      phrases: ['روح للتعريف', 'ارجع للتعريف', 'go to about', 'scroll to about'],
+      sectionId: 'about',
+      response: 'حاضر، دي التعريف.',
+      responseEn: 'Done, scrolled to about.',
+    },
+    skills: {
+      phrases: ['روح للمهارات', 'ارجع للمهارات', 'go to skills', 'scroll to skills'],
+      sectionId: 'skills',
+      response: 'حاضر، دي المهارات.',
+      responseEn: 'Done, scrolled to skills.',
+    },
+    work: {
+      phrases: ['روح للمشاريع', 'ارجع للمشاريع', 'go to projects', 'scroll to projects', 'go to work', 'scroll to work'],
+      sectionId: 'work',
+      response: 'حاضر، دي المشاريع.',
+      responseEn: 'Done, scrolled to projects.',
+    },
+    industries: {
+      phrases: ['روح للمجالات', 'ارجع للمجالات', 'go to industries', 'scroll to industries'],
+      sectionId: 'industries',
+      response: 'حاضر، دي المجالات.',
+      responseEn: 'Done, scrolled to industries.',
+    },
+    approach: {
+      phrases: ['روح للطريقة', 'ارجع للطريقة', 'go to approach', 'scroll to approach'],
+      sectionId: 'approach',
+      response: 'حاضر، دي الطريقة.',
+      responseEn: 'Done, scrolled to approach.',
+    },
+    certifications: {
+      phrases: ['روح للشهادات', 'ارجع للشهادات', 'go to certifications', 'scroll to certifications'],
+      sectionId: 'certifications',
+      response: 'حاضر، دي الشهادات.',
+      responseEn: 'Done, scrolled to certifications.',
+    },
+    contact: {
+      phrases: ['روح للتواصل', 'ارجع للتواصل', 'go to contact', 'scroll to contact'],
+      sectionId: 'contact',
+      response: 'حاضر، دي التواصل.',
+      responseEn: 'Done, scrolled to contact.',
+    },
+  },
+
+  projectCommands: {
+    phrases: ['افتح مشروع', 'تفاصيل مشروع', 'احكيلي عن مشروع', 'Tell me about project', 'open project', 'project details'],
+    response: 'حاضر، بعرض تفاصيل المشروع.',
+    responseEn: 'Done, showing project details.',
+  },
+
+  topCommands: {
+    phrases: ['ارجع لفوق', 'فوق', 'الرئيسية', 'go to top', 'scroll to top', 'top'],
+    response: 'حاضر، رجعتك للأعلى.',
+    responseEn: 'Done, scrolled to top.',
+  },
+}

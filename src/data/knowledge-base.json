@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": 2,
+    "version": 8,
     "languages": ["ar", "en"],
     "lastUpdated": "2026-09-04"
   },
@@ -8,75 +8,31 @@
     {
       "id": "identity",
       "keywords": {
-        "ar": ["شيماء", "شيماء رؤوف", "مين شيماء", "تعريفي", "هوية", "اسمي", "عن شيماء", "من هي شيماء", "من شيماء", "تعرف على شيماء", "شيماء رؤوف علي"],
-        "en": ["shymaa", "shymaa raouf", "shymaa raouf ali", "who is", "about", "name", "identity", "introduce", "tell me about", "background"]
+        "ar": ["شيماء", "شيماء رؤوف", "مين شيماء", "تعريفي", "هوية", "اسمي", "عن شيماء", "من هي شيماء", "من شيماء", "تعرف على شيماء", "شيماء رؤوف علي", "تعارف", " SELF", "مين هي", "هي مين", "بتشتغل في إيه", "بتعمل إيه", "Who is"],
+        "en": ["shymaa", "shymaa raouf", "shymaa raouf ali", "who is", "about", "name", "identity", "introduce", "tell me about", "background", "who are you", "what does she do"]
       },
       "questions": {
-        "ar": [
-          "مين شيماء رؤوف علي؟",
-          "عرفني عن نفسك",
-          "تعريفي بنفسي",
-          "من هي شيماء",
-          "شيماء بتشتغل في إيه",
-          "وين شيماء عايشة",
-          "شيماء من مصر صح",
-          "ايه المسمى الوظيفي بتاع شيماء",
-          "شيماء بتتكلم أنهي لغات",
-          "اسم شيماء الكامل ايه"
-        ],
-        "en": [
-          "who is shymaa raouf ali?",
-          "tell me about shymaa",
-          "introduce yourself",
-          "what does shymaa do?",
-          "what is shymaa's job title?",
-          "where is shymaa based?",
-          "what languages does shymaa speak?",
-          "what is shymaa's background?",
-          "give me a brief about shymaa",
-          "what is shymaa's full name?"
-        ]
+        "ar": ["مين شيماء رؤوف علي؟", "عرفني عن شيماء", "من هي شيماء", "شيماء بتشتغل في إيه", "شيماء بتتكلم أنهي لغات", "اسم شيماء الكامل ايه", "تعريف شيماء", "هي مين شيماء دي"],
+        "en": ["who is shymaa raouf ali?", "tell me about shymaa", "introduce yourself", "what does shymaa do?", "what languages does shymaa speak?", "what is shymaa's full name?", "who is shymaa?", "what is shymaa's background?"]
       },
       "answer": {
-        "ar": "شيماء رؤوف علي، أخصائية إدارة وسائل التواصل الاجتماعي ومبتكرة محتوى من الإسماعيلية، مصر. متخصصة في السوق السعودي. بتتكلم عربي (أصلي)، إنجليزي (طليق)، وفرنسي (طليق).",
-        "en": "Shymaa Raouf Ali is a Social Media Specialist and Content Creator based in Ismailia, Egypt, with a focus on the Saudi market. She speaks Arabic (Native), English (Fluent), and French (Fluent)."
+        "ar": "Shymaa is a Social Media Specialist and Content Creator with a background in digital marketing. She focuses on creating engaging content, developing social media strategies, and helping brands communicate with their audiences in a creative and meaningful way.\n\nShe enjoys turning ideas into content that is not only visually appealing, but also has a clear purpose and connects with the right audience.",
+        "en": "Shymaa is a Social Media Specialist and Content Creator with a background in digital marketing. She focuses on creating engaging content, developing social media strategies, and helping brands communicate with their audiences in a creative and meaningful way.\n\nShe enjoys turning ideas into content that is not only visually appealing, but also has a clear purpose and connects with the right audience."
       }
     },
     {
       "id": "experience",
       "keywords": {
-        "ar": ["خبرة", "اشتغلت", "شغل", "منصب", "وظيفة", "سنوات خبرة", "مهماتها", "مسؤوليات", "العمل", "التوظيف"],
-        "en": ["experience", "work", "job", "role", "position", "years", "responsibilities", "career", "employed", "currently working"]
+        "ar": ["خبرة", "اشتغلت", "شغل", "منصب", "وظيفة", "سنوات خبرة", "مهماتها", "مسؤوليات", "العمل", "التوظيف", "المنصات", "السوشيال ميديا", "الحالية", "دلوقتي"],
+        "en": ["experience", "work", "job", "role", "position", "years", "responsibilities", "career", "employed", "currently working", "platforms"]
       },
       "questions": {
-        "ar": [
-          "شيماء عندها كام سنة خبرة؟",
-          "بتشتغل فين دلوقتي؟",
-          "ايه الوظيفة الحالية بتاعتها؟",
-          "ايه المسؤوليات بتاعتها في الشغل؟",
-          "شتغلت في أنهي شركة قبل كده؟",
-          "بدأت شغلها من إمتى؟",
-          "خبرتها في إدارة السوشيال ميديا إيه؟",
-          "بتتعامل مع أنهي منصات؟",
-          "بتكتب محتوى زى إيه؟",
-          "بتستخدم الذكاء الاصطناعي في شغلها؟"
-        ],
-        "en": [
-          "how many years of experience does shymaa have?",
-          "where does shymaa currently work?",
-          "what is shymaa's current role?",
-          "what are shymaa's responsibilities?",
-          "what was shymaa's previous job?",
-          "when did shymaa start working?",
-          "what platforms does shymaa manage?",
-          "does shymaa create reels?",
-          "does shymaa use AI in her work?",
-          "what does shymaa do at her current job?"
-        ]
+        "ar": ["شيماء عندها كام سنة خبرة؟", "بتشتغل فين دلوقتي؟", "ايه المسؤوليات بتاعتها في الشغل؟", "بتتعامل مع أنهي منصات؟", "بتستخدم الذكاء الاصطناعي في شغلها؟", "بتكتب محتوى زى إيه؟"],
+        "en": ["how many years of experience does shymaa have?", "where does shymaa currently work?", "what are shymaa's responsibilities?", "what platforms does shymaa manage?", "does shymaa use AI in her work?", "what does shymaa write content for?"]
       },
       "answer": {
-        "ar": "شيماء عندها أكثر من سنة خبرة. بتشتغل حالياً كأخصائية إدارة وسائل التواصل ومبتكرة محتوى في شركة تمويز من أبريل 2025. مسؤولياتها بتشمل: إدارة حسابات فيسبوك وإنستجرام وتيك توك سناب شات إكس ولينكدإن، وضع استراتيجيات المحتوى وتقويم شهرية، كتابة النصوص وسكربتات الريلز، تحليل الوصول والتفاعل، واستخدام أدوات الذكاء الاصطناعي لتطوير المحتوى. قبل كده كانت معلمة فرنساوي من 2023 لـ 2024.",
-        "en": "Shymaa has 1+ years of experience. She currently works as Social Media Specialist & Content Creator at Tamiyouz Company since April 2025. Her responsibilities include: managing accounts on Facebook, Instagram, TikTok, Snapchat, X, and LinkedIn; developing content strategies and monthly calendars; writing copy and Reels scripts; analyzing reach and engagement; and using AI tools for content ideation. Previously she was a French Language Teacher (2023-2024)."
+        "ar": "Shymaa has 1+ years of experience in social media management. She currently works as Social Media Specialist & Content Creator at Tamiyouz Company since April 2025.\n\nHer responsibilities include:\n• Managing accounts on Facebook, Instagram, TikTok, Snapchat, X, and LinkedIn\n• Developing content strategies and monthly calendars\n• Writing copy and Reels scripts\n• Analyzing reach and engagement\n• Using AI tools for content ideation\n\nPreviously she was a French Language Teacher (2023-2024).",
+        "en": "Shymaa has 1+ years of experience in social media management. She currently works as Social Media Specialist & Content Creator at Tamiyouz Company since April 2025.\n\nHer responsibilities include:\n• Managing accounts on Facebook, Instagram, TikTok, Snapchat, X, and LinkedIn\n• Developing content strategies and monthly calendars\n• Writing copy and Reels scripts\n• Analyzing reach and engagement\n• Using AI tools for content ideation\n\nPreviously she was a French Language Teacher (2023-2024)."
       }
     },
     {
@@ -86,331 +42,162 @@
         "en": ["education", "university", "degree", "bachelor", "studied", "graduate", "school", "academic"]
       },
       "questions": {
-        "ar": [
-          "شيماء خلصت تعليمها منين؟",
-          "ايه الشهادة بتاعتها؟",
-          "تخرجت من أنهي جامعة؟",
-          "متى تخرجت؟",
-          "مستوى التعليم بتاعها إيه؟",
-          "دراسة إيه في الجامعة؟",
-          "تخرجت بامتياز؟"
-        ],
-        "en": [
-          "where did shymaa study?",
-          "what is shymaa's degree?",
-          "what university did shymaa attend?",
-          "when did shymaa graduate?",
-          "what grade did shymaa get?",
-          "what did shymaa study in university?",
-          "what is shymaa's educational background?"
-        ]
+        "ar": ["شيماء خلصت تعليمها منين؟", "ايه الشهادة بتاعتها؟", "تخرجت من أنهي جامعة؟", "متى تخرجت؟", "مستوى التعليم بتاعها إيه؟"],
+        "en": ["where did shymaa study?", "what is shymaa's degree?", "what university did shymaa attend?", "when did shymaa graduate?", "what is shymaa's educational background?"]
       },
       "answer": {
-        "ar": "شيماء خدت بكالوريوس اللغة الفرنسية من جامعة قناة السويس سنة 2024، بتقدير جيد جداً.",
+        "ar": "Shymaa holds a BA in French Language from Suez Canal University (2024), graduating with Very Good honors.",
         "en": "Shymaa holds a BA in French Language from Suez Canal University (2024), graduating with Very Good honors."
       }
     },
     {
       "id": "skills",
       "keywords": {
-        "ar": ["مهارات", "مهاراتها", "بتعرف تعمل إيه", "قدراتها", "متمكنة في إيه", "المهارات", "الكفاءات"],
-        "en": ["skills", "abilities", "can do", "competencies", "expertise", "proficient", "capable"]
+        "ar": ["مهارات", "مهاراتها", "بتعرف تعمل إيه", "قدراتها", "متمكنة في إيه", "المهارات", "الكفاءات", "strongest", "أقوى", "what can she do"],
+        "en": ["skills", "abilities", "can do", "competencies", "expertise", "proficient", "capable", "strongest", "best at", "what can she do"]
       },
       "questions": {
-        "ar": [
-          "شيماء عندها أنهي مهارات؟",
-          "بتعرف تعمل إيه في السوشيال ميديا؟",
-          "مهاراتها في المحتوى إيه؟",
-          "بتعرف تدير حسابات؟",
-          "بتكتب كويس؟",
-          "بتعرف تحلل بيانات؟",
-          "بتستخدم أنهي أدوات؟",
-          "مهاراتها في التسويق الرقمي إيه؟",
-          "بتعرف تعمل محتوى بصري؟",
-          "بتعرف تصور ريلز؟"
-        ],
-        "en": [
-          "what skills does shymaa have?",
-          "what can shymaa do?",
-          "what are shymaa's social media skills?",
-          "can shymaa manage accounts?",
-          "can shymaa write copy?",
-          "can shymaa analyze data?",
-          "what tools does shymaa use?",
-          "what are shymaa's marketing skills?",
-          "can shymaa create visual content?",
-          "can shymaa edit reels?"
-        ]
+        "ar": ["شيماء عندها أنهي مهارات؟", "بتعرف تعمل إيه في السوشيال ميديا؟", "مهاراتها في المحتوى إيه؟", "بتعرف تدير حسابات؟", "بتكتب كويس؟", "بتعرف تحلل بيانات؟", "بتستخدم أنهي أدوات؟", "مهاراتها في التسويق الرقمي إيه؟", "بتعرف تعمل محتوى بصري؟", "بتعرف تصور ريلز؟", "ايه أقوى مهاراتها؟", "بتعرف تعمل إيه؟", "skills", "what can she do", "what is she good at"],
+        "en": ["what skills does shymaa have?", "what can shymaa do?", "what are shymaa's social media skills?", "can shymaa manage accounts?", "can shymaa write copy?", "can shymaa analyze data?", "what tools does shymaa use?", "what are shymaa's marketing skills?", "can shymaa create visual content?", "can shymaa edit reels?", "what are her strongest skills?", "what can she do?", "what is she good at?", "her skills"]
       },
       "answer": {
-        "ar": "مهارات شيماء بتشمل: إدارة وسائل التواصل الاجتماعي، إبداع المحتوى، استراتيجية المحتوى، تقويم المحتوى والتخطيط، الريلز والمحتوى القصير، كتابة النصوص والكابشنز، أفكار المحتوى الإبداعي، بحث الجمهور والمنافسين، التسويق الرقمي، وتطوير المحتوى بمساعدة الذكاء الاصطناعي.",
-        "en": "Shymaa's skills include: Social Media Management, Content Creation, Content Strategy, Content Calendars & Planning, Reels & Short-form Content, Copywriting & Captions, Creative Content Ideas, Audience & Competitor Research, Digital Marketing, and AI-assisted Content Development."
+        "ar": "Shymaa can support brands across different stages of their social media presence.\n\nHer skills include:\n\n• Social Media Management\n• Content Creation\n• Content Strategy\n• Content Calendars & Planning\n• Creative Content Ideas\n• Reels & Short-form Content\n• Copywriting & Captions\n• Audience & Competitor Research\n• Digital Marketing\n\nHer approach combines creativity with strategy, so the content has a purpose beyond simply looking good.",
+        "en": "Shymaa can support brands across different stages of their social media presence.\n\nHer skills include:\n\n• Social Media Management\n• Content Creation\n• Content Strategy\n• Content Calendars & Planning\n• Creative Content Ideas\n• Reels & Short-form Content\n• Copywriting & Captions\n• Audience & Competitor Research\n• Digital Marketing\n\nHer approach combines creativity with strategy, so the content has a purpose beyond simply looking good."
       }
     },
     {
       "id": "content_types",
       "keywords": {
-        "ar": ["نوع المحتوى", "بتصنع إيه من محتوى", "أنواع المحتوى", "محتوى تعليمي", "محتوى ترويجي", "المحتوى"],
-        "en": ["content types", "what content", "types of content", "educational content", "promotional content", "reels", "stories"]
+        "ar": ["نوع المحتوى", "بتصنع إيه من محتوى", "أنواع المحتوى", "محتوى تعليمي", "محتوى ترويجي", "المحتوى", "content type", "types", "content"],
+        "en": ["content types", "what content", "types of content", "educational content", "promotional content", "reels", "stories", "what type of content", "what kind of content"]
       },
       "questions": {
-        "ar": [
-          "شيماء بتعمل أنهي أنواع محتوى؟",
-          "بتكتب محتوى تعليمي؟",
-          "بتعمل ريلز؟",
-          "بتعمل محتوى ترويجي؟",
-          "بتعمل محتوى تفاعلي؟",
-          "بتعمل قصص؟",
-          "بتعمل محتوى موسمي؟",
-          "بتعمل محتوى بصري للسوشيال ميديا؟",
-          "بتكتب كابشنز؟",
-          "بتعمل محتوى للمنتجات؟"
-        ],
-        "en": [
-          "what types of content does shymaa create?",
-          "does shymaa create educational content?",
-          "does shymaa make reels?",
-          "does shymaa create promotional content?",
-          "does shymaa make engagement content?",
-          "does shymaa create stories?",
-          "does shymaa make seasonal content?",
-          "does shymaa create social media visuals?",
-          "does shymaa write captions?",
-          "does shymaa create product content?"
-        ]
+        "ar": ["شيماء بتعمل أنهي أنواع محتوى؟", "بتكتب محتوى تعليمي؟", "بتعمل ريلز؟", "بتعمل محتوى ترويجي؟", "بتعمل محتوى تفاعلي؟", "بتعمل قصص؟", "بتعمل محتوى موسمي؟", "بتعمل محتوى بصري للسوشيال ميديا؟", "بتكتب كابشنز؟", "بتعمل محتوى للمنتجات؟", "content types", "what type of content does she create"],
+        "en": ["what types of content does shymaa create?", "does shymaa create educational content?", "does shymaa make reels?", "does shymaa create promotional content?", "does shymaa make engagement content?", "does shymaa create stories?", "does shymaa make seasonal content?", "does shymaa create social media visuals?", "does shymaa write captions?", "does shymaa create product content?", "what kind of content does shymaa make?", "what content can shymaa produce?", "types of content"]
       },
       "answer": {
-        "ar": "شيماء بت صنع أنواع محتوى متنوعة: محتوى تعليمي، ترويجي، تفاعلي، قصصي، ريلز ومحتوى قصير، محتوى للمنتجات، محتوى موسمي وحملات، وتصميمات وبصريات السوشيال ميديا.",
-        "en": "Shymaa creates diverse content types: Educational, Promotional, Engagement-focused, Storytelling, Reels & Short-form Videos, Product-focused, Seasonal & Campaign Content, and Social Media Visuals & Creative Concepts."
+        "ar": "Shymaa creates different types of content depending on the brand, audience, and marketing goal.\n\nThis includes:\n\n• Educational Content\n• Promotional Content\n• Engagement-focused Content\n• Storytelling Content\n• Reels & Short-form Videos\n• Product-focused Content\n• Seasonal & Campaign Content\n• Social Media Visuals & Creative Concepts\n\nShe adapts the content style to each brand rather than using the same approach for every client.",
+        "en": "Shymaa creates different types of content depending on the brand, audience, and marketing goal.\n\nThis includes:\n\n• Educational Content\n• Promotional Content\n• Engagement-focused Content\n• Storytelling Content\n• Reels & Short-form Videos\n• Product-focused Content\n• Seasonal & Campaign Content\n• Social Media Visuals & Creative Concepts\n\nShe adapts the content style to each brand rather than using the same approach for every client."
       }
     },
     {
       "id": "industries",
       "keywords": {
-        "ar": ["مجالات", "مجالات العمل", "sectors", "شغلت في أنهي مجال", "القطاعات", "العملاء"],
-        "en": ["industries", "sectors", "fields", "domains", "what industries", "clients", "brands"]
+        "ar": ["مجالات", "مجالات العمل", "sectors", "شغلت في أنهي مجال", "القطاعات", "العملاء", "brands", "الشركات", "المجالات", "industries"],
+        "en": ["industries", "sectors", "fields", "domains", "what industries", "clients", "brands", "worked with", "what sectors"]
       },
       "questions": {
-        "ar": [
-          "شيماء شغلت في أنهي مجالات؟",
-          "مجالات خبرتها إيه؟",
-          "beit dealt مع أنهي نوع من الشركات؟",
-          "عملت مع علامات تجارية إيه؟",
-          "في أنهي sectors اشتغلت؟",
-          "مجال الأثاث شغلت فيه؟",
-          "اشتغلت في المجال الطبي؟",
-          "مجال التعليم اشتغلت فيه؟"
-        ],
-        "en": [
-          "what industries has shymaa worked in?",
-          "what sectors has shymaa experience in?",
-          "what type of companies has shymaa worked with?",
-          "what brands has shymaa managed?",
-          "has shymaa worked in furniture?",
-          "has shymaa worked in healthcare?",
-          "has shymaa worked in education?",
-          "what fields does shymaa have experience in?"
-        ]
+        "ar": ["شيماء شغلت في أنهي مجالات؟", "مجالات خبرتها إيه؟", "عملت مع أنهي نوع من الشركات؟", "عملت مع علامات تجارية إيه؟", "في أنهي sectors اشتغلت؟", "مجال الأثاث شغلت فيه؟", "اشتغلت في المجال الطبي؟", "مجال التعليم اشتغلت فيه؟", "مجالات العمل بتاعتها إيه؟", "شتغلت مع أنهي براندات؟", "industries", "what industries has she worked in"],
+        "en": ["what industries has shymaa worked in?", "what sectors has shymaa experience in?", "what type of companies has shymaa worked with?", "what brands has shymaa managed?", "has shymaa worked in furniture?", "has shymaa worked in healthcare?", "has shymaa worked in education?", "what fields does shymaa have experience in?", "what industries has shymaa covered?", "what brands has shymaa worked with?", "what companies has she worked with?"]
       },
       "answer": {
-        "ar": "شيماء اشتغلت في مجالات متنوعة تشمل: الأثاث والمنزل (أثركس للموبيليا)، الرخام (أفاق للرخام)، الصيدلة والرعاية الصحية (روشتة للصيدليات)، التعليم (سمارت جونيور إنجليش أكاديمي)، خدمات التنظيف (الوان هابي لوك)، ومستحضرات التجميل والتجارة الإلكترونية (فيلورا كوزماتكس).",
-        "en": "Shymaa has worked across diverse industries: Furniture & Home (Adrak Furniture), Marble (Afaag Marble), Pharmacy & Healthcare (Rosheta Pharmacies), Education (Smart Junior English Academy), Cleaning Services (Alwan Happy Luck), and Beauty & E-commerce (Velora Cosmatics)."
+        "ar": "Shymaa has worked on social media and content projects across different industries, including:\n\n• Furniture & Home: Adrak Furniture\n• Marble: Afaag Marble\n• Pharmacy & Healthcare: Rosheta Pharmacies\n• Education: Smart Junior English Academy\n• Cleaning Services: Alwan Happy Luck\n• E-commerce & Other Businesses: Various social media projects\n\nWorking across different industries has helped her learn how to adapt content to different audiences, products, and brand personalities.",
+        "en": "Shymaa has worked on social media and content projects across different industries, including:\n\n• Furniture & Home: Adrak Furniture\n• Marble: Afaag Marble\n• Pharmacy & Healthcare: Rosheta Pharmacies\n• Education: Smart Junior English Academy\n• Cleaning Services: Alwan Happy Luck\n• E-commerce & Other Businesses: Various social media projects\n\nWorking across different industries has helped her learn how to adapt content to different audiences, products, and brand personalities."
       }
     },
     {
       "id": "projects",
       "keywords": {
-        "ar": ["مشاريع", "شغلها", "الشغل اللي عملته", " Show", "المشاريع", "الحملات"],
-        "en": ["projects", "portfolio", "work", "showcase", "case study", "clients", "brands managed"]
+        "ar": ["مشاريع", "شغلها", "الشغل اللي عملته", "المشاريع", "الحملات", "work", "portfolio", "شغل", "SHOW", "مشاريعها", "شوف شغلها", "عايز اشوف", "selected work", "explore her work"],
+        "en": ["projects", "portfolio", "work", "showcase", "case study", "clients", "brands managed", "her work", "show me", "selected work", "explore", "explore her work"]
       },
       "questions": {
-        "ar": [
-          "شيماء عملت أنهي مشاريع؟",
-          " SHOW مشاريعها",
-          "مشاريعها في أنهي مجالات؟",
-          "عملت شغل مع أنهي علامات تجارية؟",
-          "اسم مشاريعها إيه؟",
-          "شاركت في أنهي حملات؟",
-          "عملت شغل إيجابي؟"
-        ],
-        "en": [
-          "what projects has shymaa worked on?",
-          "show me shymaa's projects",
-          "what brands has shymaa managed?",
-          "what campaigns has shymaa run?",
-          "name some of shymaa's projects",
-          "what case studies does shymaa have?",
-          "what notable work has shymaa done?"
-        ]
+        "ar": ["شيماء عملت أنهي مشاريع؟", "مشاريعها", "مشاريعها في أنهي مجالات؟", "عملت شغل مع أنهي علامات تجارية؟", "اسم مشاريعها إيه؟", "شاركت في أنهي حملات؟", "شغلها", "شوف شغلها", "عايزة اشوف شغلها", "work", "selected work", "view selected work", "explore her work"],
+        "en": ["what projects has shymaa worked on?", "show me shymaa's projects", "what brands has shymaa managed?", "what campaigns has shymaa run?", "name some of shymaa's projects", "what case studies does shymaa have?", "show her work", "explore her work", "i want to see her work", "portfolio", "selected work", "view selected work"]
       },
       "answer": {
-        "ar": "مشاريع شيماء بتشمل: جرش صبية (تجارة إلكترونية)، وقف ممنوع (اجتماعي/جمعية)، كومفورت بيجنز (خدمات تنظيف)، ألوان الحز绿茶eid (خدمات إبداعية)، فيلورا كوزماتكس (جمال وتجارة إلكترونية)، ولازور (خدمات/تجارة إلكترونية).",
-        "en": "Shymaa's projects include: Jarrash Sabia (E-commerce), Wagf Momnah (Social/NGO), Comfort Begins (Cleaning Services), Alwan Elhaz Elsaed (Creative Services), Velora Cosmatics (Beauty & E-commerce), and Lazor (Services/E-commerce)."
+        "ar": "Shymaa has worked on different types of social media content for various brands and industries, including furniture, marble, pharmacies, education, cleaning services, and e-commerce.\n\nHer work includes social media posts, reels, creative content ideas, captions, content calendars, and overall social media management.\n\nHer projects span:\n• Adrak Furniture (Furniture)\n• Afaag Marble (Marble)\n• Rosheta Pharmacies (Healthcare)\n• Smart Junior Academy (Education)\n• Alwan Happy Luck (Cleaning)\n• Velora Cosmatics (Beauty & E-commerce)",
+        "en": "Shymaa has worked on different types of social media content for various brands and industries, including furniture, marble, pharmacies, education, cleaning services, and e-commerce.\n\nHer work includes social media posts, reels, creative content ideas, captions, content calendars, and overall social media management.\n\nHer projects span:\n• Adrak Furniture (Furniture)\n• Afaag Marble (Marble)\n• Rosheta Pharmacies (Healthcare)\n• Smart Junior Academy (Education)\n• Alwan Happy Luck (Cleaning)\n• Velora Cosmatics (Beauty & E-commerce)"
+      }
+    },
+    {
+      "id": "case_studies",
+      "keywords": {
+        "ar": ["دراسات حالة", "حالة", "case study", "تفاصيل المشاريع", "نتائج", "ادخل في التفاصيل", "التفاصيل", "النتائج", "explore case studies"],
+        "en": ["case studies", "case study", "project details", "results", "performance", "outcomes", "details", "explore case studies"]
+      },
+      "questions": {
+        "ar": ["شيماء عندها دراسات حالة؟", "ممكن تشوف تفاصيل المشاريع؟", "ادخل في تفاصيل المشاريع", "نتائج شغلها إيه؟", "بتعمل دراسات حالة؟", "في تفاصيل عن المشاريع؟", "case studies", "explore case studies"],
+        "en": ["does shymaa have case studies?", "can i see project details?", "tell me about the case studies", "what were the results?", "does shymaa create case studies?", "any details about the projects?", "show me case studies", "case studies"]
+      },
+      "answer": {
+        "ar": "In her case studies, Shymaa showcases the thinking behind her work — not just the final designs.\n\nEach case study highlights the brand, the challenge, the target audience, the content approach, the strategy, and the work created.\n\nWhere real performance data is available, she also highlights the results and key insights.",
+        "en": "In her case studies, Shymaa showcases the thinking behind her work — not just the final designs.\n\nEach case study highlights the brand, the challenge, the target audience, the content approach, the strategy, and the work created.\n\nWhere real performance data is available, she also highlights the results and key insights."
       }
     },
     {
       "id": "certifications",
       "keywords": {
-        "ar": ["شهادات", "شهادة", "شهادات معتمدة", "الشهادات", "التدريب", "التأهيل"],
-        "en": ["certifications", "certificates", "certified", "qualified", "credentials", "licenses"]
+        "ar": ["شهادات", "شهادة", "شهادات معتمدة", "الشهادات", "التدريب", "التأهيل", "دورة", "certification", "certifications"],
+        "en": ["certifications", "certificates", "certified", "qualified", "credentials", "licenses", "course"]
       },
       "questions": {
-        "ar": [
-          "شيماء عندها أنهي شهادات؟",
-          "شهادات معتمدة؟",
-          "اتخذت أنهي دورات؟",
-          "شهادة جوجل عندها؟",
-          "شهادة ميتا؟",
-          "بتتعلم باستمرار؟",
-          "شهاداتها بتاعتها؟",
-          "شهادات الذكاء الاصطناعي؟"
-        ],
-        "en": [
-          "what certifications does shymaa have?",
-          "is shymaa certified?",
-          "what certificates does shymaa hold?",
-          "does shymaa have a Google certificate?",
-          "does shymaa have Meta certification?",
-          "what are shymaa's credentials?",
-          "list shymaa's certifications",
-          "any AI certifications?"
-        ]
+        "ar": ["شيماء عندها أنهي شهادات؟", "شهادات معتمدة؟", "اتخذت أنهي دورات؟", "شهادة جوجل عندها؟", "شهادة ميتا؟", "بتتعلم باستمرار؟", "شهاداتها بتاعتها؟", "شهادات الذكاء الاصطناعي؟"],
+        "en": ["what certifications does shymaa have?", "is shymaa certified?", "what certificates does shymaa hold?", "does shymaa have a Google certificate?", "does shymaa have Meta certification?", "what are shymaa's credentials?", "list shymaa's certifications", "any AI certifications?"]
       },
       "answer": {
-        "ar": "شهادات شيماء بتشمل: شهادة جوجل للمحترفين في الذكاء الاصطناعي، تخصص الذكاء الاصطناعي التوليدي للتسويق الرقمي، إتقان المحتوى بالذكاء الاصطناعي للسوشيال ميديا، شهادة ميتا المتخصصة في إدارة وسائل التواصل، شهادة جوجل في التسويق الرقمي والتجارة الإلكترونية، شهادة هب سبوت في تسويق المحتوى، وشهادة DELF B1 في اللغة الفرنسية.",
-        "en": "Shymaa's certifications include: Google AI Professional Certificate, Generative AI for Digital Marketing Specialization, AI Content Mastery for Social Media, Meta Social Media Marketing Professional Certificate, Google Digital Marketing & E-commerce Certificate, HubSpot Content Marketing Certification, and DELF B1 – French Language Certification."
+        "ar": "Shymaa's certifications include:\n\n• Google AI Professional Certificate\n• Generative AI for Digital Marketing Specialization\n• AI Content Mastery for Social Media\n• Meta Social Media Marketing Professional Certificate\n• Google Digital Marketing & E-commerce Certificate\n• HubSpot Content Marketing Certification\n• DELF B1 – French Language Certification",
+        "en": "Shymaa's certifications include:\n\n• Google AI Professional Certificate\n• Generative AI for Digital Marketing Specialization\n• AI Content Mastery for Social Media\n• Meta Social Media Marketing Professional Certificate\n• Google Digital Marketing & E-commerce Certificate\n• HubSpot Content Marketing Certification\n• DELF B1 – French Language Certification"
       }
     },
     {
       "id": "approach",
       "keywords": {
-        "ar": ["طريقة العمل", "process", "إزاي بتشتغل", "خطوات", "منهجيتها", "الاستراتيجية", "المنهجية"],
+        "ar": ["طريقة العمل", "process", "إزاي بتشتغل", "خطوات", "منهجيتها", "الاستراتيجية", "المنهجية", "how does she work", "خطوات الشغل", "methodology"],
         "en": ["approach", "process", "method", "how does she work", "workflow", "strategy", "steps", "methodology"]
       },
       "questions": {
-        "ar": [
-          "شيماء بتشتغل إزاي؟",
-          "طريقة شغلها إيه؟",
-          "إزاي بتصنع محتوى؟",
-          "خطوات شغلها إيه؟",
-          "بتبدأ منين مع العميل؟",
-          "بتعمل استراتيجية محتوى إزاي؟",
-          "process بتاعها في الشغل إيه؟",
-          "بتؤكد على أنهي حاجة في شغلها؟"
-        ],
-        "en": [
-          "how does shymaa work?",
-          "what is shymaa's approach?",
-          "how does shymaa create content?",
-          "what are shymaa's workflow steps?",
-          "how does shymaa start with a client?",
-          "how does shymaa build a content strategy?",
-          "what is shymaa's work process?",
-          "what does shymaa focus on in her work?"
-        ]
+        "ar": ["شيماء بتشتغل إزاي؟", "طريقة شغلها إيه؟", "إزاي بتصنع محتوى؟", "خطوات شغلها إيه؟", "بتبدأ منين مع العميل؟", "بتعمل استراتيجية محتوى إزاي؟", "process بتاعها في الشغل إيه؟", "بتؤكد على أنهي حاجة في شغلها؟", "how does she work", "approach", "methodology"],
+        "en": ["how does shymaa work?", "what is shymaa's approach?", "how does shymaa create content?", "what are shymaa's workflow steps?", "how does shymaa start with a client?", "how does shymaa build a content strategy?", "what is shymaa's work process?", "what does shymaa focus on in her work?", "how does she approach projects?", "methodology"]
       },
       "answer": {
-        "ar": "طريقة شغل شيماء فيها 4 مراحل: أولاً تفهم البراند والجمهور والمنافسين والأهداف. ثانياً تضع استراتيجية المحتوى وتقويم شهري. ثالثاً تصنع محتوى واضح وذو صلة وعلى البراند. رابعاً تحلل الأداء وتحسن باستمرار.",
-        "en": "Shymaa's approach has 4 phases: 1) Understand: brand, audience, competitors & goals. 2) Plan: content strategy & monthly calendar. 3) Create: clear, relevant, on-brand content. 4) Optimize: analyze performance & improve."
+        "ar": "Shymaa starts by understanding the brand, its audience, competitors, and goals.\n\nFrom there, she develops content ideas and a content plan that balances different types of content — from educational and engaging posts to promotional and brand-building content.\n\nShe then focuses on creating content that is clear, relevant, and consistent with the brand identity.\n\nFinally, she looks at the performance of the content and uses those insights to improve future ideas and strategies.",
+        "en": "Shymaa starts by understanding the brand, its audience, competitors, and goals.\n\nFrom there, she develops content ideas and a content plan that balances different types of content — from educational and engaging posts to promotional and brand-building content.\n\nShe then focuses on creating content that is clear, relevant, and consistent with the brand identity.\n\nFinally, she looks at the performance of the content and uses those insights to improve future ideas and strategies."
       }
     },
     {
       "id": "differentiator",
       "keywords": {
-        "ar": ["مميز", "فريد", "ليه أختارها", "مختلفة", "تميزها", "نقاط القوة", "التفردة"],
-        "en": ["different", "unique", "why choose", "what makes", "special", "stand out", "advantage", "strength"]
+        "ar": ["مميز", "فريد", "ليه أختارها", "مختلفة", "تميزها", "نقاط القوة", "التفردة", "special", "unique", "ليه هي مختلفة", "إيه اللي بيميزها", "what makes her different"],
+        "en": ["different", "unique", "why choose", "what makes", "special", "stand out", "advantage", "strength", "what sets her apart"]
       },
       "questions": {
-        "ar": [
-          "ليه أختار شيماء؟",
-          "إيه اللي بيميزها؟",
-          "ليه هي مختلفة عن غيرها؟",
-          "ليه هيا مختلفة؟",
-          "إيه نقاط قوتها؟",
-          "بتتميز بإيه عن غيرها من المتخصصين؟",
-          "ليه أعمل معاها مش مع حد تاني؟",
-          "مميزاتها إيه؟"
-        ],
-        "en": [
-          "why should i choose shymaa?",
-          "what makes shymaa different?",
-          "why is shymaa special?",
-          "what are shymaa's strengths?",
-          "how does shymaa stand out?",
-          "why work with shymaa?",
-          "what is shymaa's unique value?",
-          "what sets shymaa apart from others?"
-        ]
+        "ar": ["ليه أختار شيماء؟", "إيه اللي بيميزها؟", "ليه هي مختلفة عن غيرها؟", "ليه هي مختلفة؟", "إيه نقاط قوتها؟", "بتتميز بإيه عن غيرها من المتخصصين؟", "ليه أعمل معاها مش مع حد تاني؟", "مميزاتها إيه؟", "what makes her different", "different"],
+        "en": ["why should i choose shymaa?", "what makes shymaa different?", "why is shymaa special?", "what are shymaa's strengths?", "how does shymaa stand out?", "why work with shymaa?", "what is shymaa's unique value?", "what sets shymaa apart from others?", "what makes her special?"]
       },
       "answer": {
-        "ar": "شيماء بتجمع بين الإبداع والاستراتيجية. مش بتصنع محتوى عشان يبسط بس — بتفكر في الجمهور والرسالة والهدف. كمان بتستخدم أدوات الذكاء الاصطناعي لتحسين عملية الإبداع. وبتكيّف أسلوبها مع كل براند على حدة.",
-        "en": "Shymaa combines creativity with strategy. She doesn't create content just because it looks good — she thinks about the audience, the message, and the goal. She also uses AI tools to improve her creative process, and adapts her style to each brand individually."
+        "ar": "Shymaa believes good content needs both creativity and purpose.\n\nShe doesn't create content just because it looks nice. She thinks about the audience, the message, the brand, and what the content is supposed to achieve.\n\nShe also enjoys experimenting with AI tools to make the creative process faster, explore new ideas, and improve the way content is planned and produced.\n\nIn short: Creative Thinking + Strategic Thinking + A Willingness to Learn.",
+        "en": "Shymaa believes good content needs both creativity and purpose.\n\nShe doesn't create content just because it looks nice. She thinks about the audience, the message, the brand, and what the content is supposed to achieve.\n\nShe also enjoys experimenting with AI tools to make the creative process faster, explore new ideas, and improve the way content is planned and produced.\n\nIn short: Creative Thinking + Strategic Thinking + A Willingness to Learn."
       }
     },
     {
       "id": "contact",
       "keywords": {
-        "ar": ["تواصل", "اتصال", "بريد", "هاتف", "رقم", "الاتصال", "البريد الإلكتروني", "كلمها"],
-        "en": ["contact", "email", "phone", "reach", "get in touch", "call", "whatsapp", "hire"]
+        "ar": ["تواصل", "اتصال", "بريد", "هاتف", "رقم", "الاتصال", "البريد الإلكتروني", "كلمها", "work together", " collaborated", "عايز أشتغل معاها", "عايز أتعاون", "let's work together", "contact"],
+        "en": ["contact", "email", "phone", "reach", "get in touch", "call", "whatsapp", "hire", "work together", "collaborate", "let's work together"]
       },
       "questions": {
-        "ar": [
-          "إزاي أتواصل مع شيماء؟",
-          "البريد الإلكتروني بتاعها إيه؟",
-          "رقم تليفونها إيه؟",
-          "بترد على الواتساب؟",
-          "معلومات التواصل بتاعتها إيه؟",
-          "إزاي أكلمها؟",
-          "تليفونها إيه؟",
-          "عايز أكلمها على لينكدإن"
-        ],
-        "en": [
-          "how can i contact shymaa?",
-          "what is shymaa's email?",
-          "what is shymaa's phone number?",
-          "does shymaa reply on whatsapp?",
-          "what is shymaa's contact info?",
-          "how to reach shymaa?",
-          "what is shymaa's phone?",
-          "can i find shymaa on linkedin?"
-        ]
+        "ar": ["إزاي أتواصل مع شيماء؟", "البريد الإلكتروني بتاعها إيه؟", "رقم تليفونها إيه؟", "بترد على الواتساب؟", "معلومات التواصل بتاعتها إيه؟", "إزاي أكلمها؟", "تليفونها إيه؟", "عايز أكلمها على لينكدإن", "عايز أشتغل معاها", "عايز أتعاون معاها", "how can i contact her", "contact"],
+        "en": ["how can i contact shymaa?", "what is shymaa's email?", "what is shymaa's phone number?", "does shymaa reply on whatsapp?", "what is shymaa's contact info?", "how to reach shymaa?", "what is shymaa's phone?", "can i find shymaa on linkedin?", "i want to work with her", "how can we collaborate?"]
       },
       "answer": {
-        "ar": "تقدر تتواصل مع شيماء عن طريق الإيميل: raoufshimaa587@gmail.com أو تتصل أو ترسل واتساب على: +01282354052",
-        "en": "You can reach Shymaa at raoufshimaa587@gmail.com or call/WhatsApp at +01282354052."
+        "ar": "Looking for someone to help manage your social media and create content that actually feels like your brand?\n\nShymaa is open to new opportunities in Social Media, Content Creation, and Digital Marketing.\n\nIf you think there could be a good fit, feel free to get in touch.\n\nContact:\n• Email: raoufshimaa587@gmail.com\n• Phone/WhatsApp: +01282354052",
+        "en": "Looking for someone to help manage your social media and create content that actually feels like your brand?\n\nShymaa is open to new opportunities in Social Media, Content Creation, and Digital Marketing.\n\nIf you think there could be a good fit, feel free to get in touch.\n\nContact:\n• Email: raoufshimaa587@gmail.com\n• Phone/WhatsApp: +01282354052"
       }
     },
     {
       "id": "availability",
       "keywords": {
-        "ar": ["متاحة", "شاغرة", "available", "بتدور على شغل", "فرصة عمل", "متاحة للعمل", "عمل حر"],
+        "ar": ["متاحة", "شاغرة", "available", "بتدور على شغل", "فرصة عمل", "متاحة للعمل", "عمل حر", "open to work", "شاغرة", "availability"],
         "en": ["available", "hiring", "open to work", "vacant", "job", "opportunity", "looking for", "freelance"]
       },
       "questions": {
-        "ar": [
-          "شيماء متاحة للشغل؟",
-          "بتدور على فرصة عمل؟",
-          "شاغرة دلوقتي؟",
-          "متاحة دلوقتي؟",
-          "ممكن أعيدها مشروع؟",
-          "بتعمل فريلانس؟",
-          "عايزة تشتغل في إيه؟",
-          "متاحة لعمل حر؟"
-        ],
-        "en": [
-          "is shymaa available for work?",
-          "is shymaa looking for a job?",
-          "is shymaa currently available?",
-          "is shymaa open to opportunities?",
-          "can i hire shymaa for a project?",
-          "does shymaa do freelancing?",
-          "what kind of work is shymaa looking for?",
-          "is shymaa available for freelance?"
-        ]
+        "ar": ["شيماء متاحة للشغل؟", "بتدور على فرصة عمل؟", "شاغرة دلوقتي؟", "متاحة دلوقتي؟", "ممكن أعيدها مشروع؟", "بتعمل فريلانس؟", "عايزة تشتغل في إيه؟", "متاحة لعمل حر؟"],
+        "en": ["is shymaa available for work?", "is shymaa looking for a job?", "is shymaa currently available?", "is shymaa open to opportunities?", "can i hire shymaa for a project?", "does shymaa do freelancing?", "what kind of work is shymaa looking for?", "is shymaa available for freelance?"]
       },
       "answer": {
-        "ar": "أيوه! شيماء مفتوحة لفرص جديدة في إدارة وسائل التواصل الاجتماعي، إبداع المحتوى، والتسويق الرقمي. تواصل معاها على raoufshimaa587@gmail.com",
-        "en": "Yes! Shymaa is open to new opportunities in Social Media Management, Content Creation, and Digital Marketing. Contact her at raoufshimaa587@gmail.com."
+        "ar": "Yes! Shymaa is open to new opportunities in Social Media Management, Content Creation, and Digital Marketing.\n\nIf you think there could be a good fit, feel free to get in touch.\n\nContact:\n• Email: raoufshimaa587@gmail.com\n• Phone/WhatsApp: +01282354052",
+        "en": "Yes! Shymaa is open to new opportunities in Social Media Management, Content Creation, and Digital Marketing.\n\nIf you think there could be a good fit, feel free to get in touch.\n\nContact:\n• Email: raoufshimaa587@gmail.com\n• Phone/WhatsApp: +01282354052"
       }
     }
   ]
