@@ -1,8 +1,82 @@
 {
   "meta": {
-    "version": 10,
+    "version": 11,
     "languages": ["ar", "en"],
     "lastUpdated": "2026-09-05"
+  },
+  "followUpPool": {
+    "identity": [
+      { "label": { "ar": "🎨 وريني مشاريعها", "en": "🎨 Show me her projects" }, "intent": "projects" },
+      { "label": { "ar": "💡 إيه اللي بيميزها؟", "en": "💡 What makes her different?" }, "intent": "differentiator" },
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+      { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" }
+    ],
+    "work": [
+      { "label": { "ar": "🌍 شغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
+      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+      { "label": { "ar": "📚 شيماء بتتعلم إيه؟", "en": "📚 What is she learning?" }, "intent": "education" }
+    ],
+    "projects": [
+      { "label": { "ar": "📊 شاورلي دراسات الحالة", "en": "📊 Tell me about the case studies" }, "intent": "caseStudies" },
+      { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+      { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" }
+    ],
+    "caseStudies": [
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+      { "label": { "ar": "📧 عايز أتواصل معاها", "en": "📧 I want to contact her" }, "intent": "contact" },
+      { "label": { "ar": "✨ إيه اللي بيميزها؟", "en": "✨ What makes her different?" }, "intent": "differentiator" },
+      { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" }
+    ],
+    "skills": [
+      { "label": { "ar": "✨ إيه اللي بيميزها؟", "en": "✨ What makes her different?" }, "intent": "differentiator" },
+      { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" },
+      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" }
+    ],
+    "differentiator": [
+      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+      { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" },
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" }
+    ],
+    "contentTypes": [
+      { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
+      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" }
+    ],
+    "industries": [
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+      { "label": { "ar": "📊 شاورلي دراسات الحالة", "en": "📊 Tell me about the case studies" }, "intent": "caseStudies" },
+      { "label": { "ar": "📧 عايز أتواصل معاها", "en": "📧 I want to contact her" }, "intent": "contact" }
+    ],
+    "approach": [
+      { "label": { "ar": "💡 إيه اللي بيميزها؟", "en": "💡 What makes her different?" }, "intent": "differentiator" },
+      { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" },
+      { "label": { "ar": "📚 شيماء بتتعلم إيه؟", "en": "📚 What is she learning?" }, "intent": "education" },
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" }
+    ],
+    "education": [
+      { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" },
+      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" }
+    ],
+    "contact": [
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+      { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
+      { "label": { "ar": "✨ إيه اللي بيميزها؟", "en": "✨ What makes her different?" }, "intent": "differentiator" },
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" }
+    ],
+    "availability": [
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+      { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+      { "label": { "ar": "📧 عايز أتواصل معاها", "en": "📧 I want to contact her" }, "intent": "contact" }
+    ]
   },
   "intents": [
     {
@@ -20,6 +94,10 @@
       "questions": {
         "ar": ["مين هي شيماء؟", "عرفني بشيماء", "من هي شيماء؟", "مين هي شيماء دي؟", "عرفني عن شيماء"],
         "en": ["Who is Shymaa?", "Tell me about Shymaa", "Who is Shymaa Raouf Ali?", "Introduce her"]
+      },
+      "aliases": {
+        "ar": ["شيماء", "التعريف", "عرفني"],
+        "en": ["shymaa", "about", "who is", "introduce"]
       },
       "answer": {
         "ar": "شيماء أخصائية وسائل تواصل اجتماعي وصانعة محتوى، بخلفية في التسويق الرقمي. بتركز على إنتاج محتوى جذاب، وتطوير استراتيجيات سوشيال ميديا، ومساعدة العلامات التجارية على التواصل مع جمهورها بطريقة إبداعية وهادفة.\n\nبتحب تحوّل الأفكار لمحتوى مش بس شكله حلو، لكن ليه هدف واضح وبيوصل للجمهور الصح.",
@@ -47,6 +125,10 @@
         "ar": ["شيماء شغلت في إيه؟", "ايه نوع الشغل اللي بتعمله؟", "وريني شغلها", "عايز اشوف شغلها"],
         "en": ["What type of work does Shymaa do?", "Show me her work", "What kind of work does she do?"]
       },
+      "aliases": {
+        "ar": ["شغل", "الأعمال", "بتمثل"],
+        "en": ["work", "portfolio", "showcase", "what she does"]
+      },
       "answer": {
         "ar": "شيماء اشتغلت على أنواع مختلفة من محتوى السوشيال ميديا لعلامات تجارية ومجالات متنوعة، منها الأثاث، والرخام، والصيدليات، والتعليم، وخدمات التنظيف، والتجارة الإلكترونية.\n\nشغلها بيشمل بوستات سوشيال ميديا، وريلز، وأفكار محتوى إبداعية، وكابشنز، وتقويمات محتوى، وإدارة سوشيال ميديا بشكل شامل.",
         "en": "Shymaa has worked on different types of social media content for various brands and industries, including furniture, marble, pharmacies, education, cleaning services, and e-commerce.\n\nHer work includes social media posts, reels, creative content ideas, captions, content calendars, and overall social media management."
@@ -72,6 +154,10 @@
       "questions": {
         "ar": ["وريني مشاريع شيماء", "ايه المشاريع اللي شغالة عليها؟", "مشاريعها ايه؟", "شوف شغلها", "وريني مشاريعها"],
         "en": ["Show me Shymaa's projects", "What projects has Shymaa worked on?", "Show her projects", "View selected work"]
+      },
+      "aliases": {
+        "ar": ["مشاريع", "أعمال", "شغل", "الحملات", "المعرض"],
+        "en": ["projects", "project", "portfolio", "work", "showcase", "samples"]
       },
       "answer": {
         "ar": "شيماء اشتغلت على أنواع مختلفة من محتوى السوشيال ميديا لعلامات تجارية ومجالات متنوعة، منها الأثاث، والرخام، والصيدليات، والتعليم، وخدمات التنظيف، والتجارة الإلكترونية.\n\nشغلها بيشمل بوستات سوشيال ميديا، وريلز، وأفكار محتوى إبداعية، وكابشنز، وتقويمات محتوى، وإدارة سوشيال ميديا بشكل شامل.",
@@ -99,6 +185,10 @@
         "ar": ["عندها دراسات حالة؟", "ممكن تشوف تفاصيل المشاريع؟", "ايه نتائج شغلها؟", "وريني دراسات الحالة"],
         "en": ["Does Shymaa have case studies?", "Show me case studies", "Can I see project details?", "What were the results?"]
       },
+      "aliases": {
+        "ar": ["دراسات", "دراسة", "حالة", "النتائج", "التفاصيل"],
+        "en": ["case studies", "case study", "results", "details", "outcomes"]
+      },
       "answer": {
         "ar": "في دراسات الحالة، شيماء بتعرض التفكير اللي ورا شغلها — مش بس التصاميم النهائية.\n\nكل دراسة حالة بتبرز البراند، والتحدي، والجمهور المستهدف، وطريقة المحتوى، والاستراتيجية، والشغل اللي اتعمل.\n\nوحيثما تتوفر بيانات أداء حقيقية، بتسلط الضوء كمان على النتائج والرؤى الرئيسية.",
         "en": "In her case studies, Shymaa showcases the thinking behind her work — not just the final designs.\n\nEach case study highlights the brand, the challenge, the target audience, the content approach, the strategy, and the work created.\n\nWhere real performance data is available, she also highlights the results and key insights."
@@ -107,6 +197,36 @@
       "followUps": [
         { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
         { "label": { "ar": "📧 عايز أتواصل معاها", "en": "📧 I want to contact her" }, "intent": "contact" }
+      ]
+    },
+    {
+      "id": "education",
+      "category": "about",
+      "intentPriority": 1,
+      "keywords": {
+        "ar": ["تعليم", "دراسة", "تعلم", "تعلمت", "شهادة", "منهج"],
+        "en": ["education", "learn", "learning", "study", "studies", "course", "courses", "diploma"]
+      },
+      "synonyms": {
+        "ar": ["شيماء بتتعلم إيه", "ايه اللي بتدرسه", "تعليمها"],
+        "en": ["what is she learning", "what does she study", "what is her education"]
+      },
+      "questions": {
+        "ar": ["شيماء بتتعلم إيه؟", "إيه تعليمها؟", "بتدرس إيه؟"],
+        "en": ["What is Shymaa learning?", "What is her education?", "What does she study?"]
+      },
+      "aliases": {
+        "ar": ["تعلم", "التعلم", "تعليم", "دراسة", "ادرس", "علمت"],
+        "en": ["learn", "learning", "study", "studies", "education", "course", "research", "knowledge"]
+      },
+      "answer": {
+        "ar": "شيماء بتشوف التعليم شغله مستمر، وبتحب تتطور في إنشاء المحتوى والسوشيال ميديا والتسويق الرقمي.\n\nالتعلم بيقوي شغلتها إنها تعتمد محتوى له هدف واضح، واستكشاف أدوات زي الذكاء الاصطناعي بيساعدها تنتج أسرع وتجرب أفكار جديدة.",
+        "en": "Shymaa sees learning as an ongoing part of what she does, and keeps sharpening her craft in content creation, social media, and digital marketing.\n\nLearning strengthens her work: having a clear content purpose, and exploring tools like AI to produce faster and try new ideas."
+      },
+      "action": { "type": "scroll", "target": "skills", "label": "Education" },
+      "followUps": [
+        { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" },
+        { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" }
       ]
     },
     {
@@ -124,6 +244,10 @@
       "questions": {
         "ar": ["إيه مهاراتها؟", "إيه المهارات اللي عندها؟", "شيماء بتعرف تعمل إيه؟", "ايه اكتر حاجة هي قوية فيها؟"],
         "en": ["What are Shymaa's skills?", "What can Shymaa do?", "What are her strongest skills?", "What skills does she have?"]
+      },
+      "aliases": {
+        "ar": ["مهاره", "مهارات", "قدرات", "الكفاءات", "تعرف تعمل"],
+        "en": ["skill", "skills", "abilities", "competencies", "what can she do"]
       },
       "answer": {
         "ar": "شيماء تقدر تدعم العلامات التجارية في مراحل مختلفة من تواجدها على السوشيال ميديا.\n\nمهاراتها بتشمل:\n• إدارة وسائل التواصل الاجتماعي\n• إبداع المحتوى\n• استراتيجية المحتوى\n• تقويم المحتوى والتخطيط\n• أفكار المحتوى الإبداعي\n• الريلز والمحتوى القصير\n• كتابة النصوص والكابشنز\n• بحث الجمهور والمنافسين\n• التسويق الرقمي\n\nأسلوبها بيجمع بين الإبداع والاستراتيجية، عشان المحتوى يكون ليه هدف أبعد من مجرد الشكل الحلو.",
@@ -151,6 +275,10 @@
         "ar": ["إيه اللي بيميز شيماء؟", "ليه أختار شيماء؟", "إيه اللي بيميزها؟", "ليه هي مختلفة؟"],
         "en": ["What makes Shymaa different?", "Why should I choose Shymaa?", "What makes her special?", "What sets her apart?"]
       },
+      "aliases": {
+        "ar": ["مميز", "تميز", "مختلفه", "نقاط القوه", "فرايد"],
+        "en": ["different", "unique", "special", "what makes", "stand out"]
+      },
       "answer": {
         "ar": "شيماء بتؤمن إن المحتوى الجيد محتاج إبداع وهدف مع بعض.\n\nهي مش بتعمل محتوى مجرد إنه شكله حلو. بتفكر في الجمهور، والرسالة، والبراند، وإيه اللي المحتوى المفروض يحققه.\n\nوبتحب كمان تجرّب أدوات الذكاء الاصطناعي عشان تسرّع العملية الإبداعية، وتستكشف أفكار جديدة، وتحسّن طريقة تخطيط المحتوى وإنتاجه.\n\nباختصار: تفكير إبداعي + تفكير استراتيجي + رغبة في التعلّم.",
         "en": "Shymaa believes good content needs both creativity and purpose.\n\nShe doesn't create content just because it looks nice. She thinks about the audience, the message, the brand, and what the content is supposed to achieve.\n\nShe also enjoys experimenting with AI tools to make the creative process faster, explore new ideas, and improve the way content is planned and produced.\n\nIn short: Creative Thinking + Strategic Thinking + A Willingness to Learn."
@@ -176,6 +304,10 @@
       "questions": {
         "ar": ["إيه نوع المحتوى اللي بتعمله؟", "بتعمل أنهي أنواع محتوى؟", "بتعمل ريلز؟", "بتكتب كابشنز؟"],
         "en": ["What type of content does Shymaa create?", "What types of content does she make?", "Does she make reels?", "What content can she produce?"]
+      },
+      "aliases": {
+        "ar": ["أنواع المحتوى", "المحتوى", "ريلز", "كابشنز"],
+        "en": ["content types", "content", "reels", "stories", "captions"]
       },
       "answer": {
         "ar": "شيماء بتعمل أنواع مختلفة من المحتوى حسب البراند والجمهور والهدف التسويقي.\n\nده بيشمل:\n• محتوى تعليمي\n• محتوى ترويجي\n• محتوى تفاعلي\n• محتوى قصصي\n• ريلز وفيديوهات قصيرة\n• محتوى موجه للمنتجات\n• محتوى موسمي وحملات\n• تصاميم ومفاهيم إبداعية للسوشيال ميديا\n\nهي بتكيّف أسلوب المحتوى مع كل براند بدل ما تستخدم نفس الأسلوب مع كل عميل.",
@@ -203,6 +335,10 @@
         "ar": ["شيماء اشتغلت في إيه؟", "شغلت في أنهي مجالات؟", "اشتغلت مع مين؟", "شيماء شغلت في أنهي صناعات؟"],
         "en": ["Which industries has Shymaa worked with?", "What industries has she worked in?", "What brands has she worked with?", "Which sectors has she covered?"]
       },
+      "aliases": {
+        "ar": ["مجالات", "القطاعات", "الصناعات", "العملاء"],
+        "en": ["industries", "sectors", "fields", "clients", "brands"]
+      },
       "answer": {
         "ar": "شيماء اشتغلت على مشاريع سوشيال ميديا ومحتوى في مجالات متنوعة، منها:\n• الأثاث والمنزل: أدفراك للأثاث (Adrak Furniture)\n• الرخام: أفاق للرخام (Afaag Marble)\n• الصيدلة والرعاية الصحية: روشيتا الصيدليات (Rosheta Pharmacies)\n• التعليم: سمارت جينيور أكاديمي للغات (Smart Junior English Academy)\n• خدمات التنظيف: ألوان هابي لوك (Alwan Happy Luck)\n• التجارة الإلكترونية وأعمال أخرى: مشاريع سوشيال ميديا متنوعة\n\nالشغل في مجالات مختلفة ساعدها تتعلم إزاي تكيّف المحتوى مع جمهور ومنتجات وشخصيات براند مختلفة.",
         "en": "Shymaa has worked on social media and content projects across different industries, including:\n• Furniture & Home: Adrak Furniture\n• Marble: Afaag Marble\n• Pharmacy & Healthcare: Rosheta Pharmacies\n• Education: Smart Junior English Academy\n• Cleaning Services: Alwan Happy Luck\n• E-commerce & Other Businesses: Various social media projects\n\nWorking across different industries has helped her learn how to adapt content to different audiences, products, and brand personalities."
@@ -228,6 +364,10 @@
       "questions": {
         "ar": ["إزاي بتشتغل؟", "طريقة شغلها إيه؟", "شيماء بتشتغل إزاي؟", "خطوات شغلها إيه؟"],
         "en": ["How does Shymaa work?", "How does she approach social media?", "What is her approach?", "What are her workflow steps?"]
+      },
+      "aliases": {
+        "ar": ["طريقه الشغل", "إزاي تشتغل", "منهجية", "الاستراتيجية"],
+        "en": ["approach", "process", "method", "workflow", "steps"]
       },
       "answer": {
         "ar": "شيماء بتبدأ بفهم البراند وجمهوره ومنافسيه وأهدافه.\n\nمن هنا، بتطوّر أفكار المحتوى وخطة محتوى بتوازن بين أنواع مختلفة من المحتوى — من بوستات تعليمية وتفاعلية لبوستات ترويجية وبناءة للبراند.\n\nوبعدين بتركز على إنتاج محتوى واضح وذو صلة ومتسق مع هوية البراند.\n\nوأخيراً، بتنظر لأداء المحتوى وتستخدم الرؤى دي لتحسين الأفكار والاستراتيجيات المستقبلية.",
@@ -255,6 +395,10 @@
         "ar": ["عايز أتواصل معاها", "إزاي أكلم شيماء؟", "البريد الإلكتروني بتاعها إيه؟", "عايز أشتغل معاها"],
         "en": ["I want to contact her", "How can I contact Shymaa?", "What is her email?", "I want to work with her"]
       },
+      "aliases": {
+        "ar": ["تواصل", "رقم", "بريد", "هاتف", "معلومات التواصل"],
+        "en": ["contact", "info", "number", "phone", "email", "reach"]
+      },
       "answer": {
         "ar": "لو بتدور على حد يساعدك تدير سوشيال ميديا وتصنع محتوى فعلاً بيعبّر عن براندك، شيماء مفتوحة لفرص جديدة في السوشيال ميديا وصناعة المحتوى والتسويق الرقمي.\n\nلو حاسس إن فيه توافق، اتواصل معاها بحرية.\n\nالتواصل:\n• البريد الإلكتروني: raoufshimaa587@gmail.com\n• لينكدإن: Shymaa Raouf Ali\n• الموبايل واتساب: 01282354052",
         "en": "Looking for someone to help manage your social media and create content that actually feels like your brand?\n\nShymaa is open to new opportunities in Social Media, Content Creation, and Digital Marketing.\n\nIf you think there could be a good fit, feel free to get in touch.\n\nContact:\n• Email: raoufshimaa587@gmail.com\n• LinkedIn: Shymaa Raouf Ali\n• Phone/WhatsApp: +01282354052"
@@ -280,6 +424,10 @@
       "questions": {
         "ar": ["شيماء متاحة للشغل؟", "بتدور على فرصة عمل؟", "متاحة دلوقتي؟"],
         "en": ["Is Shymaa available for work?", "Is she open to opportunities?", "Can I hire her for a project?"]
+      },
+      "aliases": {
+        "ar": ["متاحة", "متاحه", "شاغرة", "فرصة عمل"],
+        "en": ["available", "open to work", "hiring", "freelance", "job"]
       },
       "answer": {
         "ar": "أيوة! شيماء مفتوحة لفرص جديدة في إدارة السوشيال ميديا وصناعة المحتوى والتسويق الرقمي.\n\nلو حاسس إن فيه توافق، اتواصل معاها بحرية.\n\nالتواصل:\n• البريد الإلكتروني: raoufshimaa587@gmail.com\n• الموبايل واتساب: 01282354052",

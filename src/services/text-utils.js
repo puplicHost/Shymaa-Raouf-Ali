@@ -39,12 +39,47 @@ const ARABIC_NORMALIZATIONS = [
   [/\u064A\u0646/g, '\u064A'],
 ]
 
+// Small, conservative shorthand expansion for the conversational inputs people
+// actually type into a chat box (e.g. "info" -> "information", "u" -> "you").
+// Kept tiny on purpose: normalization must never guess words it is not sure
+// about, so only fixed, unambiguous whole-token forms are mapped and every
+// replacement is word-boundary safe (no mangling inside longer words).
+const COMMON_SHORTHAND = {
+  info: 'information',
+  'info.': 'information',
+  u: 'you',
+  ur: 'your',
+  yr: 'your',
+  plz: 'please',
+  pls: 'please',
+  thx: 'thanks',
+  tnx: 'thanks',
+  bc: 'because',
+  bcz: 'because',
+  coz: 'because',
+  btw: 'by the way',
+  wanna: 'want to',
+  gimme: 'give me',
+}
+
+function expandShorthand(text) {
+  let result = ` ${String(text || '').toLowerCase()} `
+  for (const [key, value] of Object.entries(COMMON_SHORTHAND)) {
+    const rx = new RegExp(`(^|[^\\p{L}\\p{N}])${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?=$|[^\\p{L}\\p{N}])`, 'gu')
+    result = result.replace(rx, `$1${value}`)
+  }
+  return result.trim()
+}
+
 /**
  * Normalizes Arabic text: strips diacritics/tatweel, folds alef variants,
- * ta marbuta and alef maqsura. For English, just lowercases.
+ * ta marbuta and alef maqsura. For English, just lowercases. Also expands a
+ * tiny set of unambiguous shorthand forms and collapses punctuation/whitespace
+ * so "contact info.", "u want info" and "info" all reach the same tokens.
  */
 export function normalizeText(text) {
-  let result = String(text || '').trim().toLowerCase()
+  let result = expandShorthand(text)
+  result = result.replace(/[^\p{L}\p{N}\s\u0600-\u06FF]/gu, ' ')
   for (const [pattern, replacement] of ARABIC_NORMALIZATIONS) {
     result = result.replace(pattern, replacement)
   }
@@ -55,9 +90,7 @@ export function normalizeText(text) {
  * Tokenizes text into normalized word tokens (length > 1).
  */
 export function tokenize(text) {
-  return String(text || '')
-    .toLowerCase()
-    .replace(/[^\w\s\u0600-\u06FF]/g, ' ')
+  return normalizeText(text)
     .split(/\s+/)
     .filter((t) => t.length > 1)
 }

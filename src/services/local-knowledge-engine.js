@@ -30,7 +30,7 @@ const THEME_RULES = [
   },
   {
     id: 'skills',
-    rx: /(مهارات|بتعرف تعمل|قادره على|skills|abilities|competenc|good at|can she do|strongest)/,
+    rx: /(مهارات|مهاره|بتعرف تعمل|قادره على|skills|abilities|competenc|good at|can she do|strongest)/,
   },
   {
     id: 'approach',
@@ -50,7 +50,11 @@ const THEME_RULES = [
   },
   {
     id: 'projects',
-    rx: /(مشاريع|وريني|شوف شغلها|شغلها|projects|portfolio|selected work|show me (her|shymaa|the)|her work|explore (her|the|shymaa))/,
+    rx: /(مشاريع|(?:^|[^\p{L}\p{N}])شغل(?=$|[^\p{L}\p{N}])|وريني|شوف شغلها|شغلها|\bwork\b|projects|portfolio|selected work|show me (her|shymaa|the)|her work|explore (her|the|shymaa))/,
+  },
+  {
+    id: 'education',
+    rx: /(تعليم|تعلم|التعلم|education|learning)/,
   },
   {
     id: 'caseStudies',
@@ -125,10 +129,12 @@ function intentLists(intent, lang) {
   const k = intent.keywords || {}
   const s = intent.synonyms || {}
   const q = intent.questions || {}
+  const a = intent.aliases || {}
   return {
     keywords: (k[lang] || k.en || []).map(normalizeText),
     synonyms: (s[lang] || s.en || []).map(normalizeText),
     questions: (q[lang] || q.en || []).map(normalizeText),
+    aliases: (a[lang] || a.en || []).map(normalizeText),
   }
 }
 
@@ -145,24 +151,23 @@ function scoreList(normalizedQuery, queryTokens, lang, phrases) {
 
   for (const p of phrases) {
     if (!p) continue
-    const pFiltered = removeStopWords(tokenize(p), lang)
+    const pTokens = tokenize(p) // raw phrase tokens (punctuation-free, normalized)
+    if (pTokens.length === 0) continue
+    const pFiltered = removeStopWords(pTokens, lang).filter((t) => queryTokens.some((qt) => qt.startsWith(t) || t.startsWith(qt)))
     if (pFiltered.length === 0) continue
 
-    // Require at least one meaningful (non-stopword) token in common.
-    const present = pFiltered.filter(
-      (t) => queryTokens.includes(t) || queryTokens.some((qt) => t.includes(qt) || qt.includes(t))
-    )
-    if (present.length === 0) continue
-
-    present.forEach((t) => covered.add(t))
+    // Only tokens that actually matched are "covered"; stop words inside the
+    // phrase still count in the ratio ceiling so partial hits like "good" ->
+    // "good at" cannot score as strongly as a real single-purpose keyword.
+    pFiltered.forEach((t) => covered.add(t))
 
     // Multi-token exact substring phrase -> strongest signal.
-    if (pFiltered.length > 1 && p.length > 2 && normalizedQuery.includes(p)) {
+    if (pTokens.length > 1 && p.length > 2 && normalizedQuery.includes(p)) {
       bestMatch = Math.max(bestMatch, 1.0)
       continue
     }
 
-    const exactRatio = present.length / pFiltered.length
+    const exactRatio = pFiltered.length / pTokens.length
     bestMatch = Math.max(bestMatch, exactRatio)
   }
 
@@ -196,14 +201,15 @@ export function searchLocal(query) {
   // Layer 2: fuzzy ranking
   const ranked = []
   for (const intent of intents) {
-    const { keywords, synonyms, questions } = intentLists(intent, lang)
+    const { keywords, synonyms, questions, aliases } = intentLists(intent, lang)
 
     const kw = scoreList(normalizedQuery, tokens, lang, keywords)
     const sy = scoreList(normalizedQuery, tokens, lang, synonyms)
     const qu = scoreList(normalizedQuery, tokens, lang, questions)
+    const al = scoreList(normalizedQuery, tokens, lang, aliases)
 
     // Similarity via TF-IDF over the searchable union (conservative).
-    const searchable = [...synonyms, ...keywords, ...questions]
+    const searchable = [...synonyms, ...aliases, ...keywords, ...questions]
     const docs = searchable
       .map((s) => removeStopWords(tokenize(s), lang))
       .filter((d) => d.length > 0)
@@ -219,8 +225,9 @@ export function searchLocal(query) {
     }
 
     // Best evidence weighted by query coverage (avoids incidental keyword hits).
-    const bestRaw = Math.max(kw.match * 0.9, sy.match * 1.0, qu.match * 0.8)
-    const bestCoverage = Math.max(kw.coverage, sy.coverage, qu.coverage)
+    // Aliases are treated as a first-class signal (same weight as synonyms).
+    const bestRaw = Math.max(kw.match * 0.9, sy.match * 1.0, al.match * 1.0, qu.match * 0.8)
+    const bestCoverage = Math.max(kw.coverage, sy.coverage, qu.coverage, al.coverage)
     const composite = bestRaw * (0.5 + 0.5 * bestCoverage)
 
     ranked.push({ intent, composite, keyword: kw.match, synonym: sy.match, question: qu.match, similarity })

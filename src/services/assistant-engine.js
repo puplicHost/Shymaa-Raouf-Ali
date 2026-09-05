@@ -27,13 +27,122 @@ const LOCAL_ONLY_MODE = true
 let lastRequestAt = 0
 let processing = false
 
+// Recently answered intents (in conversation order). Used by the follow-up
+// picker so two consecutive answers never re-suggest the same section and the
+// conversation keeps exploring instead of looping. Reset alongside the rate
+// limit so every test starts from a clean conversation state.
+const RECENT_LIMIT = 4
+let recentIntentIds = []
+
 /**
- * Resets the client-side cooldown state. Primarily useful for tests; on the
- * frontend the cooldown simply prevents accidental duplicate sends.
+ * Resets the client-side cooldown state and the recent-intent history.
+ * Primarily useful for tests; on the frontend the cooldown simply prevents
+ * accidental duplicate sends.
  */
 export function resetRateLimit() {
   lastRequestAt = 0
   processing = false
+  recentIntentIds = []
+}
+
+function trackRecentIntent(intentId) {
+  if (!intentId) return
+  recentIntentIds = recentIntentIds.filter((id) => id !== intentId)
+  recentIntentIds.push(intentId)
+  if (recentIntentIds.length > RECENT_LIMIT) recentIntentIds.shift()
+}
+
+/**
+ * Human-friendly fallback labels for follow-up suggestions that come from the
+ * pool but are not the canonical first two of an intent. Kept in the KB sense:
+ * every label still resolves through the normal local engine when clicked.
+ */
+const FALLBACK_LABELS = {
+  identity: { ar: '🤍 مين هي شيماء؟', en: '🤍 Who is Shymaa?' },
+  work: { ar: '💼 نوع الشغل اللي بتعمله؟', en: '💼 What type of work does she do?' },
+  projects: { ar: '📈 وريني المشاريع', en: '📈 Show me the projects' },
+  caseStudies: { ar: '📊 شاورلي دراسات الحالة', en: '📊 Tell me about the case studies' },
+  education: { ar: '📚 شيماء بتتعلم إيه؟', en: '📚 What is she learning?' },
+  skills: { ar: '💪 إيه مهاراتها؟', en: '💪 What are her skills?' },
+  differentiator: { ar: '💡 إيه اللي بيميزها؟', en: '💡 What makes her different?' },
+  contentTypes: { ar: '📱 إيه نوع المحتوى اللي بتعمله؟', en: '📱 What type of content does she create?' },
+  industries: { ar: '🌍 اشتغلت في صناعات إيه؟', en: '🌍 Which industries has she worked in?' },
+  approach: { ar: '🛠️ إزاي بتشتغل؟', en: '🛠️ How does she approach work?' },
+  contact: { ar: '📧 عايز أتواصل معاها', en: '📧 I want to contact her' },
+  availability: { ar: '📅 شيماء متاحة للشغل؟', en: '📅 Is Shymaa available for work?' },
+}
+
+/**
+ * Deterministic follow-up picker. Always returns exactly two follow-ups for an
+ * intent (intent-id + bilingual label):
+ *   - with no prior context it returns the canonical KB pair unchanged,
+ *   - with recent-intent history it avoids repeating just-answered sections
+ *     (no self-loop, no immediate re-loop) and prefers topic diversity,
+ *   - ordering stays stable so identical conversations give identical output.
+ */
+export function pickFollowUps(intentId, lang = 'en', recent = []) {
+  if (!intentId) return []
+
+  const intent = (knowledgeBase.intents || []).find((i) => i.id === intentId)
+  if (!intent) return []
+
+  // The canonical pair (kept deterministic and untouched whenever possible).
+  const canonical = [...(intent.followUps || [])]
+  if (!canonical.length) return []
+
+  const sourceCategory = intent.category || ''
+  const recentSet = new Set(recent.filter((id) => id && id !== intentId))
+
+  // When there is no prior conversational context (or it only contains the
+  // current intent), the canonical pair IS the answer — this preserves the
+  // stable, previously-approved follow-up behaviour.
+  if (recentSet.size === 0) {
+    return canonical.map((f) => ({ intent: f.intent, label: (f.label && (f.label[lang] || f.label.en)) || '' }))
+  }
+
+  // Candidate pool: this intent's follow-up entries from the KB. The first
+  // two entries mirror the canonical pair; extra entries provide substitute
+  // suggestions so a recently-visited topic is replaced instead of repeated.
+  const entries = (knowledgeBase.followUpPool || {})[intentId] || canonical
+
+  const scored = entries
+    // Never re-suggest the current intent itself, and hard-skip any
+    // destination the user just visited (recent) — this is what keeps the
+    // conversation exploring instead of looping.
+    .filter((e) => e.intent && e.intent !== intentId && !recentSet.has(e.intent))
+    .map((e, index) => {
+      const target = (knowledgeBase.intents || []).find((i) => i.id === e.intent)
+      const category = target ? target.category || '' : ''
+      let score = index * 0.001 // deterministic, stable order tie-break
+      if (category && category !== sourceCategory) score -= 0.5 // different topic -> preferred
+      return { entry: e, score, category }
+    })
+
+  scored.sort((a, b) => {
+    if (a.score !== b.score) return a.score - b.score
+    return a.entry.intent.localeCompare(b.entry.intent)
+  })
+
+  // Fill from the deterministic global order if a pool ever runs short, so the
+  // result is ALWAYS exactly two diverse follow-ups.
+  const picked = scored.slice(0, 2).map((s) => s.entry)
+  const fallbackOrder = Object.keys(FALLBACK_LABELS)
+  for (const id of fallbackOrder) {
+    if (picked.length >= 2) break
+    if (id === intentId || recentSet.has(id)) continue
+    if (picked.some((e) => e.intent === id)) continue
+    if (scored.length > 0) {
+      const target = (knowledgeBase.intents || []).find((i) => i.id === id)
+      const category = target ? target.category || '' : ''
+      if (category === sourceCategory) continue // prefer a different topic when we can
+    }
+    picked.push({ intent: id, label: FALLBACK_LABELS[id] })
+  }
+
+  return picked.map((e) => ({
+    intent: e.intent,
+    label: (e.label && (e.label[lang] || e.label.en)) || '',
+  }))
 }
 
 /**
@@ -67,20 +176,16 @@ function detectIntentName(text) {
 
 /**
  * Resolves the contextual follow-up suggestions for an intent in the given
- * language, straight from the knowledge base. Each follow-up references
- * another intent by id (resolved on click through the normal local engine),
- * so there is no second answer system.
+ * language. Each follow-up references another intent by id (resolved on click
+ * through the normal local engine), so there is no second answer system.
+ *
+ * `recent` is an optional ordered list of intent ids answered so far in this
+ * conversation; when provided the picker avoids re-suggesting those sections
+ * and favours topic diversity. Without it, the stable canonical pair from the
+ * knowledge base is returned (unchanged behaviour).
  */
-export function getFollowUps(intentId, lang = 'en') {
-  if (!intentId) return []
-  const intent = (knowledgeBase.intents || []).find((i) => i.id === intentId)
-  const followUps = intent && Array.isArray(intent.followUps) ? intent.followUps : []
-  return followUps
-    .map((f) => ({
-      label: (f.label && (f.label[lang] || f.label.en)) || '',
-      intent: f.intent,
-    }))
-    .filter((f) => f.label && f.intent)
+export function getFollowUps(intentId, lang = 'en', recent = []) {
+  return pickFollowUps(intentId, lang, recent)
 }
 
 /**
@@ -116,10 +221,11 @@ export async function process(inputText) {
     if (local) {
       // Execute the interaction action from the verified local answer.
       if (local.action) executeAction(local.action)
+      trackRecentIntent(local.intentId)
       return {
         answer: local.answer,
         action: local.action,
-        followUps: getFollowUps(local.intentId, local.lang),
+        followUps: getFollowUps(local.intentId, local.lang, recentIntentIds),
         lang: local.lang,
         intentId: local.intentId,
         source: 'local',
@@ -170,4 +276,4 @@ export function getFollowUp(text) {
 
 export { preprocessQuery, detectLanguage }
 
-export default { process, canProcessInput, getFollowUp, getFollowUps, resetRateLimit }
+export default { process, canProcessInput, getFollowUp, getFollowUps, pickFollowUps, resetRateLimit }
