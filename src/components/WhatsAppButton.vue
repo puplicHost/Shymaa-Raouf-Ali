@@ -49,7 +49,7 @@ const whatsapp = '201282354052'
 
 @media (max-width: 480px) {
   .whatsapp-btn {
-    bottom: 4.75rem;
+    bottom: 5.25rem;
     right: 1.1rem;
     width: 48px;
     height: 48px;
