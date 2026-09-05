@@ -1,141 +1,128 @@
+<script setup>
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useLocale } from '../composables/useLocale.js'
+
+useScrollReveal()
+
+const { t } = useLocale()
+</script>
+
 <template>
   <section id="approach" class="approach">
     <div class="container">
-      <div class="approach-header fade-in">
-        <span class="section-label">How I Work</span>
-        <h2 class="section-title">My Approach</h2>
-        <p class="section-subtitle">
-          A clear, strategic process that turns ideas into measurable results.
-        </p>
+      <div class="section-head approach-head fade-in">
+        <span class="eyebrow">{{ t('approach.label') }}</span>
+        <h2 class="section-title">{{ t('approach.title') }}</h2>
+        <p class="section-subtitle">{{ t('approach.subtitle') }}</p>
       </div>
 
-      <div class="steps-grid fade-in">
-        <div
-          v-for="(step, index) in steps"
-          :key="step.title"
-          class="step-card"
+      <div class="steps fade-in">
+        <article
+          v-for="(step, index) in t('approach.steps')"
+          :key="index"
+          class="step"
         >
-          <div class="step-number">{{ String(index + 1).padStart(2, '0') }}</div>
-          <div class="step-line" v-if="index < steps.length - 1"></div>
+          <span class="step-no" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span>
           <h3 class="step-title">{{ step.title }}</h3>
           <p class="step-desc">{{ step.desc }}</p>
-        </div>
+        </article>
       </div>
     </div>
   </section>
 </template>
 
-<script setup>
-import { useScrollReveal } from '../composables/useScrollReveal'
-
-useScrollReveal()
-
-const steps = [
-  {
-    title: 'Understand',
-    desc: 'Deep dive into your brand, audience, competitors, and goals to build a solid foundation.',
-  },
-  {
-    title: 'Plan',
-    desc: 'Develop a tailored content strategy with a structured monthly calendar.',
-  },
-  {
-    title: 'Create',
-    desc: 'Produce clear, relevant, on-brand content that captures attention and drives engagement.',
-  },
-  {
-    title: 'Optimize',
-    desc: 'Analyze performance data, gather insights, and continuously refine for better results.',
-  },
-]
-</script>
-
 <style scoped>
 .approach {
-  background: var(--color-bg);
+  background: var(--ink);
+  color: var(--on-ink);
+  border-top: 1px solid rgba(244, 238, 228, 0.1);
 }
 
-.approach-header {
-  text-align: center;
-  margin-bottom: 4rem;
+.approach .section-title {
+  color: var(--on-ink);
 }
 
-.approach-header .section-subtitle {
-  margin: 0 auto;
+.approach .section-subtitle {
+  color: rgba(244, 238, 228, 0.7);
 }
 
-.steps-grid {
+.approach .eyebrow {
+  color: rgba(244, 238, 228, 0.55);
+}
+
+.approach .eyebrow::before {
+  background: var(--accent);
+}
+
+.steps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  border-top: 2px solid rgba(244, 238, 228, 0.85);
+}
+
+.step {
+  padding-block-start: clamp(1.8rem, 3.5vw, 2.75rem);
+  padding-inline-end: clamp(1rem, 2vw, 2rem);
+  border-inline-end: 1px solid rgba(244, 238, 228, 0.14);
   position: relative;
 }
 
-.step-card {
-  text-align: center;
-  position: relative;
-  padding: 0 1rem;
+.step:last-child {
+  border-inline-end: none;
 }
 
-.step-number {
-  font-family: var(--font-heading);
-  font-size: 3rem;
-  font-weight: 300;
-  color: var(--color-primary);
-  opacity: 0.5;
-  margin-bottom: 1.25rem;
+.step-no {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  font-weight: 600;
+  font-style: italic;
   line-height: 1;
-}
-
-.step-line {
-  display: none;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 238, 228, 0.4);
+  display: block;
+  margin-bottom: 1.6rem;
 }
 
 .step-title {
-  font-family: var(--font-heading);
-  font-size: 1.35rem;
-  font-weight: 500;
-  margin-bottom: 0.75rem;
-  color: var(--color-text);
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  color: var(--on-ink);
+  margin-bottom: 0.7rem;
 }
 
 .step-desc {
-  font-size: 0.875rem;
-  color: #8a7e7e;
-  line-height: 1.7;
+  font-size: 0.94rem;
+  line-height: 1.85;
+  color: rgba(244, 238, 228, 0.72);
+  max-width: 30ch;
 }
 
-@media (max-width: 768px) {
-  .steps-grid {
+@media (max-width: 900px) {
+  .steps {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
   }
 
-  .step-card {
-    text-align: left;
-    padding-left: 2.5rem;
-    position: relative;
+  .step {
+    border-inline-end: none;
+    border-bottom: 1px solid rgba(244, 238, 228, 0.14);
+    padding: 1.75rem 0;
   }
 
-  .step-number {
-    position: absolute;
-    left: 0;
-    top: -0.2rem;
-    font-size: 1.5rem;
+  .step:last-child {
+    border-bottom: none;
   }
 
-  .step-line {
-    display: block;
-    position: absolute;
-    left: 0.55rem;
-    top: 2rem;
-    bottom: -2.5rem;
-    width: 1px;
-    background: var(--color-neutral);
+  .step-no {
+    margin-bottom: 0.9rem;
   }
 
-  .step-card:last-child .step-line {
-    display: none;
+  .step-desc {
+    max-width: 46ch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step {
+    transition: none;
   }
 }
 </style>

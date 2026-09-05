@@ -1,45 +1,136 @@
-<template>
-  <nav :class="['navbar', { scrolled: isScrolled }]">
-    <div class="navbar-inner container">
-      <a href="#" class="nav-logo">
-        <span class="logo-mark">S</span>
-        <span class="logo-text">Shymaa</span>
-      </a>
-
-      <button class="nav-toggle" @click="menuOpen = !menuOpen" :aria-label="menuOpen ? 'Close menu' : 'Open menu'">
-        <span :class="['bar', { open: menuOpen }]"></span>
-      </button>
-
-      <ul :class="['nav-links', { open: menuOpen }]">
-        <li v-for="link in links" :key="link.href">
-          <a :href="link.href" @click="menuOpen = false">{{ link.label }}</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-</template>
-
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useLocale } from '../composables/useLocale.js'
+import IconGlyph from './IconGlyph.vue'
+import { ui } from '../data/icons.js'
+
+const { t, isAr, toggleLocale } = useLocale()
 
 const isScrolled = ref(false)
 const menuOpen = ref(false)
+const active = ref('')
 
 const links = [
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Work', href: '#work' },
-  { label: 'Approach', href: '#approach' },
-  { label: 'Contact', href: '#contact' },
+  { key: 'about', href: '#about' },
+  { key: 'skills', href: '#skills' },
+  { key: 'work', href: '#work' },
+  { key: 'approach', href: '#approach' },
+  { key: 'contact', href: '#contact' },
 ]
 
-const handleScroll = () => {
-  isScrolled.value = window.scrollY > 50
+const targetMap = new Map()
+let observer = null
+
+function handleScroll() {
+  isScrolled.value = window.scrollY > 24
 }
 
-onMounted(() => window.addEventListener('scroll', handleScroll))
-onUnmounted(() => window.removeEventListener('scroll', handleScroll))
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  handleScroll()
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+      if (visible) active.value = `#${visible.target.id}`
+    },
+    { rootMargin: '-45% 0px -50% 0px', threshold: [0, 0.25, 0.5] }
+  )
+
+  links.forEach((l) => {
+    const el = document.querySelector(l.href)
+    if (el) {
+      targetMap.set(l.href, el)
+      observer.observe(el)
+    }
+  })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
+  if (observer) observer.disconnect()
+})
+
+function goTo(href) {
+  menuOpen.value = false
+  const el = document.querySelector(href)
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
 </script>
+
+<template>
+  <header :class="['navbar', { scrolled: isScrolled }]">
+    <div class="navbar-inner container">
+      <a href="#hero" class="nav-brand" @click.prevent="goTo('#hero')" :aria-label="t('nav.backHome')">
+        <span class="brand-mark" aria-hidden="true">S<span class="brand-dot">.</span></span>
+        <span class="brand-word">Shymaa Raouf</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a
+          v-for="link in links"
+          :key="link.href"
+          :href="link.href"
+          class="nav-link"
+          :class="{ active: active === link.href }"
+          @click.prevent="goTo(link.href)"
+        >
+          {{ t(`nav.${link.key}`) }}
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <button
+          class="lang-toggle"
+          type="button"
+          :aria-label="t('nav.switchLang')"
+          @click="toggleLocale"
+        >
+          {{ isAr ? 'EN' : 'العربية' }}
+        </button>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          :aria-label="menuOpen ? t('nav.closeMenu') : t('nav.openMenu')"
+          :aria-expanded="menuOpen"
+          @click="menuOpen = !menuOpen"
+        >
+          <IconGlyph :path="menuOpen ? ui.close : ui.menu" :size="22" />
+        </button>
+      </div>
+    </div>
+
+    <Transition name="panel">
+      <Teleport to="body">
+        <div v-if="menuOpen" class="mobile-panel">
+          <nav class="mobile-links" aria-label="Mobile">
+            <a
+              v-for="(link, i) in links"
+              :key="link.href"
+              :href="link.href"
+              class="mobile-link"
+              :style="{ transitionDelay: `${60 + i * 40}ms` }"
+              @click.prevent="goTo(link.href)"
+            >
+              <span class="mobile-index">{{ String(i + 1).padStart(2, '0') }}</span>
+              {{ t(`nav.${link.key}`) }}
+            </a>
+          </nav>
+          <div class="mobile-panel-footer">
+            <button class="lang-toggle" type="button" @click="toggleLocale">
+              {{ isAr ? 'EN' : 'العربية' }}
+            </button>
+          </div>
+        </div>
+      </Teleport>
+    </Transition>
+  </header>
+</template>
 
 <style scoped>
 .navbar {
@@ -48,156 +139,224 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
   left: 0;
   right: 0;
   z-index: 100;
-  padding: 1.25rem 0;
-  transition: all 0.4s ease;
+  background: rgba(244, 238, 228, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.4s var(--ease), border-color 0.4s var(--ease);
 }
 
 .navbar.scrolled {
-  background: rgba(250, 247, 244, 0.92);
-  backdrop-filter: blur(12px);
-  padding: 0.75rem 0;
-  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.04);
+  background: rgba(244, 238, 228, 0.88);
+  border-bottom-color: var(--hairline);
 }
 
 .navbar-inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
+  gap: 1.5rem;
+  height: 72px;
 }
 
-.nav-logo {
-  display: flex;
+.nav-brand {
+  display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.9rem;
+  justify-self: start;
 }
 
-.logo-mark {
-  width: 36px;
-  height: 36px;
-  background: var(--color-primary);
-  color: var(--color-bg);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
+.brand-mark {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
   font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
-.logo-text {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
+.brand-dot {
+  color: var(--accent);
+}
+
+.brand-word {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
 }
 
 .nav-links {
   display: flex;
-  gap: 2.25rem;
+  gap: 0;
 }
 
-.nav-links a {
-  font-size: 0.875rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  color: var(--color-text);
+.nav-link {
   position: relative;
-  transition: color 0.3s ease;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 0.4rem 0.9rem;
+  transition: color 0.25s ease;
 }
 
-.nav-links a::after {
+.nav-link::after {
   content: '';
   position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
+  left: 0.9rem;
+  right: 0.9rem;
+  bottom: 0;
   height: 1.5px;
-  background: var(--color-primary);
-  transition: width 0.3s ease;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease);
 }
 
-.nav-links a:hover {
-  color: var(--color-deep);
+[dir='rtl'] .nav-link::after {
+  transform-origin: right;
 }
 
-.nav-links a:hover::after {
-  width: 100%;
+.nav-link:hover,
+.nav-link.active {
+  color: var(--ink);
+}
+
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-self: end;
+}
+
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
+}
+
+.lang-toggle::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.lang-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+[dir='rtl'] .lang-toggle {
+  letter-spacing: 0.02em;
 }
 
 .nav-toggle {
   display: none;
-  width: 28px;
-  height: 20px;
-  position: relative;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
 }
 
-.bar,
-.bar::before,
-.bar::after {
-  display: block;
-  width: 100%;
-  height: 2px;
-  background: var(--color-text);
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-.bar {
-  position: relative;
-}
-
-.bar::before,
-.bar::after {
-  content: '';
-  position: absolute;
-  left: 0;
-}
-
-.bar::before { top: -7px; }
-.bar::after { bottom: -7px; }
-
-.bar.open {
-  background: transparent;
-}
-
-.bar.open::before {
-  top: 0;
-  transform: rotate(45deg);
-}
-
-.bar.open::after {
-  bottom: 0;
-  transform: rotate(-45deg);
-}
-
-@media (max-width: 768px) {
-  .nav-toggle {
-    display: block;
+@media (max-width: 900px) {
+  .navbar-inner {
+    grid-template-columns: 1fr auto;
+    height: 64px;
   }
 
   .nav-links {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 75%;
-    max-width: 320px;
-    height: 100vh;
-    background: var(--color-bg);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    transition: right 0.4s ease;
-    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);
+    display: none;
   }
 
-  .nav-links.open {
-    right: 0;
+  .nav-toggle {
+    display: inline-flex;
   }
+}
 
-  .nav-links a {
-    font-size: 1.1rem;
-  }
+.mobile-panel {
+  position: fixed;
+  inset: 64px 0 0 0;
+  background: var(--paper);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--gutter);
+  border-top: 1px solid var(--hairline);
+}
+
+.mobile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.mobile-link {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  font-family: var(--font-display-rtl, var(--font-display));
+  font-size: clamp(1.9rem, 8vw, 2.8rem);
+  font-weight: 500;
+  color: var(--ink);
+  padding-block: 0.7rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.mobile-index {
+  font-size: 0.72rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.mobile-panel-footer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.panel-enter-active,
+.panel-leave-active {
+  transition: opacity 0.35s var(--ease);
+}
+
+.panel-enter-from,
+.panel-leave-to {
+  opacity: 0;
+}
+
+.panel-enter-active .mobile-link,
+.panel-leave-active .mobile-link {
+  transition: transform 0.35s var(--ease), opacity 0.35s var(--ease);
+}
+
+.panel-enter-from .mobile-link,
+.panel-leave-to .mobile-link {
+  opacity: 0;
+  transform: translateY(14px);
 }
 </style>

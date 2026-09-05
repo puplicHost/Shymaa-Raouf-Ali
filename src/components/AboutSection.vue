@@ -1,231 +1,269 @@
+<script setup>
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useLocale } from '../composables/useLocale.js'
+import SocialIcon from './SocialIcon.vue'
+import { brand, ui } from '../data/icons.js'
+
+useScrollReveal()
+
+const { t } = useLocale()
+
+const contact = {
+  email: 'raoufshimaa587@gmail.com',
+  phone: '+201282354052',
+  whatsapp: '201282354052',
+  linkedin: 'https://www.linkedin.com/in/shymaa-raouf-ali',
+}
+</script>
+
 <template>
   <section id="about" class="about">
-    <div class="container">
-      <div class="about-grid fade-in">
-        <div class="about-text">
-          <span class="section-label">About Me</span>
-          <h2 class="section-title">Crafting Digital<br />Experiences That Matter</h2>
+    <div class="container about-grid">
+      <div class="about-copy fade-in">
+        <span class="eyebrow">{{ t('about.label') }}</span>
+        <h2 class="section-title">{{ t('about.title') }}</h2>
 
-          <div class="about-description">
-            <p>
-              Social Media & Content Creator with 1+ year of hands-on experience managing
-              brand presence across Facebook, Instagram, TikTok, Snapchat, X, and LinkedIn.
-              My primary focus is the Saudi market — understanding its culture, trends, and
-              audience behavior to create content that resonates.
-            </p>
-            <p>
-              I bring expertise in content planning, copywriting, audience analysis, and
-              performance optimization. I'm also skilled in leveraging AI tools for content
-              development and marketing workflows — staying ahead of the curve.
-            </p>
-          </div>
-
-          <div class="about-details">
-            <div class="detail-item">
-              <span class="detail-label">Languages</span>
-              <span class="detail-value">Arabic (Native) · English (Fluent) · French (Fluent)</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Education</span>
-              <span class="detail-value">BA French Language — Suez Canal University, 2024 (Very Good)</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Location</span>
-              <span class="detail-value">Ismailia, Egypt · Serving the Saudi Market</span>
-            </div>
-          </div>
+        <div class="about-prose">
+          <p>{{ t('about.p1') }}</p>
+          <p>{{ t('about.p2') }}</p>
         </div>
 
-        <div class="about-visual">
-          <div class="visual-card">
-            <div class="card-pattern">
-              <div class="pattern-dot" v-for="n in 25" :key="n"></div>
-            </div>
-            <div class="card-accent-line"></div>
+        <dl class="about-meta">
+          <div class="meta-row">
+            <dt>{{ t('about.languagesLabel') }}</dt>
+            <dd>{{ t('about.languagesValue') }}</dd>
           </div>
-          <div class="stats-float">
-            <div class="stat">
-              <span class="stat-number">1+</span>
-              <span class="stat-label">Year Experience</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">6+</span>
-              <span class="stat-label">Platforms</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">3</span>
-              <span class="stat-label">Languages</span>
-            </div>
+          <div class="meta-row">
+            <dt>{{ t('about.educationLabel') }}</dt>
+            <dd>{{ t('about.educationValue') }}</dd>
           </div>
+          <div class="meta-row">
+            <dt>{{ t('about.locationLabel') }}</dt>
+            <dd>{{ t('about.locationValue') }}</dd>
+          </div>
+        </dl>
+
+        <div class="about-socials">
+          <SocialIcon
+            :href="`mailto:${contact.email}`"
+            :label="t('contact.email')"
+            :path="ui.email"
+            :external="false"
+          />
+          <SocialIcon
+            :href="contact.linkedin"
+            :label="t('contact.linkedin')"
+            :path="ui.linkedin"
+          />
+          <SocialIcon
+            :href="`https://wa.me/${contact.whatsapp}`"
+            :label="t('contact.whatsapp')"
+            :path="brand.whatsapp"
+          />
         </div>
       </div>
+
+      <aside class="about-index fade-in" aria-hidden="true">
+        <div class="index-card">
+          <div class="index-card-head">
+            <span>Portfolio — Index</span>
+            <span>Nº 01</span>
+          </div>
+          <div class="index-row">
+            <span class="index-value">{{ t('about.statYearsValue') }}</span>
+            <span class="index-label">{{ t('about.statYears') }}</span>
+          </div>
+          <div class="index-row">
+            <span class="index-value">{{ t('about.statPlatformsValue') }}</span>
+            <span class="index-label">{{ t('about.statPlatforms') }}</span>
+          </div>
+          <div class="index-row">
+            <span class="index-value">{{ t('about.statLanguagesValue') }}</span>
+            <span class="index-label">{{ t('about.statLanguages') }}</span>
+          </div>
+        </div>
+        <p class="about-note">{{ t('about.titleproof') }}</p>
+      </aside>
     </div>
   </section>
 </template>
 
-<script setup>
-import { useScrollReveal } from '../composables/useScrollReveal'
-useScrollReveal()
-</script>
-
 <style scoped>
 .about {
-  background: var(--color-bg);
+  background: var(--paper);
+  border-top: 1px solid var(--hairline);
 }
 
 .about-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 5rem;
-  align-items: center;
+  grid-template-columns: 1.18fr 0.82fr;
+  gap: clamp(3rem, 7vw, 7rem);
+  align-items: start;
 }
 
-.about-description {
-  margin-bottom: 2.5rem;
+.about-copy .section-title {
+  margin-bottom: 1.4rem;
 }
 
-.about-description p {
-  font-size: 1rem;
-  line-height: 1.85;
-  color: #5a5252;
-  margin-bottom: 1rem;
-}
-
-.about-description p:last-child {
-  margin-bottom: 0;
-}
-
-.about-details {
+.about-prose {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-neutral);
+  gap: 1.1rem;
+  margin-bottom: 2.2rem;
 }
 
-.detail-item {
-  display: flex;
-  gap: 1.5rem;
-  align-items: baseline;
+.about-prose p {
+  color: var(--ink-2);
+  font-size: 1.02rem;
+  line-height: 1.9;
+  max-width: 58ch;
 }
 
-.detail-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-deep);
-  min-width: 100px;
-  flex-shrink: 0;
-}
-
-.detail-value {
-  font-size: 0.925rem;
-  color: #5a5252;
-  line-height: 1.6;
-}
-
-.about-visual {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.visual-card {
-  width: 340px;
-  height: 420px;
-  background: linear-gradient(145deg, var(--color-neutral), rgba(196, 168, 176, 0.2));
-  border-radius: 16px;
-  position: relative;
-  overflow: hidden;
-}
-
-.card-pattern {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-  padding: 40px;
-  opacity: 0.3;
-}
-
-.pattern-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-deep);
-}
-
-.card-accent-line {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-deep));
-}
-
-.stats-float {
-  position: absolute;
-  right: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.stat {
-  background: var(--color-bg);
-  padding: 1rem 1.25rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  text-align: center;
-  border: 1px solid var(--color-neutral);
-}
-
-.stat-number {
-  display: block;
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
+.about-prose p:first-child::first-letter {
+  font-family: var(--font-display);
+  font-size: 2.2em;
+  float: inline-start;
+  line-height: 0.82;
+  padding-inline-end: 0.12em;
+  color: var(--accent);
   font-weight: 600;
-  color: var(--color-deep);
 }
 
-.stat-label {
+.about-meta {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--hairline);
+}
+
+.meta-row {
+  display: grid;
+  grid-template-columns: 12ch 1fr;
+  gap: 1.5rem;
+  padding-block: 0.95rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.meta-row dt {
   font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8a7e7e;
+  color: var(--muted);
+  padding-top: 0.1rem;
 }
 
-@media (max-width: 768px) {
+[dir='rtl'] .meta-row dt {
+  letter-spacing: 0.02em;
+}
+
+.meta-row dd {
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.about-socials {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 2rem;
+}
+
+/* Index card ----------------------------------------------------------- */
+.about-index {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 6.5rem;
+  align-self: start;
+}
+
+.index-card {
+  background: var(--ink);
+  color: var(--on-ink);
+  padding: clamp(1.75rem, 3.5vw, 2.75rem);
+  border-radius: var(--radius);
+  box-shadow: 12px 12px 0 0 rgba(158, 58, 78, 0.18);
+}
+
+.index-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(244, 238, 228, 0.55);
+  border-bottom: 1px solid rgba(244, 238, 228, 0.18);
+  padding-bottom: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+[dir='rtl'] .index-card-head {
+  letter-spacing: 0.02em;
+}
+
+.index-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.15rem;
+  border-bottom: 1px solid rgba(244, 238, 228, 0.12);
+}
+
+.index-row:last-child {
+  border-bottom: none;
+}
+
+.index-value {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-ink);
+}
+
+.index-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(244, 238, 228, 0.65);
+}
+
+[dir='rtl'] .index-label {
+  letter-spacing: 0.02em;
+}
+
+.about-note {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.7;
+  border-inline-start: 2px solid var(--accent);
+  padding-inline-start: 1rem;
+  max-width: 34ch;
+}
+
+@media (max-width: 900px) {
   .about-grid {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
 
-  .about-visual {
-    order: -1;
+  .about-index {
+    position: static;
   }
+}
 
-  .visual-card {
-    width: 260px;
-    height: 320px;
-  }
-
-  .stats-float {
-    position: relative;
-    right: auto;
-    top: auto;
-    transform: none;
-    flex-direction: row;
-    margin-top: 1.5rem;
-    justify-content: center;
-  }
-
-  .detail-item {
-    flex-direction: column;
-    gap: 0.25rem;
+@media (max-width: 560px) {
+  .meta-row {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    padding-block: 1rem;
   }
 }
 </style>

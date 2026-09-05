@@ -1,114 +1,151 @@
+<script setup>
+import { useLocale } from '../composables/useLocale.js'
+
+const { t } = useLocale()
+const year = new Date().getFullYear()
+
+const links = [
+  { key: 'about', href: '#about' },
+  { key: 'skills', href: '#skills' },
+  { key: 'work', href: '#work' },
+  { key: 'approach', href: '#approach' },
+  { key: 'certifications', href: '#certifications' },
+  { key: 'contact', href: '#contact' },
+]
+</script>
+
 <template>
   <footer class="footer">
-    <div class="container">
-      <div class="footer-inner">
+    <div class="container footer-inner">
+      <div class="footer-top">
         <div class="footer-brand">
-          <div class="footer-logo">
-            <span class="logo-mark">S</span>
-            <span class="logo-text">Shymaa Raouf Ali</span>
-          </div>
-          <p class="footer-tagline">Creative Thinking. Strategic Purpose.</p>
+          <span class="brand-mark">S<span class="brand-dot">.</span></span>
+          <span class="brand-word">Shymaa Raouf Ali</span>
+          <span class="tagline">{{ t('footer.tagline') }}</span>
         </div>
 
-        <div class="footer-links">
-          <a href="#about">About</a>
-          <a href="#skills">Skills</a>
-          <a href="#work">Work</a>
-          <a href="#approach">Approach</a>
-          <a href="#contact">Contact</a>
-        </div>
+        <nav class="footer-links" aria-label="Footer">
+          <a v-for="link in links" :key="link.href" :href="link.href">
+            {{ t(`nav.${link.key}`) }}
+          </a>
+        </nav>
+      </div>
 
-        <div class="footer-bottom">
-          <span class="footer-copy">&copy; {{ year }} Shymaa Raouf Ali. All rights reserved.</span>
-        </div>
+      <div class="footer-bottom">
+        <span>&copy; {{ year }} Shymaa Raouf Ali. {{ t('footer.rights') }}</span>
+        <span class="built-note">{{ t('footer.built') }} <a href="https://portholiohub.pages.dev/" target="_blank" rel="noopener noreferrer">PortholioHub</a></span>
       </div>
     </div>
   </footer>
 </template>
 
-<script setup>
-const year = new Date().getFullYear()
-</script>
-
 <style scoped>
 .footer {
-  background: var(--color-text);
-  color: rgba(250, 247, 244, 0.6);
-  padding: 4rem 0 2rem;
+  background: var(--paper);
+  border-top: 1px solid var(--hairline);
+  padding-block: 2.25rem 1.75rem;
 }
 
 .footer-inner {
   display: flex;
   flex-direction: column;
+  gap: 2rem;
+}
+
+.footer-top {
+  display: flex;
   align-items: center;
-  gap: 2.5rem;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
 .footer-brand {
-  text-align: center;
-}
-
-.footer-logo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  margin-bottom: 0.75rem;
+  gap: 0.85rem;
 }
 
-.footer-logo .logo-mark {
-  width: 32px;
-  height: 32px;
-  background: var(--color-primary);
-  color: var(--color-bg);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-heading);
-  font-size: 1rem;
+.brand-mark {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
   font-weight: 600;
+  line-height: 1;
 }
 
-.footer-logo .logo-text {
-  font-family: var(--font-heading);
-  font-size: 1.15rem;
-  font-weight: 400;
-  color: rgba(250, 247, 244, 0.85);
+.brand-dot {
+  color: var(--accent);
 }
 
-.footer-tagline {
-  font-size: 0.85rem;
+.brand-word {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.tagline {
+  font-size: 0.78rem;
   font-style: italic;
-  opacity: 0.5;
+  color: var(--muted);
+  padding-inline-start: 1rem;
+  border-inline-start: 1px solid var(--hairline-strong);
 }
 
 .footer-links {
   display: flex;
-  gap: 2rem;
+  gap: clamp(1rem, 3vw, 2rem);
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .footer-links a {
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  transition: color 0.3s ease;
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  transition: color 0.25s ease;
 }
 
 .footer-links a:hover {
-  color: var(--color-primary);
+  color: var(--accent);
 }
 
 .footer-bottom {
-  padding-top: 2rem;
-  border-top: 1px solid rgba(250, 247, 244, 0.08);
-  width: 100%;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--hairline);
+  padding-top: 1.4rem;
+  font-size: 0.76rem;
+  color: var(--muted);
 }
 
-.footer-copy {
-  font-size: 0.75rem;
-  opacity: 0.4;
+.built-note::before {
+  content: '—';
+  margin-inline-end: 0.4rem;
+  color: var(--accent);
+}
+
+.built-note a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.built-note a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .tagline {
+    display: none;
+  }
 }
 </style>

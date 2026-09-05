@@ -1,148 +1,222 @@
+<script setup>
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useLocale } from '../composables/useLocale.js'
+import IconGlyph from './IconGlyph.vue'
+import { brand, ui } from '../data/icons.js'
+
+useScrollReveal()
+
+const { t } = useLocale()
+
+const email = 'raoufshimaa587@gmail.com'
+const phoneLink = '+201282354052'
+const phoneDisplay = '+20 128 235 4052'
+const whatsapp = '201282354052'
+const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
+</script>
+
 <template>
   <section id="contact" class="contact">
-    <div class="container">
-      <div class="contact-inner fade-in">
-        <span class="section-label">Get in Touch</span>
-        <h2 class="contact-title">Let's Work Together</h2>
-        <p class="contact-subtitle">
-          Looking for a Social Media Specialist who combines creativity with strategy? Let's talk.
-        </p>
+    <div class="contact-ghost" aria-hidden="true">SR</div>
+    <div class="container contact-inner fade-in">
+      <span class="eyebrow">{{ t('contact.label') }}</span>
 
-        <div class="contact-links">
-          <a :href="`mailto:${email}`" class="contact-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-            <span>Email</span>
-          </a>
+      <h2 class="contact-title">{{ t('contact.title') }}</h2>
+      <p class="contact-subtitle">{{ t('contact.subtitle') }}</p>
 
-          <a :href="linkedin" target="_blank" rel="noopener noreferrer" class="contact-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
-              <circle cx="4" cy="4" r="2"/>
-            </svg>
-            <span>LinkedIn</span>
-          </a>
+      <p class="availability">
+        <span class="avail-dot" aria-hidden="true"></span>
+        {{ t('contact.availability') }}
+      </p>
 
-          <a :href="`https://wa.me/${whatsapp}`" target="_blank" rel="noopener noreferrer" class="contact-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
-            </svg>
-            <span>WhatsApp</span>
-          </a>
-        </div>
+      <a :href="`mailto:${email}`" class="email-cta">
+        <span>{{ email }}</span>
+        <IconGlyph :path="ui.arrowTopRight" :size="22" class="email-arrow" aria-hidden="true" />
+      </a>
 
-        <div class="contact-details">
-          <a :href="`mailto:${email}`" class="detail-link">{{ email }}</a>
-          <span class="detail-sep">·</span>
-          <a :href="`tel:${phone}`" class="detail-link">{{ phoneFormatted }}</a>
-        </div>
+      <div class="channels">
+        <a
+          :href="`https://wa.me/${whatsapp}`"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="channel"
+        >
+          <IconGlyph :path="brand.whatsapp" :size="20" aria-hidden="true" />
+          {{ t('contact.whatsapp') }}
+        </a>
+        <a
+          :href="linkedin"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="channel"
+        >
+          <IconGlyph :path="ui.linkedin" :size="20" aria-hidden="true" />
+          {{ t('contact.linkedin') }}
+        </a>
+        <a :href="`tel:${phoneLink}`" class="channel">
+          <IconGlyph :path="ui.phone" :size="20" aria-hidden="true" />
+          {{ phoneDisplay }}
+        </a>
       </div>
     </div>
   </section>
 </template>
 
-<script setup>
-import { useScrollReveal } from '../composables/useScrollReveal'
-
-useScrollReveal()
-
-const email = 'raoufshimaa587@gmail.com'
-const phone = '+201282354052'
-const phoneFormatted = '+20 128 235 4052'
-const whatsapp = '201282354052'
-const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
-</script>
-
 <style scoped>
 .contact {
-  background: var(--color-bg);
-  padding: var(--section-padding) 0 6rem;
+  background: var(--ink);
+  color: var(--on-ink);
+  border-top: 1px solid rgba(244, 238, 228, 0.1);
+  overflow: hidden;
+}
+
+.contact-ghost {
+  position: absolute;
+  top: 50%;
+  right: -0.08em;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: clamp(10rem, 32vw, 26rem);
+  font-weight: 600;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 238, 228, 0.08);
+  pointer-events: none;
+  user-select: none;
+}
+
+[dir='rtl'] .contact-ghost {
+  right: auto;
+  left: -0.08em;
 }
 
 .contact-inner {
-  text-align: center;
-  max-width: 640px;
-  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.contact .eyebrow {
+  color: rgba(244, 238, 228, 0.55);
+}
+
+.contact .eyebrow::before {
+  background: var(--accent);
 }
 
 .contact-title {
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  font-weight: 300;
-  margin-bottom: 1.25rem;
+  font-size: clamp(2.2rem, 5.5vw, 4rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--on-ink);
+  margin-bottom: 1.3rem;
+}
+
+[dir='rtl'] .contact-title {
+  letter-spacing: 0;
 }
 
 .contact-subtitle {
+  color: rgba(244, 238, 228, 0.72);
   font-size: 1.05rem;
-  color: #6b6262;
-  line-height: 1.8;
-  margin-bottom: 3rem;
+  line-height: 1.9;
+  max-width: 44ch;
+  margin-bottom: 1.6rem;
 }
 
-.contact-links {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-}
-
-.contact-btn {
+.availability {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.85rem 1.75rem;
-  border: 1.5px solid var(--color-neutral);
-  border-radius: 100px;
-  font-size: 0.875rem;
+  font-size: 0.78rem;
   font-weight: 500;
-  color: var(--color-text);
-  transition: all 0.35s ease;
+  letter-spacing: 0.1em;
+  color: rgba(244, 238, 228, 0.85);
+  margin-bottom: 2rem;
 }
 
-.contact-btn:hover {
-  border-color: var(--color-primary);
-  background: rgba(196, 168, 176, 0.08);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 111, 114, 0.1);
+.avail-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: glow 2.4s ease-in-out infinite;
 }
 
-.contact-btn svg {
-  color: var(--color-deep);
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 109, 124, 0.45); }
+  55% { box-shadow: 0 0 0 7px rgba(196, 109, 124, 0); }
 }
 
-.contact-details {
-  display: flex;
-  justify-content: center;
+.email-cta {
+  display: inline-flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.detail-link {
-  font-size: 0.85rem;
-  color: #8a7e7e;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 3vw, 1.9rem);
+  font-weight: 500;
+  color: var(--on-ink);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
   transition: color 0.3s ease;
+  word-break: break-all;
 }
 
-.detail-link:hover {
-  color: var(--color-deep);
+.email-cta:hover {
+  color: var(--accent);
 }
 
-.detail-sep {
-  color: var(--color-neutral);
+.email-arrow {
+  transition: transform 0.3s var(--ease);
 }
 
-@media (max-width: 768px) {
-  .contact-links {
-    flex-direction: column;
-    align-items: center;
+.email-cta:hover .email-arrow {
+  transform: translate(4px, -4px);
+}
+
+.channels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.4rem;
+  border: 1px solid rgba(244, 238, 228, 0.22);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: rgba(244, 238, 228, 0.9);
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+[dir='rtl'] .channel {
+  letter-spacing: 0;
+}
+
+.channel:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+@media (max-width: 560px) {
+  .email-cta {
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avail-dot {
+    animation: none;
   }
 
-  .contact-btn {
-    width: 100%;
-    max-width: 260px;
-    justify-content: center;
+  .email-arrow {
+    transition: none;
   }
 }
 </style>

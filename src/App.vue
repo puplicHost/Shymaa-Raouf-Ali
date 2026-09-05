@@ -10,11 +10,15 @@ import CertificationsSection from './components/CertificationsSection.vue'
 import ContactSection from './components/ContactSection.vue'
 import FooterSection from './components/FooterSection.vue'
 import AIAssistant from './components/AIAssistant.vue'
+import { useLocale } from './composables/useLocale.js'
+
+const { t } = useLocale()
 </script>
 
 <template>
+  <a href="#main" class="skip-link">{{ t('sr.skip') }}</a>
   <NavBar />
-  <main>
+  <main id="main">
     <HeroSection />
     <AboutSection />
     <SkillsSection />

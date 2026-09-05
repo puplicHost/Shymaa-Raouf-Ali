@@ -1,129 +1,165 @@
+<script setup>
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useLocale } from '../composables/useLocale.js'
+
+useScrollReveal()
+
+const { t, isAr } = useLocale()
+
+const industries = [
+  { en: 'Furniture & Home', ar: 'الأثاث والمنزل', enEx: 'Adrak Furniture', arEx: 'أدرك للأثاث' },
+  { en: 'Marble', ar: 'الرخام', enEx: 'Afaag Marble', arEx: 'عفاغ للرخام' },
+  { en: 'Pharmacy & Healthcare', ar: 'الصيدلة والرعاية الصحية', enEx: 'Rosheta Pharmacies', arEx: 'صيدليات روشيتة' },
+  { en: 'Education', ar: 'التعليم', enEx: 'Smart Junior Academy', arEx: 'سمارت جونيور أكاديمي' },
+  { en: 'Cleaning Services', ar: 'خدمات التنظيف', enEx: 'Alwan Happy Luck', arEx: 'ألوان هابي لوك' },
+  { en: 'Beauty & E-commerce', ar: 'الجمال والتجارة الإلكترونية', enEx: 'Velora Cosmatics', arEx: 'فيلورا كوزماتكس' },
+  { en: 'Social Media Projects', ar: 'مشاريع السوشيال ميديا', enEx: 'Various Brands', arEx: 'علامات متنوعة' },
+]
+</script>
+
 <template>
   <section id="industries" class="industries">
     <div class="container">
-      <div class="industries-inner fade-in">
-        <div class="industries-text">
-          <span class="section-label">Industries</span>
-          <h2 class="section-title">Sectors I've Worked In</h2>
-          <p class="section-subtitle">
-            Diverse experience across multiple industries, with deep understanding of each market's unique needs.
-          </p>
-        </div>
-
-        <div class="industries-list">
-          <div
-            v-for="(industry, index) in industries"
-            :key="industry.name"
-            class="industry-badge"
-            :style="{ transitionDelay: `${index * 0.06}s` }"
-          >
-            <div class="badge-dot"></div>
-            <div class="badge-content">
-              <span class="badge-name">{{ industry.name }}</span>
-              <span class="badge-example" v-if="industry.example">{{ industry.example }}</span>
-            </div>
-          </div>
-        </div>
+      <div class="section-head industries-head fade-in">
+        <span class="eyebrow">{{ t('industries.label') }}</span>
+        <h2 class="section-title">{{ t('industries.title') }}</h2>
+        <p class="section-subtitle">{{ t('industries.subtitle') }}</p>
       </div>
+
+      <ul class="industry-grid fade-in">
+        <li
+          v-for="(industry, index) in industries"
+          :key="industry.en"
+          class="industry-cell"
+        >
+          <span class="cell-index" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span>
+          <span class="cell-name">{{ isAr ? industry.ar : industry.en }}</span>
+          <span class="cell-example">{{ isAr ? industry.arEx : industry.enEx }}</span>
+          <span class="cell-corner" aria-hidden="true"></span>
+        </li>
+      </ul>
     </div>
   </section>
 </template>
 
-<script setup>
-import { useScrollReveal } from '../composables/useScrollReveal'
-
-useScrollReveal()
-
-const industries = [
-  { name: 'Furniture & Home', example: 'Adrak Furniture' },
-  { name: 'Marble', example: 'Afaag Marble' },
-  { name: 'Pharmacy & Healthcare', example: 'Rosheta Pharmacies' },
-  { name: 'Education', example: 'Smart Junior English Academy' },
-  { name: 'Cleaning Services', example: 'Alwan Happy Luck' },
-  { name: 'Beauty & E-commerce', example: 'Velora Cosmatics' },
-  { name: 'Social Media Projects', example: 'Various Brands' },
-]
-</script>
-
 <style scoped>
 .industries {
-  background: linear-gradient(180deg, var(--color-bg), rgba(232, 224, 220, 0.15), var(--color-bg));
+  background: var(--paper-3);
+  border-top: 1px solid var(--hairline);
 }
 
-.industries-inner {
+.industries-head .section-subtitle {
+  margin-top: 1rem;
+}
+
+.industry-grid {
+  border-top: 2px solid var(--ink);
+  border-inline-start: 1px solid var(--hairline);
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 4rem;
-  align-items: center;
+  grid-template-columns: repeat(3, 1fr);
 }
 
-.industries-list {
+.industry-cell {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.35rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-inline-end: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  transition: background-color 0.3s ease;
+  overflow: hidden;
 }
 
-.industry-badge {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.1rem 1.5rem;
-  background: var(--color-white);
-  border: 1px solid var(--color-neutral);
-  border-radius: 12px;
-  transition: all 0.35s ease;
-  cursor: default;
+.industry-cell:nth-child(3n) {
+  border-inline-end: none;
 }
 
-.industry-badge:hover {
-  border-color: var(--color-primary);
-  transform: translateX(6px);
-  box-shadow: 0 4px 20px rgba(139, 111, 114, 0.06);
+.industry-cell:hover {
+  background: var(--paper-2);
 }
 
-.badge-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  flex-shrink: 0;
-  transition: background 0.3s ease;
+.cell-index {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--accent);
 }
 
-.industry-badge:hover .badge-dot {
-  background: var(--color-deep);
-}
-
-.badge-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1;
-  gap: 1rem;
-}
-
-.badge-name {
-  font-size: 0.95rem;
+.cell-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.8vw, 1.45rem);
   font-weight: 500;
-  color: var(--color-text);
+  line-height: 1.25;
+  color: var(--ink);
+  margin-top: 0.6rem;
 }
 
-.badge-example {
-  font-size: 0.8rem;
-  color: #8a7e7e;
-  font-style: italic;
+.cell-example {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-@media (max-width: 768px) {
-  .industries-inner {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+[dir='rtl'] .cell-example {
+  letter-spacing: 0.02em;
+}
+
+.cell-corner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.3s ease, transform 0.3s var(--ease);
+}
+
+[dir='rtl'] .cell-corner {
+  right: auto;
+  left: 0;
+  border-right: none;
+  border-left: 2px solid var(--accent);
+}
+
+.industry-cell:hover .cell-corner {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (max-width: 1024px) {
+  .industry-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .badge-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.2rem;
+  .industry-cell:nth-child(3n) {
+    border-inline-end: 1px solid var(--hairline);
+  }
+
+  .industry-cell:nth-child(2n) {
+    border-inline-end: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .industry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .industry-cell:nth-child(2n),
+  .industry-cell:nth-child(3n) {
+    border-inline-end: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell-corner {
+    transition: none;
   }
 }
 </style>

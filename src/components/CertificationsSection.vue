@@ -1,142 +1,207 @@
+<script setup>
+import { ref } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useLocale } from '../composables/useLocale.js'
+import IconGlyph from './IconGlyph.vue'
+import { ui } from '../data/icons.js'
+
+useScrollReveal()
+
+const { t, isAr } = useLocale()
+
+const certifications = [
+  { en: 'Google AI Professional Certificate', ar: 'شهادة جوجل للمحترفين في الذكاء الاصطناعي', enIssuer: 'Google', arIssuer: 'جوجل' },
+  { en: 'Generative AI for Digital Marketing', ar: 'تخصص الذكاء الاصطناعي التوليدي للتسويق الرقمي', enIssuer: 'Coursera', arIssuer: 'كورسيرا' },
+  { en: 'AI Content Mastery for Social Media', ar: 'إتقان المحتوى بالذكاء الاصطناعي للسوشيال ميديا', enIssuer: 'Industry Certification', arIssuer: 'شهادة صناعية' },
+  { en: 'Meta Social Media Marketing Professional', ar: 'شهادة ميتا المتخصصة في إدارة وسائل التواصل', enIssuer: 'Meta', arIssuer: 'ميتا' },
+  { en: 'Google Digital Marketing & E-commerce', ar: 'شهادة جوجل في التسويق الرقمي والتجارة الإلكترونية', enIssuer: 'Google', arIssuer: 'جوجل' },
+  { en: 'HubSpot Content Marketing Certification', ar: 'شهادة هب سبوت في تسويق المحتوى', enIssuer: 'HubSpot', arIssuer: 'هب سبوت' },
+  { en: 'DELF B1 — French Language', ar: 'شهادة DELF B1 في اللغة الفرنسية', enIssuer: 'France Éducation', arIssuer: 'فرنسا للتعليم' },
+]
+
+const track = ref(null)
+
+function step(direction) {
+  const el = track.value
+  if (!el) return
+  el.scrollBy({ left: direction * el.clientWidth * 0.85, behavior: 'smooth' })
+}
+</script>
+
 <template>
   <section id="certifications" class="certifications">
     <div class="container">
-      <div class="certs-header fade-in">
-        <span class="section-label">Certifications</span>
-        <h2 class="section-title">Continuous Learning</h2>
-        <p class="section-subtitle">
-          Committed to staying current with industry standards and emerging technologies.
-        </p>
-      </div>
-
-      <div class="certs-scroll-wrapper fade-in">
-        <div class="certs-track" ref="track">
-          <div
-            v-for="(cert, index) in certifications"
-            :key="cert.name"
-            class="cert-card"
-          >
-            <div class="cert-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-              </svg>
-            </div>
-            <div class="cert-info">
-              <h3 class="cert-name">{{ cert.name }}</h3>
-              <span class="cert-issuer">{{ cert.issuer }}</span>
-            </div>
+      <div class="section-head certs-head fade-in">
+        <span class="eyebrow">{{ t('certs.label') }}</span>
+        <div class="certs-head-row">
+          <div>
+            <h2 class="section-title">{{ t('certs.title') }}</h2>
+            <p class="section-subtitle">{{ t('certs.subtitle') }}</p>
+          </div>
+          <div class="certs-controls">
+            <button type="button" class="ctrl-btn" :aria-label="`${t('certs.label')} —`" @click="step(-1)">
+              <IconGlyph :path="isAr ? ui.chevronRight : ui.chevronLeft" :size="18" />
+            </button>
+            <button type="button" class="ctrl-btn" :aria-label="`${t('certs.label')} +`" @click="step(1)">
+              <IconGlyph :path="isAr ? ui.chevronLeft : ui.chevronRight" :size="18" />
+            </button>
           </div>
         </div>
+      </div>
+
+      <div class="certs-scroll fade-in" ref="track">
+        <article
+          v-for="(cert, index) in certifications"
+          :key="cert.en"
+          class="cert-card"
+        >
+          <span class="cert-no" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span>
+          <div class="cert-meta">
+            <h3 class="cert-name">{{ isAr ? cert.ar : cert.en }}</h3>
+            <span class="cert-issuer">{{ isAr ? cert.arIssuer : cert.enIssuer }}</span>
+          </div>
+          <IconGlyph :path="ui.starFourPoints" :size="16" class="cert-glyph" aria-hidden="true" />
+        </article>
       </div>
     </div>
   </section>
 </template>
 
-<script setup>
-import { useScrollReveal } from '../composables/useScrollReveal'
-
-useScrollReveal()
-
-const certifications = [
-  { name: 'Google AI Professional Certificate', issuer: 'Google' },
-  { name: 'Generative AI for Digital Marketing Specialization', issuer: 'Coursera' },
-  { name: 'AI Content Mastery for Social Media', issuer: 'Industry Certification' },
-  { name: 'Meta Social Media Marketing Professional Certificate', issuer: 'Meta' },
-  { name: 'Google Digital Marketing & E-commerce Certificate', issuer: 'Google' },
-  { name: 'HubSpot Content Marketing Certification', issuer: 'HubSpot' },
-  { name: 'DELF B1 — French Language Certification', issuer: 'France Éducation' },
-]
-</script>
-
 <style scoped>
 .certifications {
-  background: linear-gradient(180deg, var(--color-bg), rgba(232, 224, 220, 0.15), var(--color-bg));
+  background: var(--paper);
+  border-top: 1px solid var(--hairline);
 }
 
-.certs-header {
-  text-align: center;
-  margin-bottom: 3.5rem;
+.certs-head-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
 }
 
-.certs-header .section-subtitle {
-  margin: 0 auto;
+.certs-head .section-subtitle {
+  margin-top: 1rem;
 }
 
-.certs-scroll-wrapper {
+.certs-controls {
+  display: flex;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.ctrl-btn {
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  transition: background-color 0.25s ease, color 0.25s ease,
+    border-color 0.25s ease, transform 0.25s var(--ease);
+}
+
+.ctrl-btn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+  transform: translateY(-2px);
+}
+
+.certs-scroll {
+  display: flex;
+  gap: 1.25rem;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  margin: 0 calc(var(--container-padding) * -1);
-  padding: 0 var(--container-padding);
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
 }
 
-.certs-scroll-wrapper::-webkit-scrollbar {
+.certs-scroll::-webkit-scrollbar {
   display: none;
 }
 
-.certs-track {
-  display: flex;
-  gap: 1.25rem;
-  padding-bottom: 1rem;
-  min-width: min-content;
-}
-
 .cert-card {
+  position: relative;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: min(360px, 84vw);
+  background: var(--paper-3);
+  border: 1px solid var(--hairline);
+  padding: clamp(1.6rem, 3vw, 2.2rem);
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.25rem 1.75rem;
-  background: var(--color-white);
-  border: 1px solid var(--color-neutral);
-  border-radius: 12px;
-  min-width: 320px;
-  flex-shrink: 0;
-  transition: all 0.35s ease;
-  cursor: default;
+  flex-direction: column;
+  gap: 1.4rem;
+  transition: border-color 0.3s ease, transform 0.3s var(--ease);
 }
 
 .cert-card:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 6px 24px rgba(139, 111, 114, 0.08);
+  border-color: var(--accent);
+  transform: translateY(-3px);
 }
 
-.cert-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(196, 168, 176, 0.15), rgba(139, 111, 114, 0.1));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-deep);
-  flex-shrink: 0;
-}
-
-.cert-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+.cert-no {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--accent);
 }
 
 .cert-name {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 1.12rem;
   font-weight: 500;
-  color: var(--color-text);
   line-height: 1.4;
+  color: var(--ink);
 }
 
 .cert-issuer {
-  font-size: 0.75rem;
-  color: var(--color-deep);
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-inline-start: 2px solid var(--accent);
+  padding-inline-start: 0.7rem;
 }
 
-@media (max-width: 768px) {
+[dir='rtl'] .cert-issuer {
+  letter-spacing: 0.02em;
+}
+
+.cert-glyph {
+  position: absolute;
+  top: 1.6rem;
+  inset-inline-end: 1.8rem;
+  color: var(--accent);
+  opacity: 0.4;
+}
+
+@media (max-width: 640px) {
+  .certs-head-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .cert-card {
-    min-width: 280px;
-    padding: 1rem 1.25rem;
+    width: min(300px, 82vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-card,
+  .ctrl-btn {
+    transition: none;
+  }
+
+  .cert-card:hover {
+    transform: none;
   }
 }
 </style>
