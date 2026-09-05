@@ -46,7 +46,11 @@ const THEME_RULES = [
   },
   {
     id: 'industries',
-    rx: /(مجالات|القطاعات|اشتغلت مع|فين اشتغلت|شغلت فين|اشتغلت في|industries|sectors|clients|brands)/,
+    rx: /(مجالات|القطاعات|اشتغلت مع|فين اشتغلت|شغلت فين|اشتغلت في|industries|sectors|clients|brands|where (did|has) she work|where she work)/,
+  },
+  {
+    id: 'identity',
+    rx: /(work experience|professional background|career history|خبرتها|خبره شيماء|الخبرة المهنية)/,
   },
   {
     id: 'projects',
@@ -179,13 +183,71 @@ function scoreList(normalizedQuery, queryTokens, lang, phrases) {
 }
 
 /**
+ * Intent Concept Layer: resolves a short, unambiguous user concept to its
+ * matching intent using the KB's own alias/synonym phrases. Operates on the
+ * normalized query (before stop-word removal), so concepts that are entirely
+ * stop words — "about", "who is she", "work experience" — still resolve.
+ *
+ * Conservative by design: only exact matches, or multi-word phrase containment
+ * where neither side is a mere single generic token, are accepted. Weak or
+ * ambiguous input returns null so the theme/fuzzy layers or fallback handle it.
+ */
+function matchConceptIntent(normalizedQuery, lang) {
+  if (!normalizedQuery) return null
+  let best = null
+  let bestLen = 0
+
+  for (const intent of intents) {
+    const { aliases, synonyms } = intentLists(intent, lang)
+    const phrases = [...aliases, ...synonyms].filter(Boolean)
+
+    for (const p of phrases) {
+      const cp = normalizeText(p)
+      if (!cp) continue
+      // Exact or full-phrase containment.
+      if (cp === normalizedQuery) {
+        // Exact match always wins.
+        return intent.id
+      }
+      // Multi-word containment only (avoids "about" hijacking a longer query).
+      const multiP = cp.split(/\s+/).length > 1
+      const multiQ = normalizedQuery.split(/\s+/).length > 1
+      if (multiP && multiQ && (normalizedQuery.includes(cp) || cp.includes(normalizedQuery))) {
+        if (cp.length > bestLen) {
+          bestLen = cp.length
+          best = intent.id
+        }
+      }
+    }
+  }
+  return best
+}
+
+/**
  * Searches the structured, bilingual knowledge base.
  * Returns the highest-confidence intent with a deterministic ranking:
- *   exact intent theme  >  phrase  >  keyword  >  synonym  >  similarity
+ *   intent concept  >  exact intent theme  >  phrase  >  keyword  >  synonym  >  similarity
+ *
+ * Layer 0 (concept) runs on the normalized query itself, so short concept
+ * phrases that collapse to stop words (e.g. "about", "who is she", "work
+ * experience") still resolve. It only fires on strong matches — never on weak
+ * or ambiguous input — so unknown/phrases fall through to the fuzzy layers.
  */
 export function searchLocal(query) {
   const { lang, tokens } = preprocessQuery(query)
   const normalizedQuery = normalizeText(query)
+
+  // Layer 0: Intent Concept Layer. Runs only when the query lost ALL its
+  // meaningful tokens to stop-word removal (e.g. "about", "who is she",
+  // "what does she do"), because those would otherwise hit the early return
+  // below before the theme/fuzzy layers get a chance. When the query retains
+  // tokens, the theme/fuzzy layers handle it — we never let a bare alias
+  // hijack a token-bearing query into the wrong intent.
+  const conceptId = tokens.length === 0 ? matchConceptIntent(normalizedQuery, lang) : null
+  if (conceptId) {
+    const intent = intents.find((i) => i.id === conceptId)
+    if (intent) return { found: true, match: intent, score: 0.95, source: intent.id, lang, fromConcept: true }
+  }
 
   if (tokens.length === 0) {
     return { found: false, match: null, score: 0, source: null, lang }

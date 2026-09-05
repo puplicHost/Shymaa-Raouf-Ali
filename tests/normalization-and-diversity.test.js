@@ -153,7 +153,6 @@ describe('Follow-up click behaves exactly like typing the label', () => {
   })
 })
 
-// Re-check that the new/education intent is fully wired through the KB.
 describe('Knowledge base — education intent + aliases', () => {
   it('defines an education intent with bilingual alias data', () => {
     const edu = knowledgeBase.intents.find((i) => i.id === 'education')
@@ -170,5 +169,113 @@ describe('Knowledge base — education intent + aliases', () => {
     for (const intent of knowledgeBase.intents) {
       expect(knowledgeBase.followUpPool[intent.id]).toBeDefined()
     }
+  })
+})
+
+// Intent Concept Layer: short portfolio concepts — some of which collapse to
+// stop words entirely ("about", "who is she") — must resolve to the right
+// intent instead of falling through to the fallback.
+describe('Intent concept layer — natural portfolio concepts resolve', () => {
+  const EN_CASES = [
+    ['about', 'identity'],
+    ['about her', 'identity'],
+    ['who is she', 'identity'],
+    ['who is shymaa', 'identity'],
+    ['what does she do', 'identity'],
+    ['experience', 'identity'],
+    ['background', 'identity'],
+    ['work experience', 'identity'],
+    ['certifications', 'certifications'],
+    ['certificate', 'certifications'],
+    ['where did she work', 'industries'],
+    ['where has she worked', 'industries'],
+  ]
+
+  const AR_CASES = [
+    ['مين شيماء', 'identity'],
+    ['هي مين', 'identity'],
+    ['بتعمل إيه', 'identity'],
+    ['الخبرة', 'identity'],
+    ['حكاية شيماء', 'identity'],
+    ['الشهادات', 'certifications'],
+    ['شهادة', 'certifications'],
+    ['اشتغلت فين', 'industries'],
+  ]
+
+  it.each(EN_CASES)('%s -> %s', (query, intentId) => {
+    const r = searchLocal(query)
+    expect(r.found).toBe(true)
+    expect(r.source).toBe(intentId)
+    const a = findLocalAnswer(query)
+    expect(a.intentId).toBe(intentId)
+  })
+
+  it.each(AR_CASES)('%s -> %s', (query, intentId) => {
+    const r = searchLocal(query)
+    expect(r.found).toBe(true)
+    expect(r.source).toBe(intentId)
+    const a = findLocalAnswer(query)
+    expect(a.intentId).toBe(intentId)
+  })
+
+  it('does not let a bare alias hijack a longer token-bearing query', () => {
+    // "about" is an identity alias, but inside a longer question the broader
+    // theme/fuzzy layers decide — never a blanket single-word match.
+    const r = searchLocal('what about her projects')
+    expect(r.found).toBe(true)
+    expect(r.source).toBe('projects')
+  })
+
+  it('contact phrases still resolve via the concept/theme layer', () => {
+    for (const q of ['contact her', 'how to contact her', 'contact info', 'number', 'phone', 'email']) {
+      const r = searchLocal(q)
+      expect(r.found).toBe(true)
+      expect(r.source).toBe('contact')
+    }
+  })
+})
+
+// Conversational inputs (greeting / thanks / acknowledgment) must be handled by
+// the conversation service before the portfolio engine, with no follow-up
+// suggestions — they are not navigational questions. Negatives must still fall
+// back without guessing.
+describe('Conversation service — small talk resolves, negatives do not', () => {
+  beforeEach(() => {
+    assistantEngine.resetRateLimit()
+  })
+
+  const CONV_EN = ['hello', 'hi', 'hey', 'good morning', 'thank you', 'thanks', 'you are welcome', 'okay', 'got it', 'great', 'cool']
+  const CONV_AR = ['أهلا', 'مرحبا', 'سلام', 'ازيك', 'شكرا', 'تسلم', 'ميرسي', 'تمام', 'حلو', 'ماشي']
+
+  it.each(CONV_EN)('%s -> conversation service (en)', async (q) => {
+    const r = await assistantEngine.process(q)
+    expect(r.source).toBe('conversation')
+    expect(r.answer).toBeTruthy()
+    expect(r.action).toBeNull()
+    expect(r.followUps).toHaveLength(0)
+  })
+
+  it.each(CONV_AR)('%s -> conversation service (ar)', async (q) => {
+    const r = await assistantEngine.process(q)
+    expect(r.source).toBe('conversation')
+    expect(r.answer).toBeTruthy()
+    expect(r.action).toBeNull()
+    expect(r.followUps).toHaveLength(0)
+  })
+
+  it('portfolio queries that merely mention a courtesy word stay portfolio', async () => {
+    // Not small talk: these must resolve through the local engine, not the
+    // conversation service, and they must not be swallowed as "okay"/"thanks".
+    const r = await assistantEngine.process('thank you, tell me about her skills')
+    expect(r.source).toBe('local')
+    expect(r.intentId).toBe('skills')
+  })
+
+  it.each(['asdf', 'qwerty', 'xyzabc', '123456', 'random nonsense'])('%s stays unresolved (local not confident)', async (q) => {
+    const r = await assistantEngine.process(q)
+    expect(r.source).toBe('fallback')
+    expect(r.answer).toBeTruthy()
+    expect(r.action).toBeNull()
+    expect(r.followUps).toHaveLength(0)
   })
 })

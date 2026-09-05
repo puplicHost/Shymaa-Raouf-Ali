@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": 11,
+    "version": 12,
     "languages": ["ar", "en"],
     "lastUpdated": "2026-09-05"
   },
@@ -65,6 +65,12 @@
       { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
       { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" }
     ],
+    "certifications": [
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+      { "label": { "ar": "📚 شيماء بتتعلم إيه؟", "en": "📚 What is she learning?" }, "intent": "education" },
+      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+      { "label": { "ar": "💡 إيه اللي بيميزها؟", "en": "💡 What makes her different?" }, "intent": "differentiator" }
+    ],
     "contact": [
       { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
       { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
@@ -96,12 +102,12 @@
         "en": ["Who is Shymaa?", "Tell me about Shymaa", "Who is Shymaa Raouf Ali?", "Introduce her"]
       },
       "aliases": {
-        "ar": ["شيماء", "التعريف", "عرفني"],
-        "en": ["shymaa", "about", "who is", "introduce"]
+        "ar": ["شيماء", "التعريف", "عرفني", "هي مين", "بتعمل إيه", "الخبرة", "حكاية"],
+        "en": ["shymaa", "about", "who is", "who is she", "introduce", "what does she do", "experience", "background", "work experience", "about her"]
       },
       "answer": {
-        "ar": "شيماء أخصائية وسائل تواصل اجتماعي وصانعة محتوى، بخلفية في التسويق الرقمي. بتركز على إنتاج محتوى جذاب، وتطوير استراتيجيات سوشيال ميديا، ومساعدة العلامات التجارية على التواصل مع جمهورها بطريقة إبداعية وهادفة.\n\nبتحب تحوّل الأفكار لمحتوى مش بس شكله حلو، لكن ليه هدف واضح وبيوصل للجمهور الصح.",
-        "en": "Shymaa is a Social Media Specialist and Content Creator with a background in digital marketing. She focuses on creating engaging content, developing social media strategies, and helping brands communicate with their audiences in a creative and meaningful way.\n\nShe enjoys turning ideas into content that is not only visually appealing, but also has a clear purpose and connects with the right audience."
+        "ar": "شيماء أخصائية وسائل تواصل اجتماعي وصانعة محتوى، بخلفية في التسويق الرقمي. بتركز على إنتاج محتوى جذاب، وتطوير استراتيجيات سوشيال ميديا، ومساعدة العلامات التجارية على التواصل مع جمهورها بطريقة إبداعية وهادفة.\n\nعندها خبرة عملية في إدارة حضور العلامات التجارية على فيسبوك، وإنستجرام، وتيك توك، وسناب شات، وإكس (تويتر)، ولينكدإن، مع تركيز رئيسي على السوق السعودي.\n\nبتحب تحوّل الأفكار لمحتوى مش بس شكله حلو، لكن ليه هدف واضح وبيوصل للجمهور الصح.",
+        "en": "Shymaa is a Social Media Specialist and Content Creator with a background in digital marketing. She focuses on creating engaging content, developing social media strategies, and helping brands communicate with their audiences in a creative and meaningful way.\n\nShe has hands-on experience managing brand presence across Facebook, Instagram, TikTok, Snapchat, X, and LinkedIn, with a primary focus on the Saudi market.\n\nShe enjoys turning ideas into content that is not only visually appealing, but also has a clear purpose and connects with the right audience."
       },
       "action": { "type": "scroll", "target": "about", "label": "About" },
       "followUps": [
@@ -230,6 +236,36 @@
       ]
     },
     {
+      "id": "certifications",
+      "category": "skills",
+      "intentPriority": 2,
+      "keywords": {
+        "ar": ["شهادات", "شهادة", "شهاداتها", "certifications", "شهادة معتمدة"],
+        "en": ["certifications", "certification", "certificate", "certificates", "courses done", "accreditations"]
+      },
+      "synonyms": {
+        "ar": ["ايه الشهادات اللي عندها", "شيماء معاها شهادات إيه"],
+        "en": ["what certifications does she have", "what certificates has she earned"]
+      },
+      "questions": {
+        "ar": ["شيماء معاها شهادات؟", "ايه الشهادات اللي عندها؟", "عندها شهادات معتمدة؟"],
+        "en": ["Does Shymaa have certifications?", "What certifications does she hold?", "What certificates has she earned?"]
+      },
+      "aliases": {
+        "ar": ["شهادات", "شهادة", "الشهادات", "certification"],
+        "en": ["certifications", "certification", "certificate", "certificates", "accreditation"]
+      },
+      "answer": {
+        "ar": "أيوة! شيماء معاها شهادات معتمدة في التسويق الرقمي وصناعة المحتوى والذكاء الاصطناعي، منها:\n• Google AI Professional Certificate (Google)\n• Generative AI for Digital Marketing Specialization (Coursera)\n• AI Content Mastery for Social Media\n• Meta Social Media Marketing Professional Certificate (Meta)\n• Google Digital Marketing & E-commerce Certificate (Google)\n• HubSpot Content Marketing Certification (HubSpot)\n• DELF B1 — شهادة اللغة الفرنسية (France Éducation)\n\nالشهادات دي بتأكد إنها بتحافظ على نفسها محدّثة بأحدث الأدوات والمعايير في المجال.",
+        "en": "Yes! Shymaa holds professional certifications in digital marketing, content creation, and AI, including:\n• Google AI Professional Certificate (Google)\n• Generative AI for Digital Marketing Specialization (Coursera)\n• AI Content Mastery for Social Media\n• Meta Social Media Marketing Professional Certificate (Meta)\n• Google Digital Marketing & E-commerce Certificate (Google)\n• HubSpot Content Marketing Certification (HubSpot)\n• DELF B1 — French Language Certification (France Éducation)\n\nThese certifications show she keeps herself up to date with the latest tools and standards in the field."
+      },
+      "action": { "type": "scroll", "target": "certifications", "label": "Certifications" },
+      "followUps": [
+        { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+        { "label": { "ar": "📚 شيماء بتتعلم إيه؟", "en": "📚 What is she learning?" }, "intent": "education" }
+      ]
+    },
+    {
       "id": "skills",
       "category": "skills",
       "intentPriority": 1,
@@ -336,8 +372,8 @@
         "en": ["Which industries has Shymaa worked with?", "What industries has she worked in?", "What brands has she worked with?", "Which sectors has she covered?"]
       },
       "aliases": {
-        "ar": ["مجالات", "القطاعات", "الصناعات", "العملاء"],
-        "en": ["industries", "sectors", "fields", "clients", "brands"]
+        "ar": ["مجالات", "القطاعات", "الصناعات", "العملاء", "اشتغلت فين", "شغلت فين"],
+        "en": ["industries", "sectors", "fields", "clients", "brands", "where did she work", "where has she worked", "where she worked"]
       },
       "answer": {
         "ar": "شيماء اشتغلت على مشاريع سوشيال ميديا ومحتوى في مجالات متنوعة، منها:\n• الأثاث والمنزل: أدفراك للأثاث (Adrak Furniture)\n• الرخام: أفاق للرخام (Afaag Marble)\n• الصيدلة والرعاية الصحية: روشيتا الصيدليات (Rosheta Pharmacies)\n• التعليم: سمارت جينيور أكاديمي للغات (Smart Junior English Academy)\n• خدمات التنظيف: ألوان هابي لوك (Alwan Happy Luck)\n• التجارة الإلكترونية وأعمال أخرى: مشاريع سوشيال ميديا متنوعة\n\nالشغل في مجالات مختلفة ساعدها تتعلم إزاي تكيّف المحتوى مع جمهور ومنتجات وشخصيات براند مختلفة.",

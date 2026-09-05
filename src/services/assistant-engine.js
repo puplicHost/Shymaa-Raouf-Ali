@@ -14,6 +14,7 @@ import { findLocalAnswer } from './local-knowledge-engine.js'
 import { detectLanguage, preprocessQuery } from './text-utils.js'
 import { getAIAnswer, genericFallback, followUp } from './ai-service.js'
 import { executeAction } from './interaction-engine.js'
+import { detectConversation } from './conversation-service.js'
 import knowledgeBase from '../data/knowledge-base.json'
 
 const MAX_INPUT_LENGTH = 500
@@ -216,6 +217,20 @@ export async function process(inputText) {
   lastRequestAt = Date.now()
 
   try {
+    // 0) Everyday conversational inputs (greeting / thanks / ack) resolve
+    //    first — they are not portfolio questions, so they never hit the
+    //    intent engine nor produce follow-up suggestions.
+    const conv = detectConversation(input)
+    if (conv) {
+      return {
+        answer: conv.answer,
+        action: null,
+        followUps: [],
+        lang: conv.lang,
+        source: 'conversation',
+      }
+    }
+
     // 1) Local knowledge is the source of truth.
     const local = findLocalAnswer(input)
     if (local) {
