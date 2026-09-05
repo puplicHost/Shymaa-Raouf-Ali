@@ -6,6 +6,7 @@ const year = new Date().getFullYear()
 
 const links = [
   { key: 'about', href: '#about' },
+  { key: 'experience', href: '#experience' },
   { key: 'skills', href: '#skills' },
   { key: 'work', href: '#work' },
   { key: 'approach', href: '#approach' },

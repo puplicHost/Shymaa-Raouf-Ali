@@ -82,6 +82,12 @@
       { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
       { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
       { "label": { "ar": "📧 عايز أتواصل معاها", "en": "📧 I want to contact her" }, "intent": "contact" }
+    ],
+    "experience": [
+      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+      { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
+      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" }
     ]
   },
   "intents": [
@@ -413,6 +419,36 @@
       "followUps": [
         { "label": { "ar": "💡 إيه اللي بيميزها؟", "en": "💡 What makes her different?" }, "intent": "differentiator" },
         { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" }
+      ]
+    },
+    {
+      "id": "experience",
+      "category": "work",
+      "intentPriority": 1,
+      "keywords": {
+        "ar": ["خبرة", "خبرتها", "اشتغلت فين", "شغالة فين", "بتشتغل فين", "تاريخ العمل", "تميز", "تميّز", "شركة تميز", "مدرسة فرنساوي", "مدرسة لغة فرنسية"],
+        "en": ["experience", "work experience", "where does she work", "current job", "tamiyouz", "tamiyouz company", "social media specialist", "french teacher", "career", "work history", "job history"]
+      },
+      "synonyms": {
+        "ar": ["ايه خبرة شيماء", "شيماء شغالة فين", "شيماء اشتغلت فين قبل كده"],
+        "en": ["what is her experience", "where does shymaa work", "what is shymaa's work history"]
+      },
+      "questions": {
+        "ar": ["شيماء شغالة فين؟", "ايه خبرة شيماء؟", "اشتغلت فين قبل كده؟", "بتشتغل في شركة ايه؟"],
+        "en": ["Where does Shymaa work?", "What is Shymaa's experience?", "Where has she worked before?", "What company does she work for?"]
+      },
+      "aliases": {
+        "ar": ["خبرة", "شغل", "وظيفة", "تميز", "شركة"],
+        "en": ["experience", "work experience", "job", "career", "tamiyouz", "employment"]
+      },
+      "answer": {
+        "ar": "شيماء شغالة Social Media & Content Creator في شركة Tamiyouz من أبريل 2025 لحد دلوقتي.\n\nشغلها بيشمل إدارة حسابات سوشيال ميديا لبراندات في مجالات مختلفة بتركيز أساسي على السوق السعودي، وتطوير استراتيجيات المحتوى وتقويمات المحتوى الشهرية، وإدارة المحتوى على فيسبوك وإنستجرام وتيك توك وسناب شات وإكس ولينكدإن، وكتابة كوبي السوشيال ميديا وتطوير سكريبتات الريلز والأفكار والكونسبت الإبداعية، وتحليل الوصول والتفاعل وإنسايتس الجمهور وأداء المحتوى، وتعديل الاستراتيجيات حسب سلوك الجمهور وترندات السوق، واستخدام أدوات Generative AI في توليد الأفكار والبحث وكتابة الكوبي وتطوير المحتوى، وتكييف المحتوى مع الثقافة السعودية وترندات السوق.\n\nقبل كده اشتغلت مدرّسة لغة فرنسية من 2023 لـ 2024، وكانت بتطوّر خطط دروس منظمة ومواد تعليمية تفاعلية وبتستخدم الأدوات الرقمية وطرق التدريس الحديثة.",
+        "en": "Shymaa works as a Social Media & Content Creator at Tamiyouz Company from April 2025 – Present.\n\nHer role includes managing social media accounts for brands across diverse industries with a primary focus on the Saudi market, developing content strategies and monthly content calendars, creating and managing content across Facebook, Instagram, TikTok, Snapchat, X, and LinkedIn, writing social media copy and developing Reels scripts, creative concepts, and content ideas, analyzing reach, engagement, audience insights, and content performance, monitoring performance and adjusting strategies based on audience behavior and market trends, leveraging Generative AI tools for content ideation, research, copywriting, and content development, and adapting content to Saudi cultural context and market trends.\n\nPreviously, she worked as a French Language Teacher from 2023 to 2024, developing structured lesson plans and interactive learning materials using digital tools and modern teaching methods."
+      },
+      "action": { "type": "scroll", "target": "experience", "label": "Experience" },
+      "followUps": [
+        { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+        { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" }
       ]
     },
     {

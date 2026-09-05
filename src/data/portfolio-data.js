@@ -178,6 +178,12 @@ export const portfolioData = {
       response: 'حاضر، دي المهارات.',
       responseEn: 'Done, scrolled to skills.',
     },
+    experience: {
+      phrases: ['روح للخبرة', 'ارجع للخبرة', 'فين اشتغلت', 'خبرة شيماء', 'go to experience', 'scroll to experience', 'work experience', 'where does she work'],
+      sectionId: 'experience',
+      response: 'حاضر، دي الخبرة.',
+      responseEn: 'Done, scrolled to experience.',
+    },
     work: {
       phrases: ['روح للمشاريع', 'ارجع للمشاريع', 'go to projects', 'scroll to projects', 'go to work', 'scroll to work'],
       sectionId: 'work',

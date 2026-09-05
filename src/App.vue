@@ -2,6 +2,7 @@
 import NavBar from './components/NavBar.vue'
 import HeroSection from './components/HeroSection.vue'
 import AboutSection from './components/AboutSection.vue'
+import ExperienceSection from './components/ExperienceSection.vue'
 import SkillsSection from './components/SkillsSection.vue'
 import ProjectsSection from './components/ProjectsSection.vue'
 import IndustriesSection from './components/IndustriesSection.vue'
@@ -22,6 +23,7 @@ const { t } = useLocale()
   <main id="main">
     <HeroSection />
     <AboutSection />
+    <ExperienceSection />
     <SkillsSection />
     <ProjectsSection />
     <IndustriesSection />

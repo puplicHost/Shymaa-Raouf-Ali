@@ -8,6 +8,7 @@ export const en = {
   },
   nav: {
     about: 'About',
+    experience: 'Experience',
     skills: 'Skills',
     work: 'Work',
     approach: 'Approach',
@@ -53,24 +54,30 @@ export const en = {
     titleproof: 'A designer who treats each platform as a craft.',
   },
   skills: {
-    label: '02 · Skills',
+    label: '03 · Skills',
     title: 'Services & expertise',
     subtitle: 'Comprehensive social media solutions tailored to elevate a brand’s digital presence.',
   },
+  experience: {
+    label: '02 · Experience',
+    title: 'Work experience',
+    subtitle: 'Where I’ve worked and what I’ve delivered — from social media management to teaching.',
+    present: 'Present',
+  },
   projects: {
-    label: '03 · Selected Work',
+    label: '04 · Selected Work',
     title: 'Projects I’ve managed',
     subtitle: 'A curated selection of brands grown through strategic social media management.',
     viewOn: 'View on Instagram',
     open: 'Open project',
   },
   industries: {
-    label: '04 · Industries',
+    label: '05 · Industries',
     title: 'Sectors I’ve worked in',
     subtitle: 'Diverse experience across industries, with a deep understanding of each market’s needs.',
   },
   approach: {
-    label: '05 · Approach',
+    label: '06 · Approach',
     title: 'A clear process, measured results',
     subtitle: 'A strategic method that turns ideas into outcomes — from first brief to final report.',
     steps: [
@@ -81,12 +88,12 @@ export const en = {
     ],
   },
   certs: {
-    label: '06 · Certifications',
+    label: '07 · Certifications',
     title: 'Continuous learning',
     subtitle: 'Staying current with industry standards and the tools reshaping the craft.',
   },
   contact: {
-    label: '07 · Contact',
+    label: '08 · Contact',
     title: 'Let’s work together',
     subtitle: 'Looking for a designer who pairs creativity with strategy? Start a conversation.',
     email: 'Email',
@@ -114,6 +121,7 @@ export const ar = {
   },
   nav: {
     about: 'من أنا',
+    experience: 'الخبرة',
     skills: 'المهارات',
     work: 'الأعمال',
     approach: 'منهجيتي',
@@ -159,24 +167,30 @@ export const ar = {
     titleproof: 'مصممة تتعامل مع كل منصة كحرفة قائمة بذاتها.',
   },
   skills: {
-    label: '٠٢ · المهارات',
+    label: '٠٣ · المهارات',
     title: 'خدمات وخبرات',
     subtitle: 'حلول متكاملة للسوشيال ميديا مصمّمة لترتقي بحضور علامتك الرقمية.',
   },
+  experience: {
+    label: '٠٢ · الخبرة',
+    title: 'الخبرة العملية',
+    subtitle: 'أين عملت وماذا قدّمت — من إدارة السوشيال ميديا إلى التدريس.',
+    present: 'حاليًا',
+  },
   projects: {
-    label: '٠٣ · أعمال مختارة',
+    label: '٠٤ · أعمال مختارة',
     title: 'مشاريع أدرتها',
     subtitle: 'اختيار من العلامات التي ساعدتها على النمو عبر إدارة استراتيجية لوسائل التواصل.',
     viewOn: 'الاطلاع على إنستجرام',
     open: 'افتح المشروع',
   },
   industries: {
-    label: '٠٤ · المجالات',
+    label: '٠٥ · المجالات',
     title: 'قطاعات عملت بها',
     subtitle: 'خبرة متنوعة عبر كثير من القطاعات، بفهم عميق لاحتياجات كل سوق.',
   },
   approach: {
-    label: '٠٥ · منهجيتي',
+    label: '٠٦ · منهجيتي',
     title: 'عملية واضحة ونتائج ملموسة',
     subtitle: 'طريقة استراتيجية تحوّل الأفكار إلى نتائج — من أول ملخص إلى آخر تقرير.',
     steps: [
@@ -187,12 +201,12 @@ export const ar = {
     ],
   },
   certs: {
-    label: '٠٦ · الشهادات',
+    label: '٠٧ · الشهادات',
     title: 'تعلّم مستمر',
     subtitle: 'مواكبة معايير الصناعة والأدوات التي تعيد تشكيل المهنة.',
   },
   contact: {
-    label: '٠٧ · تواصل',
+    label: '٠٨ · تواصل',
     title: 'هيا نعمل معًا',
     subtitle: 'تبحث عن مصممة تجمع بين الإبداع والاستراتيجية؟ لنبدأ حديثًا.',
     email: 'البريد الإلكتروني',
