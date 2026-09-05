@@ -19,7 +19,14 @@ const ENDPOINT = '/api/nara/v1/chat/completions'
 
 // environment check: only attempt when we are in a context that may have a
 // server-side proxy (dev server). Non-VITE_ env vars are never bundled.
+//
+// LOCAL-ONLY MODE: external AI is disabled by default so the assistant is a
+// fully self-contained, offline system (zero Nara/API calls). To re-enable the
+// optional Nara fallback for local development, flip LOCAL_ONLY_MODE to false.
+const LOCAL_ONLY_MODE = true
+
 const AI_ENABLED =
+  !LOCAL_ONLY_MODE &&
   typeof import.meta !== 'undefined' &&
   import.meta.env &&
   import.meta.env.DEV === true

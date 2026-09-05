@@ -34,11 +34,13 @@
           </div>
         </div>
 
-        <div class="chat-suggestions" v-if="messages.length <= 1">
+        <div class="chat-suggestions" v-if="suggestions.length">
+          <span v-if="showSuggestionHeader" class="suggestions-header">{{ suggestionHeader }}</span>
           <button
             v-for="(q, i) in suggestions"
             :key="i"
             class="suggestion-btn"
+            :disabled="isTyping"
             @click="sendMessage(q)"
           >
             {{ q }}
@@ -93,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, nextTick, watch, onMounted, onBeforeUnmount } from 'vue'
 import assistantEngine from '../services/assistant-engine.js'
 import { createVoiceService } from '../services/voice-service.js'
 import { detectLanguage } from '../services/text-utils.js'
@@ -107,6 +109,26 @@ const messagesContainer = ref(null)
 const chatInput = ref(null)
 let voiceService = null
 
+// Initial suggestions shown before the first message (unchanged).
+const DEFAULT_SUGGESTIONS = [
+  'Who is Shymaa?',
+  'What are her skills?',
+  'Show me her projects',
+  'How to contact her?',
+]
+
+const suggestions = ref([...DEFAULT_SUGGESTIONS])
+const showSuggestionHeader = ref(false)
+const assistantLang = ref('en')
+
+const suggestionHeader = computed(() =>
+  showSuggestionHeader.value
+    ? assistantLang.value === 'ar'
+      ? 'ممكن كمان تعرف:'
+      : 'You can also ask:'
+    : ''
+)
+
 const messages = ref([
   {
     role: 'assistant',
@@ -114,13 +136,6 @@ const messages = ref([
       ? '!مرحباً أنا المساعد الذكي لموقع شيماء. اسأل عن مهاراتها ومشاريعها وطريقة شغلها'
       : "Hi! I'm Shymaa's portfolio assistant. Ask me about her skills, projects, or how she works!",
   },
-])
-
-const suggestions = ref([
-  'Who is Shymaa?',
-  'What are her skills?',
-  'Show me her projects',
-  'How to contact her?',
 ])
 
 // Escape untrusted text first, then apply safe formatting to trusted content.
@@ -196,17 +211,23 @@ async function sendMessage(text = null) {
   const result = await assistantEngine.process(input)
 
   addMessage('assistant', result.answer)
-  const lang = detectLanguage(input)
+  assistantLang.value = result.lang || detectLanguage(input)
+
+  // Contextual follow-ups: replace the buttons after every answer with the two
+  // suggestions that belong to the current intent. Unknown/fallback answers
+  // fall back to the standard starting suggestions so the conversation never
+  // dead-ends.
+  if (result.followUps && result.followUps.length === 2) {
+    suggestions.value = result.followUps.map((f) => f.label)
+    showSuggestionHeader.value = true
+  } else {
+    suggestions.value = [...DEFAULT_SUGGESTIONS]
+    showSuggestionHeader.value = false
+  }
 
   // Optionally speak the answer (voice is an optional layer).
   if (voiceService && result.source !== 'cooldown') {
     voiceService.speak(result.answer)
-  }
-
-  // Add a natural conversational follow-up (never fabricates facts).
-  const followUpText = assistantEngine.getFollowUp(input)
-  if (followUpText) {
-    messages.value.push({ role: 'assistant', text: followUpText })
   }
 
   isTyping.value = false
@@ -406,6 +427,13 @@ watch(isOpen, async (val) => {
   padding: 0.5rem 0.75rem 0.75rem;
 }
 
+.suggestions-header {
+  width: 100%;
+  font-size: 0.72rem;
+  color: var(--color-deep, #8B6F72);
+  margin-bottom: 0.15rem;
+}
+
 .suggestion-btn {
   padding: 0.4rem 0.75rem;
   font-size: 0.75rem;
@@ -423,6 +451,11 @@ watch(isOpen, async (val) => {
   background: var(--color-primary, #C4A8B0);
   color: var(--color-white, #fff);
   border-color: var(--color-primary, #C4A8B0);
+}
+
+.suggestion-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .chat-input-area {

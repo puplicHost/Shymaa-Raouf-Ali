@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": 9,
+    "version": 10,
     "languages": ["ar", "en"],
     "lastUpdated": "2026-09-05"
   },
@@ -25,7 +25,11 @@
         "ar": "شيماء أخصائية وسائل تواصل اجتماعي وصانعة محتوى، بخلفية في التسويق الرقمي. بتركز على إنتاج محتوى جذاب، وتطوير استراتيجيات سوشيال ميديا، ومساعدة العلامات التجارية على التواصل مع جمهورها بطريقة إبداعية وهادفة.\n\nبتحب تحوّل الأفكار لمحتوى مش بس شكله حلو، لكن ليه هدف واضح وبيوصل للجمهور الصح.",
         "en": "Shymaa is a Social Media Specialist and Content Creator with a background in digital marketing. She focuses on creating engaging content, developing social media strategies, and helping brands communicate with their audiences in a creative and meaningful way.\n\nShe enjoys turning ideas into content that is not only visually appealing, but also has a clear purpose and connects with the right audience."
       },
-      "action": { "type": "scroll", "target": "about", "label": "About" }
+      "action": { "type": "scroll", "target": "about", "label": "About" },
+      "followUps": [
+        { "label": { "ar": "🎨 وريني مشاريعها", "en": "🎨 Show me her projects" }, "intent": "projects" },
+        { "label": { "ar": "💡 إيه اللي بيميزها؟", "en": "💡 What makes her different?" }, "intent": "differentiator" }
+      ]
     },
     {
       "id": "work",
@@ -47,7 +51,11 @@
         "ar": "شيماء اشتغلت على أنواع مختلفة من محتوى السوشيال ميديا لعلامات تجارية ومجالات متنوعة، منها الأثاث، والرخام، والصيدليات، والتعليم، وخدمات التنظيف، والتجارة الإلكترونية.\n\nشغلها بيشمل بوستات سوشيال ميديا، وريلز، وأفكار محتوى إبداعية، وكابشنز، وتقويمات محتوى، وإدارة سوشيال ميديا بشكل شامل.",
         "en": "Shymaa has worked on different types of social media content for various brands and industries, including furniture, marble, pharmacies, education, cleaning services, and e-commerce.\n\nHer work includes social media posts, reels, creative content ideas, captions, content calendars, and overall social media management."
       },
-      "action": { "type": "scroll", "target": "work", "label": "Projects" }
+      "action": { "type": "scroll", "target": "work", "label": "Projects" },
+      "followUps": [
+        { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+        { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" }
+      ]
     },
     {
       "id": "projects",
@@ -69,7 +77,11 @@
         "ar": "شيماء اشتغلت على أنواع مختلفة من محتوى السوشيال ميديا لعلامات تجارية ومجالات متنوعة، منها الأثاث، والرخام، والصيدليات، والتعليم، وخدمات التنظيف، والتجارة الإلكترونية.\n\nشغلها بيشمل بوستات سوشيال ميديا، وريلز، وأفكار محتوى إبداعية، وكابشنز، وتقويمات محتوى، وإدارة سوشيال ميديا بشكل شامل.",
         "en": "Shymaa has worked on different types of social media content for various brands and industries, including furniture, marble, pharmacies, education, cleaning services, and e-commerce.\n\nHer work includes social media posts, reels, creative content ideas, captions, content calendars, and overall social media management."
       },
-      "action": { "type": "scroll", "target": "work", "label": "Projects" }
+      "action": { "type": "scroll", "target": "work", "label": "Projects" },
+      "followUps": [
+        { "label": { "ar": "📊 شاورلي دراسات الحالة", "en": "📊 Tell me about the case studies" }, "intent": "caseStudies" },
+        { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" }
+      ]
     },
     {
       "id": "caseStudies",
@@ -91,7 +103,11 @@
         "ar": "في دراسات الحالة، شيماء بتعرض التفكير اللي ورا شغلها — مش بس التصاميم النهائية.\n\nكل دراسة حالة بتبرز البراند، والتحدي، والجمهور المستهدف، وطريقة المحتوى، والاستراتيجية، والشغل اللي اتعمل.\n\nوحيثما تتوفر بيانات أداء حقيقية، بتسلط الضوء كمان على النتائج والرؤى الرئيسية.",
         "en": "In her case studies, Shymaa showcases the thinking behind her work — not just the final designs.\n\nEach case study highlights the brand, the challenge, the target audience, the content approach, the strategy, and the work created.\n\nWhere real performance data is available, she also highlights the results and key insights."
       },
-      "action": { "type": "scroll", "target": "work", "label": "Case Studies" }
+      "action": { "type": "scroll", "target": "work", "label": "Case Studies" },
+      "followUps": [
+        { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+        { "label": { "ar": "📧 عايز أتواصل معاها", "en": "📧 I want to contact her" }, "intent": "contact" }
+      ]
     },
     {
       "id": "skills",
@@ -113,7 +129,11 @@
         "ar": "شيماء تقدر تدعم العلامات التجارية في مراحل مختلفة من تواجدها على السوشيال ميديا.\n\nمهاراتها بتشمل:\n• إدارة وسائل التواصل الاجتماعي\n• إبداع المحتوى\n• استراتيجية المحتوى\n• تقويم المحتوى والتخطيط\n• أفكار المحتوى الإبداعي\n• الريلز والمحتوى القصير\n• كتابة النصوص والكابشنز\n• بحث الجمهور والمنافسين\n• التسويق الرقمي\n\nأسلوبها بيجمع بين الإبداع والاستراتيجية، عشان المحتوى يكون ليه هدف أبعد من مجرد الشكل الحلو.",
         "en": "Shymaa can support brands across different stages of their social media presence.\n\nHer skills include:\n• Social Media Management\n• Content Creation\n• Content Strategy\n• Content Calendars & Planning\n• Creative Content Ideas\n• Reels & Short-form Content\n• Copywriting & Captions\n• Audience & Competitor Research\n• Digital Marketing\n\nHer approach combines creativity with strategy, so the content has a purpose beyond simply looking good."
       },
-      "action": { "type": "scroll", "target": "skills", "label": "Skills" }
+      "action": { "type": "scroll", "target": "skills", "label": "Skills" },
+      "followUps": [
+        { "label": { "ar": "✨ إيه اللي بيميزها؟", "en": "✨ What makes her different?" }, "intent": "differentiator" },
+        { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" }
+      ]
     },
     {
       "id": "differentiator",
@@ -135,7 +155,11 @@
         "ar": "شيماء بتؤمن إن المحتوى الجيد محتاج إبداع وهدف مع بعض.\n\nهي مش بتعمل محتوى مجرد إنه شكله حلو. بتفكر في الجمهور، والرسالة، والبراند، وإيه اللي المحتوى المفروض يحققه.\n\nوبتحب كمان تجرّب أدوات الذكاء الاصطناعي عشان تسرّع العملية الإبداعية، وتستكشف أفكار جديدة، وتحسّن طريقة تخطيط المحتوى وإنتاجه.\n\nباختصار: تفكير إبداعي + تفكير استراتيجي + رغبة في التعلّم.",
         "en": "Shymaa believes good content needs both creativity and purpose.\n\nShe doesn't create content just because it looks nice. She thinks about the audience, the message, the brand, and what the content is supposed to achieve.\n\nShe also enjoys experimenting with AI tools to make the creative process faster, explore new ideas, and improve the way content is planned and produced.\n\nIn short: Creative Thinking + Strategic Thinking + A Willingness to Learn."
       },
-      "action": { "type": "scroll", "target": "about", "label": "About" }
+      "action": { "type": "scroll", "target": "about", "label": "About" },
+      "followUps": [
+        { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
+        { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" }
+      ]
     },
     {
       "id": "contentTypes",
@@ -157,7 +181,11 @@
         "ar": "شيماء بتعمل أنواع مختلفة من المحتوى حسب البراند والجمهور والهدف التسويقي.\n\nده بيشمل:\n• محتوى تعليمي\n• محتوى ترويجي\n• محتوى تفاعلي\n• محتوى قصصي\n• ريلز وفيديوهات قصيرة\n• محتوى موجه للمنتجات\n• محتوى موسمي وحملات\n• تصاميم ومفاهيم إبداعية للسوشيال ميديا\n\nهي بتكيّف أسلوب المحتوى مع كل براند بدل ما تستخدم نفس الأسلوب مع كل عميل.",
         "en": "Shymaa creates different types of content depending on the brand, audience, and marketing goal.\n\nThis includes:\n• Educational Content\n• Promotional Content\n• Engagement-focused Content\n• Storytelling Content\n• Reels & Short-form Videos\n• Product-focused Content\n• Seasonal & Campaign Content\n• Social Media Visuals & Creative Concepts\n\nShe adapts the content style to each brand rather than using the same approach for every client."
       },
-      "action": { "type": "scroll", "target": "skills", "label": "Skills" }
+      "action": { "type": "scroll", "target": "skills", "label": "Skills" },
+      "followUps": [
+        { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
+        { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" }
+      ]
     },
     {
       "id": "industries",
@@ -179,7 +207,11 @@
         "ar": "شيماء اشتغلت على مشاريع سوشيال ميديا ومحتوى في مجالات متنوعة، منها:\n• الأثاث والمنزل: أدفراك للأثاث (Adrak Furniture)\n• الرخام: أفاق للرخام (Afaag Marble)\n• الصيدلة والرعاية الصحية: روشيتا الصيدليات (Rosheta Pharmacies)\n• التعليم: سمارت جينيور أكاديمي للغات (Smart Junior English Academy)\n• خدمات التنظيف: ألوان هابي لوك (Alwan Happy Luck)\n• التجارة الإلكترونية وأعمال أخرى: مشاريع سوشيال ميديا متنوعة\n\nالشغل في مجالات مختلفة ساعدها تتعلم إزاي تكيّف المحتوى مع جمهور ومنتجات وشخصيات براند مختلفة.",
         "en": "Shymaa has worked on social media and content projects across different industries, including:\n• Furniture & Home: Adrak Furniture\n• Marble: Afaag Marble\n• Pharmacy & Healthcare: Rosheta Pharmacies\n• Education: Smart Junior English Academy\n• Cleaning Services: Alwan Happy Luck\n• E-commerce & Other Businesses: Various social media projects\n\nWorking across different industries has helped her learn how to adapt content to different audiences, products, and brand personalities."
       },
-      "action": { "type": "scroll", "target": "work", "label": "Projects" }
+      "action": { "type": "scroll", "target": "work", "label": "Projects" },
+      "followUps": [
+        { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+        { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" }
+      ]
     },
     {
       "id": "approach",
@@ -201,7 +233,11 @@
         "ar": "شيماء بتبدأ بفهم البراند وجمهوره ومنافسيه وأهدافه.\n\nمن هنا، بتطوّر أفكار المحتوى وخطة محتوى بتوازن بين أنواع مختلفة من المحتوى — من بوستات تعليمية وتفاعلية لبوستات ترويجية وبناءة للبراند.\n\nوبعدين بتركز على إنتاج محتوى واضح وذو صلة ومتسق مع هوية البراند.\n\nوأخيراً، بتنظر لأداء المحتوى وتستخدم الرؤى دي لتحسين الأفكار والاستراتيجيات المستقبلية.",
         "en": "Shymaa starts by understanding the brand, its audience, competitors, and goals.\n\nFrom there, she develops content ideas and a content plan that balances different types of content — from educational and engaging posts to promotional and brand-building content.\n\nShe then focuses on creating content that is clear, relevant, and consistent with the brand identity.\n\nFinally, she looks at the performance of the content and uses those insights to improve future ideas and strategies."
       },
-      "action": { "type": "scroll", "target": "approach", "label": "Approach" }
+      "action": { "type": "scroll", "target": "approach", "label": "Approach" },
+      "followUps": [
+        { "label": { "ar": "💡 إيه اللي بيميزها؟", "en": "💡 What makes her different?" }, "intent": "differentiator" },
+        { "label": { "ar": "📱 إيه نوع المحتوى اللي بتعمله؟", "en": "📱 What type of content does she create?" }, "intent": "contentTypes" }
+      ]
     },
     {
       "id": "contact",
@@ -223,7 +259,11 @@
         "ar": "لو بتدور على حد يساعدك تدير سوشيال ميديا وتصنع محتوى فعلاً بيعبّر عن براندك، شيماء مفتوحة لفرص جديدة في السوشيال ميديا وصناعة المحتوى والتسويق الرقمي.\n\nلو حاسس إن فيه توافق، اتواصل معاها بحرية.\n\nالتواصل:\n• البريد الإلكتروني: raoufshimaa587@gmail.com\n• لينكدإن: Shymaa Raouf Ali\n• الموبايل واتساب: 01282354052",
         "en": "Looking for someone to help manage your social media and create content that actually feels like your brand?\n\nShymaa is open to new opportunities in Social Media, Content Creation, and Digital Marketing.\n\nIf you think there could be a good fit, feel free to get in touch.\n\nContact:\n• Email: raoufshimaa587@gmail.com\n• LinkedIn: Shymaa Raouf Ali\n• Phone/WhatsApp: +01282354052"
       },
-      "action": { "type": "contact", "target": "contact", "label": "Contact", "offer": ["email", "linkedin"] }
+      "action": { "type": "contact", "target": "contact", "label": "Contact", "offer": ["email", "linkedin"] },
+      "followUps": [
+        { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
+        { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" }
+      ]
     },
     {
       "id": "availability",
@@ -245,7 +285,11 @@
         "ar": "أيوة! شيماء مفتوحة لفرص جديدة في إدارة السوشيال ميديا وصناعة المحتوى والتسويق الرقمي.\n\nلو حاسس إن فيه توافق، اتواصل معاها بحرية.\n\nالتواصل:\n• البريد الإلكتروني: raoufshimaa587@gmail.com\n• الموبايل واتساب: 01282354052",
         "en": "Yes! Shymaa is open to new opportunities in Social Media Management, Content Creation, and Digital Marketing.\n\nIf you think there could be a good fit, feel free to get in touch.\n\nContact:\n• Email: raoufshimaa587@gmail.com\n• Phone/WhatsApp: +01282354052"
       },
-      "action": { "type": "contact", "target": "contact", "label": "Contact", "offer": ["email", "linkedin"] }
+      "action": { "type": "contact", "target": "contact", "label": "Contact", "offer": ["email", "linkedin"] },
+      "followUps": [
+        { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
+        { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" }
+      ]
     }
   ]
 }

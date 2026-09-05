@@ -14,9 +14,15 @@ import { findLocalAnswer } from './local-knowledge-engine.js'
 import { detectLanguage, preprocessQuery } from './text-utils.js'
 import { getAIAnswer, genericFallback, followUp } from './ai-service.js'
 import { executeAction } from './interaction-engine.js'
+import knowledgeBase from '../data/knowledge-base.json'
 
 const MAX_INPUT_LENGTH = 500
 const COOLDOWN_MS = 1200
+
+// LOCAL-ONLY MODE: the assistant never calls Nara or any external AI API.
+// The pipeline is: local knowledge engine -> local answer -> action -> follow-ups.
+// To re-enable the optional AI fallback (local dev only), set this to false.
+const LOCAL_ONLY_MODE = true
 
 let lastRequestAt = 0
 let processing = false
@@ -60,9 +66,30 @@ function detectIntentName(text) {
 }
 
 /**
+ * Resolves the contextual follow-up suggestions for an intent in the given
+ * language, straight from the knowledge base. Each follow-up references
+ * another intent by id (resolved on click through the normal local engine),
+ * so there is no second answer system.
+ */
+export function getFollowUps(intentId, lang = 'en') {
+  if (!intentId) return []
+  const intent = (knowledgeBase.intents || []).find((i) => i.id === intentId)
+  const followUps = intent && Array.isArray(intent.followUps) ? intent.followUps : []
+  return followUps
+    .map((f) => ({
+      label: (f.label && (f.label[lang] || f.label.en)) || '',
+      intent: f.intent,
+    }))
+    .filter((f) => f.label && f.intent)
+}
+
+/**
  * The core pipeline. Returns a fully-resolved assistant result with:
- *   { answer, action, lang, source, intentId }
+ *   { answer, action, followUps, lang, source, intentId }
  * and, as a side effect, executes the resolved portfolio action.
+ *
+ * In LOCAL-ONLY mode the external AI service is never called: a local answer
+ * (with its contextual follow-ups) or the safe local fallback is returned.
  *
  * Never throws. Never exposes technical errors to the user.
  */
@@ -74,6 +101,7 @@ export async function process(inputText) {
     return {
       answer: genericFallback(input),
       action: null,
+      followUps: [],
       lang,
       source: 'cooldown',
     }
@@ -91,28 +119,32 @@ export async function process(inputText) {
       return {
         answer: local.answer,
         action: local.action,
+        followUps: getFollowUps(local.intentId, local.lang),
         lang: local.lang,
         intentId: local.intentId,
         source: 'local',
       }
     }
 
-    // 2) No confident local match -> optional AI fallback for open-ended
-    //    questions. AI must never override a verified local answer (handled
-    //    above), and receives only the relevant knowledge context.
-    const intentGuess = detectIntentName(input)
-    const ai = await getAIAnswer(input, {
-      category: intentGuess === 'unknown' ? null : intentGuess,
-      intentId: intentGuess === 'unknown' ? null : intentGuess,
-    })
+    // 2) Optional AI fallback — OFF in Local-Only mode. Re-enable by setting
+    //    LOCAL_ONLY_MODE to false above (AI is dev-proxy-only and never overrides
+    //    a verified local answer).
+    if (!LOCAL_ONLY_MODE) {
+      const intentGuess = detectIntentName(input)
+      const ai = await getAIAnswer(input, {
+        category: intentGuess === 'unknown' ? null : intentGuess,
+        intentId: intentGuess === 'unknown' ? null : intentGuess,
+      })
 
-    if (ai && ai.answer && ai.answer.trim()) {
-      return {
-        answer: ai.answer,
-        action: null,
-        lang,
-        intentId: intentGuess,
-        source: 'ai',
+      if (ai && ai.answer && ai.answer.trim()) {
+        return {
+          answer: ai.answer,
+          action: null,
+          followUps: [],
+          lang,
+          intentId: intentGuess,
+          source: 'ai',
+        }
       }
     }
 
@@ -120,6 +152,7 @@ export async function process(inputText) {
     return {
       answer: genericFallback(input),
       action: null,
+      followUps: [],
       lang,
       source: 'fallback',
     }
@@ -137,4 +170,4 @@ export function getFollowUp(text) {
 
 export { preprocessQuery, detectLanguage }
 
-export default { process, canProcessInput, getFollowUp, resetRateLimit }
+export default { process, canProcessInput, getFollowUp, getFollowUps, resetRateLimit }
