@@ -10,6 +10,7 @@ import CertificationsSection from './components/CertificationsSection.vue'
 import ContactSection from './components/ContactSection.vue'
 import FooterSection from './components/FooterSection.vue'
 import AIAssistant from './components/AIAssistant.vue'
+import WhatsAppButton from './components/WhatsAppButton.vue'
 import { useLocale } from './composables/useLocale.js'
 
 const { t } = useLocale()
@@ -30,4 +31,5 @@ const { t } = useLocale()
   </main>
   <FooterSection />
   <AIAssistant />
+  <WhatsAppButton />
 </template>

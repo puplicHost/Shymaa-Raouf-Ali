@@ -18,19 +18,9 @@ export const en = {
     switchLang: 'Switch to Arabic',
     backHome: 'Back to top',
   },
-  marquee: [
-    'Visual Design',
-    'Social Media',
-    'Content Strategy',
-    'Arabic Typography',
-    'Editorial Design',
-    'Brand Content',
-    'Short-form Motion',
-    'Design Systems',
-  ],
   hero: {
     label: 'Visual Designer · Content Creator',
-    role: 'Cairo · Egypt',
+    role: 'Ismailia · Egypt',
     availability: 'Available for brands',
     title: 'Shymaa Raouf Ali',
     tagline: 'Creative thinking, strategic purpose — content that carries a brand voice with meaning.',
@@ -108,6 +98,9 @@ export const en = {
     rights: 'All rights reserved.',
     built: 'Developed by',
   },
+  assistant: {
+    askLabel: 'Ask Shymaa',
+  },
   sr: {
     skip: 'Skip to content',
   },
@@ -129,19 +122,9 @@ export const ar = {
     switchLang: 'التبديل إلى الإنجليزية',
     backHome: 'العودة للأعلى',
   },
-  marquee: [
-    'التصميم البصري',
-    'السوشيال ميديا',
-    'استراتيجية المحتوى',
-    'الخطوط العربية',
-    'التصميم التحريري',
-    'محتوى العلامات',
-    'الموشن القصير',
-    'أنظمة التصميم',
-  ],
   hero: {
     label: 'مصممة محتوى · صانعة محتوى',
-    role: 'القاهرة · مصر',
+    role: 'الإسماعيلية · مصر',
     availability: 'متاحة للعلامات التجارية',
     title: 'شيماء رأفت علي',
     tagline: 'تفكير إبداعي وهدف استراتيجي — محتوى يحمل هوية العلامة بمعنى حقيقي.',
@@ -218,6 +201,9 @@ export const ar = {
     tagline: 'تفكير إبداعي. هدف استراتيجي.',
     rights: 'جميع الحقوق محفوظة.',
     built: 'تم التطوير بواسطة',
+  },
+  assistant: {
+    askLabel: 'اسأل شيماء',
   },
   sr: {
     skip: 'تخطّي إلى المحتوى',

@@ -20,7 +20,7 @@ onMounted(() => {
       <div class="hero-copy" :class="{ visible: mounted }">
         <div class="hero-dateline">
           <span class="dateline-item">
-            {{ isAr ? 'القاهرة / الإسماعيلية · مصر — منذ ٢٠٢٥' : 'Cairo / Ismailia, Egypt — EST. 2025' }}
+            {{ isAr ? 'الإسماعيلية · مصر — منذ ٢٠٢٥' : 'Ismailia, Egypt — EST. 2025' }}
           </span>
           <span class="availability">
             <span class="avail-dot" aria-hidden="true"></span>
@@ -42,37 +42,6 @@ onMounted(() => {
           <a href="#contact" class="btn btn-ghost">{{ t('hero.ctaContact') }}</a>
         </div>
       </div>
-
-      <div class="hero-plate" :class="{ visible: mounted }" aria-hidden="true">
-        <div class="plate-frame">
-          <div class="plate-top">
-            <span>{{ t('hero.monogramCaption') }}</span>
-            <span>{{ t('hero.monogramYear') }}</span>
-          </div>
-          <div class="plate-word">
-            <span class="plate-init">S</span><span class="plate-accent">R</span>
-          </div>
-          <div class="plate-bottom">
-            <span class="plate-coords">30.0444° N</span>
-            <span class="plate-coords">31.2357° E</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="marquee">
-      <div class="marquee-track">
-        <div class="marquee-set">
-          <span v-for="(item, i) in t('marquee')" :key="`a-${i}`" class="marquee-item">
-            {{ item }}
-          </span>
-        </div>
-        <div class="marquee-set" aria-hidden="true">
-          <span v-for="(item, i) in t('marquee')" :key="`b-${i}`" class="marquee-item">
-            {{ item }}
-          </span>
-        </div>
-      </div>
     </div>
   </section>
 </template>
@@ -82,14 +51,14 @@ onMounted(() => {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding-block: 4.5rem 0;
 }
 
 .hero-inner {
-  display: grid;
-  grid-template-columns: 1.12fr 0.88fr;
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding-block: 0.5rem;
 }
 
@@ -148,11 +117,11 @@ onMounted(() => {
 }
 
 .hero-title {
-  font-size: clamp(2.9rem, 7.4vw, 6.1rem);
+  font-size: clamp(3.2rem, 8vw, 6.5rem);
   font-weight: 500;
   line-height: 1.04;
   letter-spacing: -0.02em;
-  max-width: 11ch;
+  max-width: 12ch;
   margin-bottom: 1.6rem;
 }
 
@@ -165,7 +134,7 @@ onMounted(() => {
   font-size: clamp(1rem, 1.6vw, 1.18rem);
   font-weight: 300;
   color: var(--ink-2);
-  max-width: 40ch;
+  max-width: 44ch;
   line-height: 1.85;
   margin-bottom: 2.6rem;
 }
@@ -188,116 +157,8 @@ onMounted(() => {
   transform: scaleX(-1);
 }
 
-/* Editorial cover plate ------------------------------------------------ */
-.hero-plate {
-  justify-self: center;
-  opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 1.1s var(--ease) 0.15s, transform 1.1s var(--ease) 0.15s;
-  max-width: 320px;
-  width: 100%;
-}
-
-.hero-plate.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.plate-frame {
-  position: relative;
-  background: var(--paper-3);
-  border: 1px solid var(--hairline-strong);
-  box-shadow: 0 1px 0 rgba(34, 24, 22, 0.04);
-  display: flex;
-  flex-direction: column;
-  padding: clamp(2rem, 4vw, 3rem);
-  aspect-ratio: 4 / 4.9;
-}
-
-.plate-frame::before {
-  content: '';
-  position: absolute;
-  inset: 12px;
-  border: 1px solid var(--hairline);
-  pointer-events: none;
-}
-
-.plate-frame::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  inset-inline-start: 0;
-  width: 64px;
-  height: 3px;
-  background: var(--accent);
-}
-
-.plate-top,
-.plate-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--muted);
-  position: relative;
-  z-index: 1;
-}
-
-[dir='rtl'] .plate-top,
-[dir='rtl'] .plate-bottom {
-  letter-spacing: 0.03em;
-}
-
-.plate-word {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: clamp(4.5rem, 8vw, 7rem);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: var(--ink);
-  position: relative;
-  z-index: 1;
-}
-
-.plate-accent {
-  color: var(--accent);
-}
-
-.plate-bottom {
-  border-top: 1px solid var(--hairline);
-  padding-top: 1.1rem;
-}
-
-[dir='rtl'] .plate-bottom {
-  flex-direction: row-reverse;
-}
-
-@media (max-width: 900px) {
-  .hero-inner {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    padding-top: 3rem;
-  }
-
-  .hero-plate {
-    display: none;
-  }
-
-  .hero {
-    justify-content: flex-start;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .hero-copy,
-  .hero-plate {
+  .hero-copy {
     opacity: 1;
     transform: none;
     transition: none;

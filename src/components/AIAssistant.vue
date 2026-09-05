@@ -75,9 +75,12 @@
       </div>
     </Transition>
 
-    <button class="chat-toggle" @click="toggleChat" :aria-label="isOpen ? 'Close chat' : 'Open chat'">
+    <button class="chat-toggle" @click="toggleChat" :aria-label="isOpen ? 'Close chat' : 'Ask Shymaa'">
       <Transition name="icon" mode="out-in">
-        <IconGlyph v-if="!isOpen" key="chat" :path="ui.chatProcessing" :size="24" />
+        <span v-if="!isOpen" key="chat" class="chat-toggle-label">
+          <IconGlyph :path="ui.chatProcessing" :size="20" />
+          <span class="chat-toggle-text">{{ t('assistant.askLabel') }}</span>
+        </span>
         <IconGlyph v-else key="close" :path="ui.close" :size="24" />
       </Transition>
     </button>
@@ -89,8 +92,11 @@ import { ref, computed, nextTick, watch, onMounted, onBeforeUnmount } from 'vue'
 import assistantEngine from '../services/assistant-engine.js'
 import { createVoiceService } from '../services/voice-service.js'
 import { detectLanguage } from '../services/text-utils.js'
+import { useLocale } from '../composables/useLocale.js'
 import IconGlyph from './IconGlyph.vue'
 import { ui } from '../data/icons.js'
+
+const { t } = useLocale()
 
 const isOpen = ref(false)
 const userInput = ref('')
@@ -579,9 +585,8 @@ watch(isOpen, async (val) => {
 
 /* Launcher --------------------------------------------------------------- */
 .chat-toggle {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  height: 52px;
+  border-radius: 100px;
   background: var(--ink, #221816);
   color: var(--on-ink, #f4eee4);
   display: flex;
@@ -592,6 +597,22 @@ watch(isOpen, async (val) => {
   transition: all 0.35s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
   border: none;
   cursor: pointer;
+  padding: 0 1.25rem;
+  gap: 0.55rem;
+}
+
+.chat-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.chat-toggle-text {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .chat-toggle:hover {
@@ -605,7 +626,7 @@ watch(isOpen, async (val) => {
   content: '';
   position: absolute;
   inset: -8px;
-  border-radius: 50%;
+  border-radius: 100px;
   border: 1px solid var(--accent-soft, rgba(158, 58, 78, 0.25));
   animation: ring 3s ease-in-out infinite;
   pointer-events: none;
@@ -657,8 +678,12 @@ watch(isOpen, async (val) => {
   }
 
   .chat-toggle {
-    width: 56px;
-    height: 56px;
+    height: 48px;
+    padding: 0 1rem;
+  }
+
+  .chat-toggle-text {
+    font-size: 0.78rem;
   }
 }
 
