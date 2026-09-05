@@ -41,8 +41,8 @@ const links = [
 
 <style scoped>
 .footer {
-  background: var(--paper);
-  border-top: 1px solid var(--hairline);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
   padding-block: 2.25rem 1.75rem;
 }
 
@@ -69,7 +69,7 @@ const links = [
 .brand-mark {
   font-family: var(--font-display);
   font-size: 1.6rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -83,7 +83,7 @@ const links = [
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .tagline {
@@ -91,7 +91,7 @@ const links = [
   font-style: italic;
   color: var(--muted);
   padding-inline-start: 1rem;
-  border-inline-start: 1px solid var(--hairline-strong);
+  border-inline-start: 1px solid var(--border-strong);
 }
 
 .footer-links {
@@ -105,7 +105,7 @@ const links = [
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--muted);
   transition: color 0.25s ease;
 }
 
@@ -119,7 +119,7 @@ const links = [
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  border-top: 1px solid var(--hairline);
+  border-top: 1px solid var(--border);
   padding-top: 1.4rem;
   font-size: 0.76rem;
   color: var(--muted);
@@ -139,7 +139,7 @@ const links = [
 }
 
 .built-note a:hover {
-  color: var(--ink);
+  color: var(--text);
   text-decoration: underline;
 }
 

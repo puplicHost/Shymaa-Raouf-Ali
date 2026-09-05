@@ -10,12 +10,23 @@
             <span class="chat-title">Ask about Shymaa</span>
             <span class="chat-status">
               <span class="status-dot"></span>
-              {{ voiceState === 'listening' ? 'Listening…' : 'Portfolio Assistant' }}
+              {{ isSpeaking ? (t('assistant.speaking') || 'Speaking…') : (voiceState === 'listening' ? 'Listening…' : 'Portfolio Assistant') }}
             </span>
           </div>
+          <button v-if="isSpeaking" class="skip-btn" @click="skipSpeech" aria-label="Skip speaking">
+            {{ t('assistant.skip') || 'Skip' }}
+          </button>
           <button class="chat-close" @click="closeChat" aria-label="Close chat">
             <IconGlyph :path="ui.close" :size="18" />
           </button>
+        </div>
+
+        <!-- Speaking pill -->
+        <div v-if="isSpeaking" class="speaking-pill" aria-hidden="true">
+          <span class="speaking-bars">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span class="speaking-label">{{ t('assistant.speaking') || 'Speaking…' }}</span>
         </div>
 
         <div class="chat-messages" ref="messagesContainer" aria-live="polite" aria-label="Chat messages">
@@ -77,7 +88,11 @@
 
     <button class="chat-toggle" @click="toggleChat" :aria-label="isOpen ? 'Close chat' : 'Ask Shymaa'">
       <Transition name="icon" mode="out-in">
-        <span v-if="!isOpen" key="chat" class="chat-toggle-label">
+        <span v-if="isTyping && !isOpen" key="typing" class="chat-toggle-label typing-indicator">
+          <span class="typing-dots"><span></span><span></span><span></span></span>
+          <span class="chat-toggle-text">{{ t('assistant.askLabel') }}</span>
+        </span>
+        <span v-else-if="!isOpen" key="chat" class="chat-toggle-label">
           <IconGlyph :path="ui.chatProcessing" :size="20" />
           <span class="chat-toggle-text">{{ t('assistant.askLabel') }}</span>
         </span>
@@ -101,13 +116,13 @@ const { t } = useLocale()
 const isOpen = ref(false)
 const userInput = ref('')
 const isTyping = ref(false)
+const isSpeaking = ref(false)
 const voiceState = ref('idle')
 const voiceAvailable = ref(false)
 const messagesContainer = ref(null)
 const chatInput = ref(null)
 let voiceService = null
 
-// Initial suggestions shown before the first message (unchanged).
 const DEFAULT_SUGGESTIONS = [
   'Who is Shymaa?',
   'What are her skills?',
@@ -136,7 +151,6 @@ const messages = ref([
   },
 ])
 
-// Escape untrusted text first, then apply safe formatting to trusted content.
 function escapeHtml(text) {
   return String(text)
     .replace(/&/g, '&amp;')
@@ -180,13 +194,17 @@ function closeChat() {
   voiceState.value = 'idle'
 }
 
+function skipSpeech() {
+  if (voiceService) voiceService.stop()
+  isSpeaking.value = false
+}
+
 function toggleVoice() {
   if (!voiceService) return
   if (voiceState.value === 'listening') {
     voiceService.stop()
     voiceState.value = 'idle'
   } else {
-    // no listening while typing/processing
     if (isTyping.value) return
     voiceService.listen()
   }
@@ -206,15 +224,16 @@ async function sendMessage(text = null) {
   isTyping.value = true
   await scrollToBottom()
 
+  const isMobile = window.innerWidth <= 768
+  if (isMobile && isOpen.value) {
+    isOpen.value = false
+  }
+
   const result = await assistantEngine.process(input)
 
   addMessage('assistant', result.answer)
   assistantLang.value = result.lang || detectLanguage(input)
 
-  // Contextual follow-ups: replace the buttons after every answer with the two
-  // suggestions that belong to the current intent. Unknown/fallback answers
-  // fall back to the standard starting suggestions so the conversation never
-  // dead-ends.
   if (result.followUps && result.followUps.length === 2) {
     suggestions.value = result.followUps.map((f) => f.label)
     showSuggestionHeader.value = true
@@ -223,9 +242,15 @@ async function sendMessage(text = null) {
     showSuggestionHeader.value = false
   }
 
-  // Optionally speak the answer (voice is an optional layer).
   if (voiceService && result.source !== 'cooldown') {
+    isSpeaking.value = true
     voiceService.speak(result.answer)
+    const checkSpeaking = setInterval(() => {
+      if (!voiceService.speaking) {
+        isSpeaking.value = false
+        clearInterval(checkSpeaking)
+      }
+    }, 200)
   }
 
   isTyping.value = false
@@ -244,7 +269,6 @@ onMounted(() => {
   voiceAvailable.value = voiceService.available
 
   if (voiceService) {
-    // start in idle
     voiceState.value = voiceService.state
   }
 })
@@ -284,10 +308,10 @@ watch(isOpen, async (val) => {
   right: 0;
   width: 400px;
   max-height: 580px;
-  background: var(--paper-3, #fbf7f0);
-  border: 1px solid var(--hairline-strong, rgba(34, 24, 22, 0.3));
-  border-radius: 2px;
-  box-shadow: 0 24px 64px rgba(34, 24, 22, 0.18);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -303,16 +327,16 @@ watch(isOpen, async (val) => {
   align-items: center;
   gap: 0.8rem;
   padding: 1rem 1.15rem;
-  background: var(--paper, #f4eee4);
-  border-bottom: 1px solid var(--hairline, rgba(34, 24, 22, 0.14));
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
 }
 
 .chat-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 2px;
-  background: var(--ink, #221816);
-  color: var(--on-ink, #f4eee4);
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--on-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -320,9 +344,9 @@ watch(isOpen, async (val) => {
 }
 
 .avatar-mark {
-  font-family: var(--font-display, serif);
+  font-family: var(--font-display, sans-serif);
   font-size: 1.15rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -334,10 +358,10 @@ watch(isOpen, async (val) => {
 }
 
 .chat-title {
-  font-family: var(--font-display, serif);
+  font-family: var(--font-display, sans-serif);
   font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--ink, #221816);
+  font-weight: 700;
+  color: var(--text);
 }
 
 .chat-status {
@@ -348,14 +372,78 @@ watch(isOpen, async (val) => {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted, #83746a);
+  color: var(--muted);
 }
 
 .status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent, #9e3a4e);
+  background: var(--cyan);
+}
+
+/* Skip button */
+.skip-btn {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  border: 1px solid rgba(44, 232, 200, 0.3);
+  border-radius: 9999px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.skip-btn:hover {
+  background: rgba(44, 232, 200, 0.1);
+  border-color: var(--cyan);
+}
+
+/* Speaking pill */
+.speaking-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 1.15rem;
+  background: rgba(44, 232, 200, 0.05);
+  border-bottom: 1px solid var(--border);
+}
+
+.speaking-bars {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+}
+
+.speaking-bars span {
+  width: 3px;
+  height: 100%;
+  background: var(--cyan);
+  border-radius: 2px;
+  animation: speakBar 0.8s ease-in-out infinite;
+}
+
+.speaking-bars span:nth-child(1) { animation-delay: 0s; }
+.speaking-bars span:nth-child(2) { animation-delay: 0.15s; }
+.speaking-bars span:nth-child(3) { animation-delay: 0.3s; }
+.speaking-bars span:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes speakBar {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+.speaking-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
 }
 
 .chat-close {
@@ -365,16 +453,16 @@ watch(isOpen, async (val) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--muted, #83746a);
-  border: 1px solid var(--hairline, rgba(34, 24, 22, 0.14));
+  color: var(--muted);
+  border: 1px solid var(--border);
   transition: all 0.2s ease;
   background: transparent;
   cursor: pointer;
 }
 
 .chat-close:hover {
-  color: var(--ink, #221816);
-  border-color: var(--ink, #221816);
+  color: var(--text);
+  border-color: var(--text);
 }
 
 /* Messages ------------------------------------------------------------ */
@@ -400,27 +488,27 @@ watch(isOpen, async (val) => {
 .msg-bubble {
   max-width: 85%;
   padding: 0.7rem 0.95rem;
-  border-radius: 2px;
+  border-radius: 16px;
   font-size: 0.86rem;
   line-height: 1.65;
   word-break: break-word;
 }
 
 .chat-msg.assistant .msg-bubble {
-  background: var(--paper, #f4eee4);
-  border: 1px solid var(--hairline, rgba(34, 24, 22, 0.14));
-  color: var(--ink, #221816);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
 }
 
 .chat-msg.user .msg-bubble {
-  background: var(--ink, #221816);
-  color: var(--on-ink, #f4eee4);
-  border: 1px solid var(--ink, #221816);
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 1px solid var(--accent);
 }
 
 .msg-bubble :deep(strong) {
   font-weight: 700;
-  color: var(--accent, #9e3a4e);
+  color: var(--cyan);
 }
 
 .chat-msg.user .msg-bubble :deep(strong) {
@@ -444,7 +532,7 @@ watch(isOpen, async (val) => {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent, #9e3a4e);
+  background: var(--accent);
   animation: typing 1.4s infinite ease-in-out;
 }
 
@@ -462,7 +550,7 @@ watch(isOpen, async (val) => {
   flex-wrap: wrap;
   gap: 0.45rem;
   padding: 0.6rem 1.15rem 0.85rem;
-  border-bottom: 1px solid var(--hairline, rgba(34, 24, 22, 0.14));
+  border-bottom: 1px solid var(--border);
 }
 
 .suggestions-header {
@@ -471,7 +559,7 @@ watch(isOpen, async (val) => {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--muted, #83746a);
+  color: var(--muted);
   margin-bottom: 0.1rem;
 }
 
@@ -480,18 +568,18 @@ watch(isOpen, async (val) => {
   font-size: 0.76rem;
   font-family: var(--font-body), var(--font-ar), sans-serif;
   background: transparent;
-  color: var(--ink-2, #4a3b32);
-  border: 1px solid var(--hairline-strong, rgba(34, 24, 22, 0.3));
-  border-radius: 100px;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: 9999px;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .suggestion-btn:hover {
-  background: var(--accent, #9e3a4e);
-  color: var(--on-accent, #fbf7f0);
-  border-color: var(--accent, #9e3a4e);
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
 }
 
 .suggestion-btn:disabled {
@@ -505,30 +593,30 @@ watch(isOpen, async (val) => {
   gap: 0.55rem;
   align-items: center;
   padding: 0.9rem 1.15rem;
-  background: var(--paper, #f4eee4);
-  border-top: 1px solid var(--hairline, rgba(34, 24, 22, 0.14));
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
 }
 
 .chat-input {
   flex: 1;
   padding: 0.72rem 0.9rem;
-  border: 1px solid var(--hairline-strong, rgba(34, 24, 22, 0.3));
-  border-radius: 2px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
   font-family: var(--font-body), var(--font-ar), sans-serif;
   font-size: 0.86rem;
-  background: var(--paper-3, #fbf7f0);
-  color: var(--ink, #221816);
+  background: var(--surface);
+  color: var(--text);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .chat-input:focus {
-  border-color: var(--accent, #9e3a4e);
-  box-shadow: 0 0 0 3px var(--accent-soft, rgba(158, 58, 78, 0.12));
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .chat-input::placeholder {
-  color: #b3a69c;
+  color: var(--muted);
 }
 
 .chat-input:disabled {
@@ -551,30 +639,30 @@ watch(isOpen, async (val) => {
 
 .chat-mic {
   background: transparent;
-  border: 1px solid var(--hairline-strong, rgba(34, 24, 22, 0.3));
-  color: var(--ink-2, #4a3b32);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
 }
 
 .chat-mic:hover:not(:disabled) {
-  border-color: var(--accent, #9e3a4e);
-  color: var(--accent, #9e3a4e);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .chat-mic.active {
-  background: var(--accent, #9e3a4e);
-  border-color: var(--accent, #9e3a4e);
-  color: var(--on-accent, #fbf7f0);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
 }
 
 .chat-send {
-  background: var(--ink, #221816);
-  color: var(--on-ink, #f4eee4);
-  border: 1px solid var(--ink, #221816);
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 1px solid var(--accent);
 }
 
 .chat-send:hover:not(:disabled) {
-  background: var(--accent, #9e3a4e);
-  border-color: var(--accent, #9e3a4e);
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
   transform: scale(1.05);
 }
 
@@ -586,14 +674,14 @@ watch(isOpen, async (val) => {
 /* Launcher --------------------------------------------------------------- */
 .chat-toggle {
   height: 52px;
-  border-radius: 100px;
-  background: var(--ink, #221816);
-  color: var(--on-ink, #f4eee4);
+  border-radius: 9999px;
+  background: var(--surface);
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 1px var(--hairline-strong, rgba(34, 24, 22, 0.3)),
-    0 14px 34px rgba(34, 24, 22, 0.22);
+  box-shadow: 0 0 0 1px var(--border-strong),
+    0 14px 34px rgba(0, 0, 0, 0.4);
   transition: all 0.35s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
   border: none;
   cursor: pointer;
@@ -615,19 +703,45 @@ watch(isOpen, async (val) => {
   white-space: nowrap;
 }
 
+.typing-indicator {
+  gap: 0.65rem;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.typing-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text);
+  animation: toggleTyping 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes toggleTyping {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+
 .chat-toggle:hover {
-  background: var(--accent, #9e3a4e);
+  background: var(--accent);
   transform: translateY(-3px) scale(1.04);
-  box-shadow: 0 0 0 1px var(--accent, #9e3a4e),
-    0 18px 40px rgba(158, 58, 78, 0.3);
+  box-shadow: 0 0 0 1px var(--accent),
+    0 18px 40px rgba(166, 116, 255, 0.3);
 }
 
 .chat-toggle::before {
   content: '';
   position: absolute;
   inset: -8px;
-  border-radius: 100px;
-  border: 1px solid var(--accent-soft, rgba(158, 58, 78, 0.25));
+  border-radius: 9999px;
+  border: 1px solid var(--accent-soft);
   animation: ring 3s ease-in-out infinite;
   pointer-events: none;
 }
@@ -690,9 +804,15 @@ watch(isOpen, async (val) => {
 @media (prefers-reduced-motion: reduce) {
   .chat-toggle,
   .chat-send,
-  .typing span {
+  .typing span,
+  .typing-dots span,
+  .speaking-bars span {
     animation: none;
     transition: none;
+  }
+
+  .speaking-bars span {
+    transform: scaleY(0.6);
   }
 }
 </style>

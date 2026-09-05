@@ -25,7 +25,7 @@ defineProps({
 .social-icon {
   width: 40px;
   height: 40px;
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--border-strong);
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -35,8 +35,8 @@ defineProps({
 }
 
 .social-icon:hover {
-  color: var(--paper);
-  background: var(--ink);
-  border-color: var(--ink);
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--accent);
 }
 </style>

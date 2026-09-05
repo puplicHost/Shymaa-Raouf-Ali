@@ -44,8 +44,8 @@ const industries = [
 
 <style scoped>
 .industries {
-  background: var(--paper-3);
-  border-top: 1px solid var(--hairline);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
 }
 
 .industries-head .section-subtitle {
@@ -53,8 +53,8 @@ const industries = [
 }
 
 .industry-grid {
-  border-top: 2px solid var(--ink);
-  border-inline-start: 1px solid var(--hairline);
+  border-top: 2px solid var(--text);
+  border-inline-start: 1px solid var(--border);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
@@ -65,8 +65,8 @@ const industries = [
   flex-direction: column;
   gap: 0.35rem;
   padding: clamp(1.5rem, 3vw, 2.25rem);
-  border-inline-end: 1px solid var(--hairline);
-  border-bottom: 1px solid var(--hairline);
+  border-inline-end: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   transition: background-color 0.3s ease;
   overflow: hidden;
 }
@@ -76,7 +76,7 @@ const industries = [
 }
 
 .industry-cell:hover {
-  background: var(--paper-2);
+  background: var(--surface-2);
 }
 
 .cell-index {
@@ -91,7 +91,7 @@ const industries = [
   font-size: clamp(1.1rem, 1.8vw, 1.45rem);
   font-weight: 500;
   line-height: 1.25;
-  color: var(--ink);
+  color: var(--text);
   margin-top: 0.6rem;
 }
 
@@ -138,7 +138,7 @@ const industries = [
   }
 
   .industry-cell:nth-child(3n) {
-    border-inline-end: 1px solid var(--hairline);
+    border-inline-end: 1px solid var(--border);
   }
 
   .industry-cell:nth-child(2n) {

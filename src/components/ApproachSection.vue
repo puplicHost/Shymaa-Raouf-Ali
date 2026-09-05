@@ -33,21 +33,20 @@ const { t } = useLocale()
 
 <style scoped>
 .approach {
-  background: var(--ink);
-  color: var(--on-ink);
-  border-top: 1px solid rgba(244, 238, 228, 0.1);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
 }
 
 .approach .section-title {
-  color: var(--on-ink);
+  color: var(--text);
 }
 
 .approach .section-subtitle {
-  color: rgba(244, 238, 228, 0.7);
+  color: var(--muted);
 }
 
 .approach .eyebrow {
-  color: rgba(244, 238, 228, 0.55);
+  color: var(--accent);
 }
 
 .approach .eyebrow::before {
@@ -57,13 +56,13 @@ const { t } = useLocale()
 .steps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  border-top: 2px solid rgba(244, 238, 228, 0.85);
+  border-top: 2px solid var(--text);
 }
 
 .step {
   padding-block-start: clamp(1.8rem, 3.5vw, 2.75rem);
   padding-inline-end: clamp(1rem, 2vw, 2rem);
-  border-inline-end: 1px solid rgba(244, 238, 228, 0.14);
+  border-inline-end: 1px solid var(--border);
   position: relative;
 }
 
@@ -74,25 +73,25 @@ const { t } = useLocale()
 .step-no {
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 5vw, 4.2rem);
-  font-weight: 600;
+  font-weight: 700;
   font-style: italic;
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(244, 238, 228, 0.4);
+  -webkit-text-stroke: 1px var(--border-strong);
   display: block;
   margin-bottom: 1.6rem;
 }
 
 .step-title {
   font-size: clamp(1.15rem, 1.8vw, 1.45rem);
-  color: var(--on-ink);
+  color: var(--text);
   margin-bottom: 0.7rem;
 }
 
 .step-desc {
   font-size: 0.94rem;
   line-height: 1.85;
-  color: rgba(244, 238, 228, 0.72);
+  color: var(--muted);
   max-width: 30ch;
 }
 
@@ -103,7 +102,7 @@ const { t } = useLocale()
 
   .step {
     border-inline-end: none;
-    border-bottom: 1px solid rgba(244, 238, 228, 0.14);
+    border-bottom: 1px solid var(--border);
     padding: 1.75rem 0;
   }
 

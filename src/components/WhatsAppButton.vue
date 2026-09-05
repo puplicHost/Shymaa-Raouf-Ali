@@ -28,12 +28,13 @@ const whatsapp = '201282354052'
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #25D366;
-  color: #fff;
+  background: var(--surface);
+  color: var(--cyan);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+  border: 1px solid rgba(44, 232, 200, 0.3);
+  box-shadow: 0 0 16px rgba(44, 232, 200, 0.15);
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -44,7 +45,8 @@ const whatsapp = '201282354052'
 
 .whatsapp-btn:hover {
   transform: translateY(-3px) scale(1.08);
-  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+  border-color: var(--cyan);
+  box-shadow: 0 0 24px rgba(44, 232, 200, 0.35);
 }
 
 @media (max-width: 480px) {

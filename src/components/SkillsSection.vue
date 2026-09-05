@@ -1,8 +1,6 @@
 <script setup>
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useLocale } from '../composables/useLocale.js'
-import IconGlyph from './IconGlyph.vue'
-import { ui } from '../data/icons.js'
 
 useScrollReveal()
 
@@ -75,153 +73,95 @@ const skills = [
         <p class="section-subtitle">{{ t('skills.subtitle') }}</p>
       </div>
 
-      <ol class="skills-list fade-in">
-        <li
+      <div class="skills-grid fade-in">
+        <article
           v-for="(skill, index) in skills"
           :key="skill.en"
-          class="skill-row"
+          class="skill-card"
         >
           <span class="skill-no" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span>
-          <div class="skill-body">
-            <h3 class="skill-title">{{ isAr ? skill.ar : skill.en }}</h3>
-            <p class="skill-desc">{{ isAr ? skill.arDesc : skill.enDesc }}</p>
-          </div>
-          <span class="skill-arrow" aria-hidden="true">
-            <IconGlyph :path="ui.arrowTopRight" :size="20" />
-          </span>
-        </li>
-      </ol>
+          <h3 class="skill-title">{{ isAr ? skill.ar : skill.en }}</h3>
+          <p class="skill-desc">{{ isAr ? skill.arDesc : skill.enDesc }}</p>
+        </article>
+      </div>
     </div>
   </section>
 </template>
 
 <style scoped>
 .skills {
-  background: var(--paper-3);
-  border-top: 1px solid var(--hairline);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
 }
 
 .skills-head {
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.skills-grid {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
 }
 
-.skills-head .section-subtitle {
-  justify-self: end;
-  text-align: end;
+.skill-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.3s ease, transform 0.3s var(--ease);
 }
 
-.skills-list {
-  border-top: 2px solid var(--ink);
-}
-
-.skill-row {
-  display: grid;
-  grid-template-columns: clamp(2.5rem, 4vw, 4.5rem) 1fr auto;
-  align-items: center;
-  gap: clamp(1rem, 3vw, 2.5rem);
-  padding-block: clamp(1.35rem, 2.6vw, 2rem);
-  border-bottom: 1px solid var(--hairline);
-  transition: background-color 0.3s ease, padding-inline 0.3s ease;
-}
-
-.skill-row:hover {
-  background: var(--paper-2);
-  padding-inline: 1.25rem;
+.skill-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
 }
 
 .skill-no {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.18em;
-  color: var(--accent);
+  color: var(--cyan);
 }
 
 .skill-title {
-  font-size: clamp(1.15rem, 2.4vw, 1.7rem);
-  font-weight: 500;
-  transition: color 0.25s ease, transform 0.35s var(--ease);
-  transform-origin: left;
-}
-
-[dir='rtl'] .skill-title {
-  transform-origin: right;
-}
-
-.skill-row:hover .skill-title {
-  color: var(--accent);
-  transform: translateX(6px);
-}
-
-[dir='rtl'] .skill-row:hover .skill-title {
-  transform: translateX(-6px);
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
 }
 
 .skill-desc {
   color: var(--muted);
-  font-size: 0.94rem;
+  font-size: 0.88rem;
   line-height: 1.7;
-  margin-top: 0.35rem;
-  max-width: 62ch;
 }
 
-.skill-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.3s ease, transform 0.3s var(--ease), color 0.3s ease;
+@media (max-width: 1024px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.skill-row:hover .skill-arrow {
-  opacity: 1;
-  transform: translateY(0);
-  color: var(--accent);
-}
-
-@media (max-width: 900px) {
-  .skills-head {
+@media (max-width: 600px) {
+  .skills-grid {
     grid-template-columns: 1fr;
   }
 
-  .skills-head .section-subtitle {
-    justify-self: start;
-    text-align: start;
-  }
-}
-
-@media (max-width: 560px) {
-  .skill-row {
-    grid-template-columns: 2rem 1fr;
-    gap: 0.75rem;
-  }
-
-  .skill-arrow {
-    display: none;
-  }
-
-  .skill-row:hover {
-    padding-inline: 0.75rem;
+  .skill-card {
+    padding: 22px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skill-row,
-  .skill-title,
-  .skill-arrow {
+  .skill-card {
     transition: none;
   }
 
-  .skill-row:hover .skill-title {
-    transform: none;
-  }
-
-  .skill-arrow {
-    opacity: 1;
+  .skill-card:hover {
     transform: none;
   }
 }

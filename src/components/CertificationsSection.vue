@@ -69,8 +69,8 @@ function step(direction) {
 
 <style scoped>
 .certifications {
-  background: var(--paper);
-  border-top: 1px solid var(--hairline);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
 }
 
 .certs-head-row {
@@ -93,20 +93,20 @@ function step(direction) {
 .ctrl-btn {
   width: 46px;
   height: 46px;
-  border: 1px solid var(--hairline-strong);
+  border: 1px solid var(--border-strong);
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--ink);
+  color: var(--text);
   transition: background-color 0.25s ease, color 0.25s ease,
     border-color 0.25s ease, transform 0.25s var(--ease);
 }
 
 .ctrl-btn:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--on-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
   transform: translateY(-2px);
 }
 
@@ -129,12 +129,13 @@ function step(direction) {
   flex: 0 0 auto;
   scroll-snap-align: start;
   width: min(360px, 84vw);
-  background: var(--paper-3);
-  border: 1px solid var(--hairline);
+  background: var(--surface);
+  border: 1px solid var(--border);
   padding: clamp(1.6rem, 3vw, 2.2rem);
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  border-radius: 16px;
   transition: border-color 0.3s ease, transform 0.3s var(--ease);
 }
 
@@ -154,7 +155,7 @@ function step(direction) {
   font-size: 1.12rem;
   font-weight: 500;
   line-height: 1.4;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .cert-issuer {

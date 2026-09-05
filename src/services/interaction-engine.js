@@ -4,7 +4,7 @@
 
 const EMAIL = 'raoufshimaa587@gmail.com'
 const PHONE = '+201282354052'
-const LINKEDIN = 'https://www.linkedin.com/in/shymaa-raouf-ali'
+const LINKEDIN = 'https://www.linkedin.com/in/shymaa-raouf-102a81361/'
 const WHATSAPP = '201282354052'
 
 export const SECTION_IDS = {

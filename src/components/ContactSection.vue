@@ -12,7 +12,7 @@ const email = 'raoufshimaa587@gmail.com'
 const phoneLink = '+201282354052'
 const phoneDisplay = '+20 128 235 4052'
 const whatsapp = '201282354052'
-const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
+const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-102a81361/'
 </script>
 
 <template>
@@ -64,9 +64,9 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
 
 <style scoped>
 .contact {
-  background: var(--ink);
-  color: var(--on-ink);
-  border-top: 1px solid rgba(244, 238, 228, 0.1);
+  background: var(--surface);
+  color: var(--on-surface);
+  border-top: 1px solid var(--border);
   overflow: hidden;
 }
 
@@ -77,10 +77,10 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
   transform: translateY(-50%);
   font-family: var(--font-display);
   font-size: clamp(10rem, 32vw, 26rem);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(244, 238, 228, 0.08);
+  -webkit-text-stroke: 1px var(--border);
   pointer-events: none;
   user-select: none;
 }
@@ -96,7 +96,7 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
 }
 
 .contact .eyebrow {
-  color: rgba(244, 238, 228, 0.55);
+  color: var(--accent);
 }
 
 .contact .eyebrow::before {
@@ -105,9 +105,9 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
 
 .contact-title {
   font-size: clamp(2.2rem, 5.5vw, 4rem);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--on-ink);
+  color: var(--text);
   margin-bottom: 1.3rem;
 }
 
@@ -116,7 +116,7 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
 }
 
 .contact-subtitle {
-  color: rgba(244, 238, 228, 0.72);
+  color: var(--muted);
   font-size: 1.05rem;
   line-height: 1.9;
   max-width: 44ch;
@@ -130,21 +130,21 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
   font-size: 0.78rem;
   font-weight: 500;
   letter-spacing: 0.1em;
-  color: rgba(244, 238, 228, 0.85);
+  color: var(--text);
   margin-bottom: 2rem;
 }
 
 .avail-dot {
   width: 8px;
   height: 8px;
-  background: var(--accent);
+  background: var(--cyan);
   border-radius: 50%;
   animation: glow 2.4s ease-in-out infinite;
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 109, 124, 0.45); }
-  55% { box-shadow: 0 0 0 7px rgba(196, 109, 124, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(44, 232, 200, 0.45); }
+  55% { box-shadow: 0 0 0 7px rgba(44, 232, 200, 0); }
 }
 
 .email-cta {
@@ -154,7 +154,7 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 3vw, 1.9rem);
   font-weight: 500;
-  color: var(--on-ink);
+  color: var(--text);
   border-bottom: 2px solid var(--accent);
   padding-bottom: 0.5rem;
   margin-bottom: 2rem;
@@ -185,12 +185,12 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
   align-items: center;
   gap: 0.65rem;
   padding: 0.85rem 1.4rem;
-  border: 1px solid rgba(244, 238, 228, 0.22);
-  border-radius: 100px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9999px;
   font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.06em;
-  color: rgba(244, 238, 228, 0.9);
+  color: var(--text);
   transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -199,9 +199,10 @@ const linkedin = 'https://www.linkedin.com/in/shymaa-raouf-ali'
 }
 
 .channel:hover {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
+  border-color: var(--cyan);
+  background: rgba(44, 232, 200, 0.1);
+  color: var(--cyan);
+  box-shadow: 0 0 16px rgba(44, 232, 200, 0.15);
 }
 
 @media (max-width: 560px) {

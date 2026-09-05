@@ -139,7 +139,7 @@ function goTo(href) {
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(244, 238, 228, 0.55);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
@@ -147,8 +147,8 @@ function goTo(href) {
 }
 
 .navbar.scrolled {
-  background: rgba(244, 238, 228, 0.88);
-  border-bottom-color: var(--hairline);
+  background: rgba(0, 0, 0, 0.88);
+  border-bottom-color: var(--border);
 }
 
 .navbar-inner {
@@ -169,10 +169,10 @@ function goTo(href) {
 .brand-mark {
   font-family: var(--font-display);
   font-size: 1.7rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: -0.02em;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .brand-dot {
@@ -185,7 +185,7 @@ function goTo(href) {
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 .nav-links {
@@ -199,7 +199,7 @@ function goTo(href) {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--muted);
   padding: 0.4rem 0.9rem;
   transition: color 0.25s ease;
 }
@@ -210,7 +210,7 @@ function goTo(href) {
   left: 0.9rem;
   right: 0.9rem;
   bottom: 0;
-  height: 1.5px;
+  height: 2px;
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: left;
@@ -223,7 +223,7 @@ function goTo(href) {
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--ink);
+  color: var(--text);
 }
 
 .nav-link.active::after {
@@ -245,10 +245,10 @@ function goTo(href) {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--text);
   padding: 0.45rem 0.95rem;
-  border: 1px solid var(--hairline);
-  border-radius: 100px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9999px;
   transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
 }
 
@@ -257,7 +257,7 @@ function goTo(href) {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--cyan);
 }
 
 .lang-toggle:hover {
@@ -275,8 +275,8 @@ function goTo(href) {
   height: 40px;
   align-items: center;
   justify-content: center;
-  color: var(--ink);
-  border: 1px solid var(--hairline);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
   border-radius: 50%;
 }
 
@@ -298,13 +298,13 @@ function goTo(href) {
 .mobile-panel {
   position: fixed;
   inset: 64px 0 0 0;
-  background: var(--paper);
+  background: var(--surface);
   z-index: 90;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: var(--gutter);
-  border-top: 1px solid var(--hairline);
+  border-top: 1px solid var(--border);
 }
 
 .mobile-links {
@@ -319,10 +319,10 @@ function goTo(href) {
   gap: 1.25rem;
   font-family: var(--font-display-rtl, var(--font-display));
   font-size: clamp(1.9rem, 8vw, 2.8rem);
-  font-weight: 500;
-  color: var(--ink);
+  font-weight: 700;
+  color: var(--text);
   padding-block: 0.7rem;
-  border-bottom: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--border);
 }
 
 .mobile-index {

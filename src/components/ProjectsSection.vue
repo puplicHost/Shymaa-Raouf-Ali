@@ -105,8 +105,8 @@ const projects = [
 
 <style scoped>
 .projects {
-  background: var(--paper);
-  border-top: 1px solid var(--hairline);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
 }
 
 .projects-head .section-title {
@@ -131,7 +131,7 @@ const projects = [
 }
 
 .projects-list {
-  border-top: 2px solid var(--ink);
+  border-top: 2px solid var(--text);
 }
 
 .project-row {
@@ -140,14 +140,14 @@ const projects = [
   align-items: center;
   gap: clamp(1rem, 3vw, 2.5rem);
   padding-block: clamp(1.15rem, 2.2vw, 1.7rem);
-  border-bottom: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--border);
   transition: background-color 0.3s ease, color 0.3s ease,
     padding-inline 0.35s var(--ease);
 }
 
 .project-row:hover {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--surface);
+  color: var(--on-surface);
   padding-inline: 1.25rem;
 }
 
@@ -190,7 +190,7 @@ const projects = [
 }
 
 .project-row:hover .project-desc {
-  color: rgba(244, 238, 228, 0.68);
+  color: var(--on-surface-dim);
 }
 
 .project-industry {
@@ -198,7 +198,7 @@ const projects = [
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--muted);
   transition: color 0.3s ease;
 }
 
@@ -207,7 +207,7 @@ const projects = [
 }
 
 .project-row:hover .project-industry {
-  color: rgba(244, 238, 228, 0.85);
+  color: var(--text);
 }
 
 .project-action {
@@ -224,7 +224,7 @@ const projects = [
 }
 
 .project-row:hover .project-action {
-  color: var(--on-ink);
+  color: var(--text);
 }
 
 .project-arrow {

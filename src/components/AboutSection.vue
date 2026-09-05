@@ -12,7 +12,7 @@ const contact = {
   email: 'raoufshimaa587@gmail.com',
   phone: '+201282354052',
   whatsapp: '201282354052',
-  linkedin: 'https://www.linkedin.com/in/shymaa-raouf-ali',
+  linkedin: 'https://www.linkedin.com/in/shymaa-raouf-102a81361/',
 }
 </script>
 
@@ -90,8 +90,8 @@ const contact = {
 
 <style scoped>
 .about {
-  background: var(--paper);
-  border-top: 1px solid var(--hairline);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
 }
 
 .about-grid {
@@ -113,7 +113,7 @@ const contact = {
 }
 
 .about-prose p {
-  color: var(--ink-2);
+  color: var(--muted);
   font-size: 1.02rem;
   line-height: 1.9;
   max-width: 58ch;
@@ -126,13 +126,18 @@ const contact = {
   line-height: 0.82;
   padding-inline-end: 0.12em;
   color: var(--accent);
+  font-weight: 700;
+}
+
+.about-prose :deep(strong) {
+  color: var(--accent);
   font-weight: 600;
 }
 
 .about-meta {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--hairline);
+  border-top: 1px solid var(--border);
 }
 
 .meta-row {
@@ -140,7 +145,7 @@ const contact = {
   grid-template-columns: 12ch 1fr;
   gap: 1.5rem;
   padding-block: 0.95rem;
-  border-bottom: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--border);
 }
 
 .meta-row dt {
@@ -157,7 +162,7 @@ const contact = {
 }
 
 .meta-row dd {
-  color: var(--ink-2);
+  color: var(--text);
   font-size: 0.95rem;
   line-height: 1.7;
 }
@@ -179,11 +184,12 @@ const contact = {
 }
 
 .index-card {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--surface);
+  color: var(--on-surface);
   padding: clamp(1.75rem, 3.5vw, 2.75rem);
-  border-radius: var(--radius);
-  box-shadow: 12px 12px 0 0 rgba(158, 58, 78, 0.18);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: 12px 12px 0 0 rgba(166, 116, 255, 0.08);
 }
 
 .index-card-head {
@@ -194,8 +200,8 @@ const contact = {
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(244, 238, 228, 0.55);
-  border-bottom: 1px solid rgba(244, 238, 228, 0.18);
+  color: var(--on-surface-dim);
+  border-bottom: 1px solid var(--border);
   padding-bottom: 1.1rem;
   margin-bottom: 0.4rem;
 }
@@ -210,7 +216,7 @@ const contact = {
   justify-content: space-between;
   gap: 1rem;
   padding-block: 1.15rem;
-  border-bottom: 1px solid rgba(244, 238, 228, 0.12);
+  border-bottom: 1px solid var(--border);
 }
 
 .index-row:last-child {
@@ -220,9 +226,9 @@ const contact = {
 .index-value {
   font-family: var(--font-display);
   font-size: clamp(2rem, 4vw, 2.8rem);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
-  color: var(--on-ink);
+  color: var(--on-surface);
 }
 
 .index-label {
@@ -230,7 +236,7 @@ const contact = {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(244, 238, 228, 0.65);
+  color: var(--muted);
 }
 
 [dir='rtl'] .index-label {
