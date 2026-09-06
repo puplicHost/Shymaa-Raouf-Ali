@@ -5,8 +5,9 @@ import { defineConfig, loadEnv } from 'vite'
 // (loaded from a NON-VITE_ env var: BYNARA_API_KEY) is injected server-side by
 // this proxy and NEVER shipped to the browser bundle.
 //
-// In production there is no proxy/backend, so the AI fallback is simply
-// disabled and the assistant runs 100% locally.
+// In production the same `/api/nara/*` path is served by a Cloudflare Pages
+// Function (see functions/api/nara/[[path]].js) which reads BYNARA_API_KEY
+// from the project's server-side secrets.
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')

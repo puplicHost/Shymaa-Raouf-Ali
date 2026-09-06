@@ -28,6 +28,21 @@ const COOLDOWN_MS = 1200
 // fully offline assistant, set this back to true.
 const LOCAL_ONLY_MODE = false
 
+// Dev-only routing log. Statically false in production builds, so the calls
+// below are dead-code-eliminated and nothing is ever printed (or bundled)
+// outside development. Never logs keys, headers, or secrets — only routing.
+const DEBUG =
+  typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV === true
+
+function logRoute(message, details) {
+  if (!DEBUG) return
+  try {
+    console.log(`[Assistant] ${message}`, details || '')
+  } catch {
+    /* logging must never break the assistant */
+  }
+}
+
 let lastRequestAt = 0
 let processing = false
 
@@ -420,6 +435,7 @@ export async function process(inputText) {
       if (local.action) executeAction(local.action)
       trackRecentIntent(local.intentId)
       updateContextMemory(local.intentId, preprocessQuery(input).tokens, input)
+      logRoute('Local match', { intent: local.intentId, lang: local.lang })
       return {
         answer: local.answer,
         action: local.action,
@@ -440,6 +456,7 @@ export async function process(inputText) {
       if (ctxAction) executeAction(ctxAction)
       trackRecentIntent(ctxIntent.id)
       updateContextMemory(ctxIntent.id, preprocessQuery(input).tokens, input)
+      logRoute('Local match (context)', { intent: ctxIntent.id, lang })
       return {
         answer: pickAnswerVariation(ctxIntent, lang),
         action: ctxAction,
@@ -456,6 +473,7 @@ export async function process(inputText) {
     //    (no key/proxy, network, timeout, bad status, empty reply) falls
     //    through to the safe local fallback below.
     if (!LOCAL_ONLY_MODE) {
+      logRoute('Local miss → AI fallback', { lang })
       const queryTokens = preprocessQuery(input).tokens
       const queryTopic = extractTopic(queryTokens)
       const localContext = findClosestIntents(input, 2).map((c) => ({
@@ -469,6 +487,7 @@ export async function process(inputText) {
       })
 
       if (ai && ai.answer && ai.answer.trim()) {
+        logRoute('AI success', { lang })
         return {
           answer: ai.answer,
           action: null,
@@ -481,6 +500,7 @@ export async function process(inputText) {
     }
 
     // 3) Safe local fallback when AI is unavailable/failed/disabled.
+    logRoute('AI failed → local fallback', { lang })
     return {
       answer: genericFallback(input),
       action: null,

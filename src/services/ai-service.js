@@ -1,10 +1,11 @@
 // AIService: optional LLM (Nara Router) fallback, isolated behind this module.
 //
 // SECURITY: the browser NEVER holds or receives the API key. AI is only used
-// through a server-side proxy endpoint (e.g. Vite dev proxy `/api/nara`)
+// through a same-origin server-side proxy endpoint (`/api/nara`, served by the
+// Vite dev proxy locally and by a Cloudflare Pages Function in production)
 // that injects the Authorization header using a NON-VITE_ env var, so the key
-// never lands in the client bundle. In production with no server-side proxy,
-// this service simply reports "not available" and the app continues locally.
+// never lands in the client bundle. Where no proxy exists, this service
+// simply reports "not available" and the app continues locally.
 //
 // Every failure path returns null with no exception surfacing to the UI.
 
@@ -18,19 +19,17 @@ const MODEL = 'laguna-s-2.1'
 
 const ENDPOINT = '/api/nara/v1/chat/completions'
 
-// environment check: only attempt when we are in a context that may have a
-// server-side proxy (dev server). Non-VITE_ env vars are never bundled.
+// environment check: only attempt when a fetch-capable runtime exists.
+// IMPORTANT: this must stay a *runtime* check (never `import.meta.env.DEV`),
+// so production builds keep the same-origin proxy call intact. Without a
+// server-side proxy the request simply fails and the caller falls back to
+// local answers. Non-VITE_ env vars are never bundled.
 //
-// LOCAL-ONLY MODE: external AI is disabled by default so the assistant is a
-// fully self-contained, offline system (zero Nara/API calls). To re-enable the
-// optional Nara fallback for local development, flip LOCAL_ONLY_MODE to false.
+// LOCAL-ONLY MODE: set to true to force a fully self-contained, offline
+// assistant (zero Nara/API calls) without touching anything else.
 const LOCAL_ONLY_MODE = false
 
-const AI_ENABLED =
-  !LOCAL_ONLY_MODE &&
-  typeof import.meta !== 'undefined' &&
-  import.meta.env &&
-  import.meta.env.DEV === true
+const AI_ENABLED = !LOCAL_ONLY_MODE && typeof fetch !== 'undefined'
 
 let sessionAICount = 0
 const SESSION_LIMIT = 10
@@ -120,7 +119,8 @@ export async function getAIAnswer(
       ? `Recent conversation: intent=${memory.lastIntent || 'none'}, topic=${memory.lastTopic || 'none'}.`
       : ''
   const systemPrompt =
-    'You are the friendly AI fallback layer inside Shymaa Raouf Ali\'s portfolio assistant. ' +
+    'You are the friendly AI fallback layer inside Shymaa Raouf Ali\'s portfolio assistant — the assistant itself, never Shymaa herself. ' +
+    'When stating facts about Shymaa, always use the third person ("Shymaa has…", "Her experience includes…"); never claim her work, jobs, or experience as your own ("I worked with…", "I created…", "My experience…"). ' +
     'The local knowledge below is AUTHORITATIVE for anything about Shymaa: use it, never contradict it, and never invent clients, projects, jobs, years of experience, certifications, metrics, employment history, or banking experience. ' +
     'If the provided knowledge does not contain a Shymaa-specific fact being asked for, say the information is not available instead of fabricating it. ' +
     'General questions unrelated to Shymaa may be answered naturally and helpfully. ' +

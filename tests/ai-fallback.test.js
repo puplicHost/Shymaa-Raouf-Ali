@@ -156,3 +156,79 @@ describe('AI fallback — local-first routing', () => {
     expect(r.answer).toBeTruthy()
   })
 })
+
+describe('AI fallback — Arabic routing, garbage, and extended statuses', () => {
+  // Fresh module per test: each gets an untouched AI session budget,
+  // so failure-mode tests never interfere with each other.
+  async function freshEngine() {
+    vi.resetModules()
+    return import('../src/services/assistant-engine.js')
+  }
+
+  it('Arabic unknown question succeeds via AI', async () => {
+    globalThis.fetch = vi.fn(async () => okAI('عدد محافظات مصر حاليا 27 محافظة.'))
+    const fresh = await freshEngine()
+    fresh.resetRateLimit()
+    const r = await fresh.process('ما هو عدد محافظات مصر؟')
+    expect(r.source).toBe('ai')
+    expect(r.answer).toContain('27')
+  })
+
+  it('creative request returns the natural AI answer, not portfolio boilerplate', async () => {
+    globalThis.fetch = vi.fn(async () => okAI('Sip Happens. Brew Brilliant.'))
+    const fresh = await freshEngine()
+    fresh.resetRateLimit()
+    const r = await fresh.process('Write me a short marketing slogan for coffee.')
+    expect(r.source).toBe('ai')
+    expect(r.answer).toContain('Sip Happens')
+    expect(r.answer).not.toMatch(/Shymaa specializes/i)
+  })
+
+  it('garbage input attempts AI once, then falls back (never a fake local match)', async () => {
+    globalThis.fetch = vi.fn(async () => {
+      throw new TypeError('Failed to fetch')
+    })
+    const fresh = await freshEngine()
+    fresh.resetRateLimit()
+    const r = await fresh.process('sdfjkhdsf')
+    expect(r.source).toBe('fallback')
+    expect(r.answer).toBeTruthy()
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1)
+  })
+
+  it.each([400, 404, 408, 409, 502, 503, 504])(
+    'HTTP %i falls back to local without technical leakage',
+    async (status) => {
+      globalThis.fetch = vi.fn(async () => statusOnly(status))
+      const fresh = await freshEngine()
+      fresh.resetRateLimit()
+      const r = await fresh.process('Explain dark matter briefly')
+      expect(r.source).toBe('fallback')
+      expect(r.answer).toBeTruthy()
+      expect(r.answer).not.toMatch(new RegExp(String(status)))
+    }
+  )
+
+  it('missing API key (proxy answers 401) falls back to local', async () => {
+    // A missing/invalid key can never reach the browser: the server-side
+    // proxy turns it into a 401, which degrades gracefully here.
+    globalThis.fetch = vi.fn(async () => statusOnly(401))
+    const fresh = await freshEngine()
+    fresh.resetRateLimit()
+    const r = await fresh.process('عدد محافظات مصر كام؟')
+    expect(r.source).toBe('fallback')
+    expect(r.answer).toBeTruthy()
+  })
+
+  it('system prompt frames the assistant in third person, never as Shymaa', async () => {
+    globalThis.fetch = vi.fn(async () => okAI('ok'))
+    vi.resetModules()
+    const { getAIAnswer } = await import('../src/services/ai-service.js')
+    await getAIAnswer('Who is Shymaa?', {})
+    const [, opts] = globalThis.fetch.mock.calls[0]
+    const system = JSON.parse(opts.body).messages[0].content
+    expect(system).toMatch(/third person/i)
+    expect(system).toMatch(/never Shymaa herself/i)
+    expect(system).not.toMatch(/you are Shymaa[^'s]/i)
+  })
+})
