@@ -111,7 +111,7 @@ describe('AssistantEngine — guards', () => {
   })
 })
 
-describe('AssistantEngine — LOCAL-ONLY mode (AI never invoked)', () => {
+describe('AssistantEngine — AI fallback is local-first', () => {
   it('never calls the AI service / fetch for local questions', async () => {
     global.fetch = vi.fn()
     for (const q of ['مين هي شيماء؟', 'وريني مشاريعها', 'What are her skills?', 'I want to contact her']) {
@@ -123,13 +123,17 @@ describe('AssistantEngine — LOCAL-ONLY mode (AI never invoked)', () => {
     expect(global.fetch).not.toHaveBeenCalled()
   })
 
-  it('never calls the AI service / fetch when there is no local match', async () => {
-    global.fetch = vi.fn()
-    assistantEngine.resetRateLimit()
-    const r = await assistantEngine.process('What is the capital of France?')
+  it('attempts AI once on local miss, then degrades to local fallback when unreachable', async () => {
+    vi.resetModules()
+    const fresh = await import('../src/services/assistant-engine.js')
+    global.fetch = vi.fn().mockRejectedValue(new TypeError('Failed to parse URL'))
+    fresh.resetRateLimit()
+    const r = await fresh.process('What is the capital of France?')
     assertUsefulResponse(r)
     expect(r.source).toBe('fallback')
-    expect(global.fetch).not.toHaveBeenCalled()
+    // Exactly one AI attempt through the same-origin proxy path (no key client-side).
+    expect(global.fetch).toHaveBeenCalledTimes(1)
+    expect(global.fetch.mock.calls[0][0]).toBe('/api/nara/v1/chat/completions')
   })
 })
 

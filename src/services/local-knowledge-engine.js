@@ -370,6 +370,118 @@ function jaccardCached(qSet, cachedLists, lang) {
 }
 
 /**
+ * Full fuzzy ranking for a preprocessed query. Extracted verbatim from the
+ * searchLocal pipeline so scoring stays identical everywhere it is used.
+ * Returns the ranked array (sorted, identity-guard applied), possibly empty.
+ */
+function rankFuzzy(normalizedQuery, tokens, lang) {
+  const qSet = new Set(tokens)
+  const queryTF = termFrequency(tokens)
+  const ranked = []
+  for (const i of candidateIntents(lang, tokens)) {
+    const rec = RECORDS[i]
+    const intent = rec.intent
+    const { keywords, synonyms, questions, aliases } = rec.byLang[lang]
+
+    const kw = scoreList(normalizedQuery, tokens, lang, keywords)
+    const sy = scoreList(normalizedQuery, tokens, lang, synonyms)
+    const qu = scoreList(normalizedQuery, tokens, lang, questions)
+    const al = scoreList(normalizedQuery, tokens, lang, aliases)
+
+    // Similarity via TF-IDF with precomputed idf/doc vectors (same math).
+    const L = rec.byLang[lang]
+    let similarity = 0
+    if (L.docVecs.length > 0) {
+      const queryVec = tfidfVector(queryTF, L.idf)
+      for (const vec of L.docVecs) {
+        similarity = Math.max(similarity, cosineSimilarity(queryVec, vec))
+      }
+    }
+
+    // Best evidence weighted by query coverage (avoids incidental keyword hits).
+    // Aliases are treated as a first-class signal (same weight as synonyms).
+    // An exact full-question match is the strongest possible evidence, so it
+    // is not discounted like partial question overlap is.
+    const quScore = qu.match >= 1 ? 1.0 : qu.match * 0.8
+    const bestRaw = Math.max(kw.match * 0.9, sy.match * 1.0, al.match * 1.0, quScore)
+    const bestCoverage = Math.max(kw.coverage, sy.coverage, qu.coverage, al.coverage)
+    const jaccard = jaccardCached(qSet, [keywords, synonyms, aliases], lang)
+    const composite = (bestRaw * (0.5 + 0.5 * bestCoverage)) + (jaccard * 0.3)
+
+    ranked.push({ intent, composite, keyword: kw.match, synonym: sy.match, question: qu.match, similarity, jaccard })
+  }
+
+  ranked.sort((a, b) => {
+    if (b.composite !== a.composite) return b.composite - a.composite
+    return (a.intent.intentPriority || 9) - (b.intent.intentPriority || 9)
+  })
+
+  // Guard against `identity` dominating long, non-introductory questions:
+  // identity aliases ("شيماء", "she", "work experience") appear inside many
+  // queries, so when the top intent is identity on a multi-token query and the
+  // runner-up is close behind, demote identity and re-rank.
+  if (ranked.length > 1 && ranked[0].intent.id === 'identity' && tokens.length >= 3) {
+    const gap = ranked[0].composite - ranked[1].composite
+    if (gap < 0.3) {
+      ranked[0].composite -= 0.2
+      ranked.sort((a, b) => {
+        if (b.composite !== a.composite) return b.composite - a.composite
+        return (a.intent.intentPriority || 9) - (b.intent.intentPriority || 9)
+      })
+    }
+  }
+
+  return ranked
+}
+
+/**
+ * Best-effort closest intents for a query, WITHOUT any confidence threshold.
+ * Used to build the small approved-knowledge context payload for the optional
+ * AI fallback layer. Reuses the exact same retrieval/scoring as searchLocal
+ * (concept/theme exact wins first, then fuzzy ranking) — no second engine.
+ * Returns [{ id, category, score, content }] with content capped small.
+ */
+const CONTEXT_CONTENT_MAX = 300
+
+function intentExcerpt(intent, lang) {
+  const pool = intent.answers?.[lang] || intent.answers?.en || null
+  const text =
+    (pool && pool.length > 0 ? pool[0] : null) ||
+    intent.answer?.[lang] ||
+    intent.answer?.en ||
+    ''
+  const flat = String(text).replace(/\s+/g, ' ').trim()
+  return flat.length > CONTEXT_CONTENT_MAX ? `${flat.slice(0, CONTEXT_CONTENT_MAX)}…` : flat
+}
+
+export function findClosestIntents(query, limit = 2) {
+  const { lang, tokens } = preprocessQuery(query)
+  const normalizedQuery = normalizeText(query)
+  const out = []
+  const seen = new Set()
+  const push = (intent, score) => {
+    if (!intent || seen.has(intent.id) || out.length >= limit) return
+    seen.add(intent.id)
+    out.push({ id: intent.id, category: intent.category || null, score, content: intentExcerpt(intent, lang) })
+  }
+
+  if (tokens.length === 0) {
+    const cid = matchConceptIntent(normalizedQuery, lang)
+    if (cid) push(intents.find((i) => i.id === cid), 0.95)
+  } else {
+    const tid = detectExactIntent(normalizedQuery)
+    if (tid) push(intents.find((i) => i.id === tid), 1.0)
+  }
+  if (out.length < limit && tokens.length > 0) {
+    for (const r of rankFuzzy(normalizedQuery, tokens, lang)) {
+      push(r.intent, r.composite)
+      if (out.length >= limit) break
+    }
+  }
+  return out
+}
+
+/**
  * Searches the structured, bilingual knowledge base.
  * Returns the highest-confidence intent with a deterministic ranking:
  *   intent concept  >  exact intent theme  >  phrase  >  keyword  >  synonym  >  similarity
@@ -410,64 +522,10 @@ export function searchLocal(query) {
   // is a proven superset filter (any intent able to score above zero shares a
   // prefix-overlapping non-stopword token with the query), so skipped intents
   // would all score exactly 0 and can never win.
-  const qSet = new Set(tokens)
-  const queryTF = termFrequency(tokens)
-  const ranked = []
-  for (const i of candidateIntents(lang, tokens)) {
-    const rec = RECORDS[i]
-    const intent = rec.intent
-    const { keywords, synonyms, questions, aliases } = rec.byLang[lang]
-
-    const kw = scoreList(normalizedQuery, tokens, lang, keywords)
-    const sy = scoreList(normalizedQuery, tokens, lang, synonyms)
-    const qu = scoreList(normalizedQuery, tokens, lang, questions)
-    const al = scoreList(normalizedQuery, tokens, lang, aliases)
-
-    // Similarity via TF-IDF with precomputed idf/doc vectors (same math).
-    const L = rec.byLang[lang]
-    let similarity = 0
-    if (L.docVecs.length > 0) {
-      const queryVec = tfidfVector(queryTF, L.idf)
-      for (const vec of L.docVecs) {
-        similarity = Math.max(similarity, cosineSimilarity(queryVec, vec))
-      }
-    }
-
-    // Best evidence weighted by query coverage (avoids incidental keyword hits).
-    // Aliases are treated as a first-class signal (same weight as synonyms).
-    // An exact full-question match is the strongest possible evidence, so it
-    // is not discounted like partial question overlap is.
-    const quScore = qu.match >= 1 ? 1.0 : qu.match * 0.8
-    const bestRaw = Math.max(kw.match * 0.9, sy.match * 1.0, al.match * 1.0, quScore)
-    const bestCoverage = Math.max(kw.coverage, sy.coverage, qu.coverage, al.coverage)
-    const jaccard = jaccardCached(qSet, [keywords, synonyms, aliases], lang)
-    const composite = (bestRaw * (0.5 + 0.5 * bestCoverage)) + (jaccard * 0.3)
-
-    ranked.push({ intent, composite, keyword: kw.match, synonym: sy.match, question: qu.match, similarity, jaccard })
-  }
+  const ranked = rankFuzzy(normalizedQuery, tokens, lang)
 
   if (ranked.length === 0) {
     return { found: false, match: null, score: 0, source: null, lang }
-  }
-
-  ranked.sort((a, b) => {
-    if (b.composite !== a.composite) return b.composite - a.composite
-    return (a.intent.intentPriority || 9) - (b.intent.intentPriority || 9)
-  })
-
-  // Guard against `identity` dominating long, non-introductory questions:
-  // identity aliases ("شيماء", "she", "work experience") appear inside many
-  // queries, so when the top intent is identity on a multi-token query and the
-  // runner-up is close behind, demote identity and re-rank.
-  if (ranked.length > 1 && ranked[0].intent.id === 'identity' && tokens.length >= 3) {
-    const gap = ranked[0].composite - ranked[1].composite
-    if (gap < 0.3) {
-      ranked[0].composite -= 0.2
-      ranked.sort((a, b) => {
-        if (b.composite !== a.composite) return b.composite - a.composite
-        return (a.intent.intentPriority || 9) - (b.intent.intentPriority || 9)
-      })
-    }
   }
 
   const top = ranked[0]
@@ -539,4 +597,4 @@ export function findLocalAnswer(query) {
   }
 }
 
-export default { searchLocal, findLocalAnswer, detectExactIntent, jaccardMatch, pickAnswerVariation, resetLastReply }
+export default { searchLocal, findLocalAnswer, findClosestIntents, detectExactIntent, jaccardMatch, pickAnswerVariation, resetLastReply }

@@ -9,11 +9,12 @@
 // Every failure path returns null with no exception surfacing to the UI.
 
 import { genericFallback, followUp } from './fallback-service.js'
-import { detectLanguage } from './text-utils.js'
+import { detectLanguage, normalizeText } from './text-utils.js'
 import knowledgeBase from '../data/knowledge-base.json'
 
 const MAX_PROMPT_LENGTH = 500
 const TIMEOUT_MS = 8000
+const MODEL = 'laguna-s-2.1'
 
 const ENDPOINT = '/api/nara/v1/chat/completions'
 
@@ -23,7 +24,7 @@ const ENDPOINT = '/api/nara/v1/chat/completions'
 // LOCAL-ONLY MODE: external AI is disabled by default so the assistant is a
 // fully self-contained, offline system (zero Nara/API calls). To re-enable the
 // optional Nara fallback for local development, flip LOCAL_ONLY_MODE to false.
-const LOCAL_ONLY_MODE = true
+const LOCAL_ONLY_MODE = false
 
 const AI_ENABLED =
   !LOCAL_ONLY_MODE &&
@@ -55,15 +56,51 @@ function buildContext(category, intentId) {
     .join('\n\n')
 }
 
+/**
+ * Detects the reply language instruction from the user's own words.
+ * Arabic → Arabic, Egyptian markers → Egyptian Arabic, Gulf markers → a
+ * natural Gulf conversational tone in Arabic, otherwise English.
+ */
+function promptLanguage(userText, lang) {
+  if (lang !== 'ar') return 'English.'
+  const n = ` ${normalizeText(userText || '')} `
+  const has = (...words) => words.some((w) => n.includes(` ${normalizeText(w)} `))
+  if (has('شنو', 'ابغى', 'ابي', 'وين', 'منو', 'شلون', 'وش', 'تكفى', 'زين')) {
+    return 'Arabic, preserving a natural Gulf conversational tone.'
+  }
+  if (has('عايز', 'عايزة', 'ازاي', 'دلوقتي', 'فين', 'وريني', 'مصري', 'بقى')) {
+    return 'Egyptian Arabic.'
+  }
+  return 'Arabic (Egyptian-friendly).'
+}
+
 function validPrompt(userText) {
   return typeof userText === 'string' && userText.trim().length > 0 && userText.trim().length <= MAX_PROMPT_LENGTH
 }
 
+function renderLocalContext(localContext) {
+  if (!Array.isArray(localContext) || localContext.length === 0) return ''
+  const lines = localContext
+    .filter((c) => c && (c.intent || c.content))
+    .slice(0, 2)
+    .map((c) => {
+      const topic = c.topic ? ` (topic: ${c.topic})` : ''
+      return `- ${c.intent || 'unknown'}${topic}: ${c.content || ''}`.trim()
+    })
+  return lines.length > 0 ? lines.join('\n') : ''
+}
+
 /**
- * Attempts an AI answer for an open-ended question.
- * Returns { answer } on success, or null on ANY failure/timeout.
+ * Attempts an AI answer for an open-ended question the local engine could
+ * not answer confidently. Pure fallback: returns { answer } on success, or
+ * null on ANY failure/timeout so the caller falls back to local content.
+ * Never throws. Never touches any secret: authorization is injected by the
+ * server-side proxy, so no key exists anywhere in this module.
  */
-export async function getAIAnswer(userText, { category = null, intentId = null } = {}) {
+export async function getAIAnswer(
+  userText,
+  { category = null, intentId = null, localContext = null, memory = null, timeoutMs = TIMEOUT_MS } = {}
+) {
   // No secret in the browser -> only works via a server proxy while developing.
   if (!AI_ENABLED) return null
 
@@ -77,17 +114,26 @@ export async function getAIAnswer(userText, { category = null, intentId = null }
 
   const lang = detectLanguage(userText)
   const systemHint = buildContext(category, intentId)
+  const contextBlock = renderLocalContext(localContext)
+  const memoryBlock =
+    memory && (memory.lastIntent || memory.lastTopic)
+      ? `Recent conversation: intent=${memory.lastIntent || 'none'}, topic=${memory.lastTopic || 'none'}.`
+      : ''
   const systemPrompt =
-    'You are the assistant inside Shymaa Raouf Ali\'s portfolio website. ' +
-    'Answer only using the provided knowledge. Do NOT invent facts, clients, ' +
-    'metrics, credentials, or details. Be helpful, warm, and brief. ' +
-    'If the knowledge does not cover the question, respond helpfully and ' +
-    'gently steer toward her portfolio sections. Language: ' +
-    (lang === 'ar' ? 'Arabic (Egyptian-friendly).' : 'English.') +
-    (systemHint ? `\n\nVerified knowledge:\n${systemHint}` : '')
+    'You are the friendly AI fallback layer inside Shymaa Raouf Ali\'s portfolio assistant. ' +
+    'The local knowledge below is AUTHORITATIVE for anything about Shymaa: use it, never contradict it, and never invent clients, projects, jobs, years of experience, certifications, metrics, employment history, or banking experience. ' +
+    'If the provided knowledge does not contain a Shymaa-specific fact being asked for, say the information is not available instead of fabricating it. ' +
+    'General questions unrelated to Shymaa may be answered naturally and helpfully. ' +
+    'Reply in this language: ' +
+    promptLanguage(userText, lang) +
+    ' Be concise and conversational, like the same assistant continuing naturally. ' +
+    'Never claim to be a language model, never apologize with AI disclaimers, and never mention internal systems, retrieval, knowledge bases, routing, APIs, confidence, or fallback layers.' +
+    (systemHint ? `\n\nVerified knowledge:\n${systemHint}` : '') +
+    (contextBlock ? `\n\nClosest local context:\n${contextBlock}` : '') +
+    (memoryBlock ? `\n\n${memoryBlock}` : '')
 
   const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
     const res = await fetch(ENDPOINT, {
@@ -95,7 +141,7 @@ export async function getAIAnswer(userText, { category = null, intentId = null }
       headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
       body: JSON.stringify({
-        model: 'longcat-2.0-free',
+        model: MODEL,
         temperature: 0.7,
         max_tokens: 300,
         messages: [

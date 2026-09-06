@@ -10,7 +10,7 @@
 //
 // The UI component never holds this business logic.
 
-import { findLocalAnswer, pickAnswerVariation, resetLastReply } from './local-knowledge-engine.js'
+import { findLocalAnswer, findClosestIntents, pickAnswerVariation, resetLastReply } from './local-knowledge-engine.js'
 import { detectLanguage, normalizeText, preprocessQuery, stripDefiniteArticle } from './text-utils.js'
 import { getAIAnswer, genericFallback, followUp } from './ai-service.js'
 import { executeAction } from './interaction-engine.js'
@@ -21,10 +21,12 @@ import { portfolioData } from '../data/portfolio-data.js'
 const MAX_INPUT_LENGTH = 500
 const COOLDOWN_MS = 1200
 
-// LOCAL-ONLY MODE: the assistant never calls Nara or any external AI API.
-// The pipeline is: local knowledge engine -> local answer -> action -> follow-ups.
-// To re-enable the optional AI fallback (local dev only), set this to false.
-const LOCAL_ONLY_MODE = true
+// AI FALLBACK MODE: the local pipeline stays first for every message. Only
+// when it finds no confident answer, the optional Nara fallback is attempted
+// (dev-server proxy injects the key server-side; production has no proxy, so
+// the request fails fast and the local fallback answers instead). To force a
+// fully offline assistant, set this back to true.
+const LOCAL_ONLY_MODE = false
 
 let lastRequestAt = 0
 let processing = false
@@ -333,17 +335,6 @@ export function canProcessInput(text) {
   return true
 }
 
-function detectIntentName(text) {
-  const quick = text.trim().toLowerCase()
-  if (/^(مين|من هي|عرفني|من شيماء|who is|tell me about|introduce)/.test(quick)) return 'identity'
-  if (/(مشاريع|وريني|شوف شغلها|projects|show me.*work|portfolio)/.test(quick)) return 'projects'
-  if (/(مهارات|skills)/.test(quick)) return 'skills'
-  if (/(مجالات|industries|اشتغلت|worked)/.test(quick)) return 'industries'
-  if (/(بيميز|مختلفة|مميز|different|unique)/.test(quick)) return 'differentiator'
-  if (/(تواصل|أتواصل|اتصال|contact|تواصل مع)/.test(quick)) return 'contact'
-  if (/(إزاي بتشتغل|طريقة|approach|how.*work)/.test(quick)) return 'approach'
-  return 'unknown'
-}
 
 /**
  * Resolves the contextual follow-up suggestions for an intent in the given
@@ -459,14 +450,22 @@ export async function process(inputText) {
       }
     }
 
-    // 2) Optional AI fallback — OFF in Local-Only mode. Re-enable by setting
-    //    LOCAL_ONLY_MODE to false above (AI is dev-proxy-only and never overrides
-    //    a verified local answer).
+    // 2) Optional AI fallback — reached ONLY on a local miss (never overrides
+    //    a verified local answer). Builds a small approved-knowledge context
+    //    with the existing retrieval engine, then asks Nara. Any failure
+    //    (no key/proxy, network, timeout, bad status, empty reply) falls
+    //    through to the safe local fallback below.
     if (!LOCAL_ONLY_MODE) {
-      const intentGuess = detectIntentName(input)
+      const queryTokens = preprocessQuery(input).tokens
+      const queryTopic = extractTopic(queryTokens)
+      const localContext = findClosestIntents(input, 2).map((c) => ({
+        intent: c.id,
+        topic: c.id === lastIntentId ? lastTopic : queryTopic,
+        content: c.content,
+      }))
       const ai = await getAIAnswer(input, {
-        category: intentGuess === 'unknown' ? null : intentGuess,
-        intentId: intentGuess === 'unknown' ? null : intentGuess,
+        localContext,
+        memory: { lastIntent: lastIntentId, lastTopic },
       })
 
       if (ai && ai.answer && ai.answer.trim()) {
@@ -475,7 +474,7 @@ export async function process(inputText) {
           action: null,
           followUps: [],
           lang,
-          intentId: intentGuess,
+          intentId: null,
           source: 'ai',
         }
       }
