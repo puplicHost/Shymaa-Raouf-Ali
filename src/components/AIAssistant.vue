@@ -8,9 +8,9 @@
           </div>
           <div class="chat-header-text">
             <span class="chat-title">Ask about Shymaa</span>
-            <span class="chat-status">
+            <span class="chat-status" aria-live="polite">
               <span class="status-dot"></span>
-              {{ isSpeaking ? (t('assistant.speaking') || 'Speaking…') : (voiceState === 'listening' ? 'Listening…' : 'Portfolio Assistant') }}
+              {{ voiceStatusText }}
             </span>
           </div>
           <button v-if="isSpeaking" class="skip-btn" @click="skipSpeech" aria-label="Skip speaking">
@@ -72,10 +72,11 @@
           <button
             v-if="voiceAvailable"
             class="chat-mic"
-            :class="{ active: voiceState === 'listening' }"
+            :class="{ active: voiceSessionActive }"
             @click="toggleVoice"
-            :aria-label="voiceState === 'listening' ? 'Stop listening' : 'Speak your question'"
-            :title="voiceState === 'listening' ? 'Stop listening' : 'Speak your question'"
+            :aria-pressed="voiceSessionActive"
+            :aria-label="voiceMicLabel"
+            :title="voiceMicLabel"
           >
             <IconGlyph :path="ui.microphone" :size="18" />
           </button>
@@ -142,6 +143,39 @@ const suggestionHeader = computed(() =>
     : ''
 )
 
+const voiceSessionActive = computed(
+  () => voiceState.value === 'listening' || voiceState.value === 'responding' || voiceState.value === 'processing'
+)
+
+// Human-readable voice state (Arabic/English), never technical jargon.
+const voiceStatusText = computed(() => {
+  const ar = assistantLang.value === 'ar'
+  if (isSpeaking.value || voiceState.value === 'responding') return t('assistant.speaking') || (ar ? 'شيماء بترد…' : 'Speaking…')
+  switch (voiceState.value) {
+    case 'listening':
+      return ar ? 'أنا سامعك…' : 'Listening…'
+    case 'processing':
+      return ar ? 'بفكر…' : 'Thinking…'
+    case 'stopped':
+      return ar ? 'متوقف' : 'Stopped'
+    case 'error':
+      return ar ? 'اضغط للتحدث' : 'Tap to talk'
+    default:
+      return t('assistant.title') || 'Portfolio Assistant'
+  }
+})
+
+const voiceMicLabel = computed(() => {
+  const ar = assistantLang.value === 'ar'
+  return voiceSessionActive.value
+    ? ar
+      ? 'إنهاء الجلسة الصوتية'
+      : 'End voice session'
+    : ar
+      ? 'تحدث بسؤالك'
+      : 'Speak your question'
+})
+
 const messages = ref([
   {
     role: 'assistant',
@@ -195,26 +229,30 @@ function closeChat() {
 }
 
 function skipSpeech() {
-  if (voiceService) voiceService.stop()
+  // Interrupt button: stops the spoken copy immediately but keeps a live
+  // voice session going (mic resumes listening inside the session).
+  if (voiceService) voiceService.interrupt()
   isSpeaking.value = false
 }
 
 function toggleVoice() {
   if (!voiceService) return
-  if (voiceState.value === 'listening') {
-    voiceService.stop()
-    voiceState.value = 'idle'
+  if (voiceSessionActive.value) {
+    // End the continuous session explicitly.
+    voiceService.endSession()
   } else {
     if (isTyping.value) return
-    voiceService.listen()
+    voiceService.startSession()
   }
 }
 
-async function sendMessage(text = null) {
+async function sendMessage(text = null, opts = {}) {
   const input = text || userInput.value.trim()
   if (!input || isTyping.value) return
 
-  if (voiceService) {
+  // Typed (or tapped) messages take over: end any voice session so the mic
+  // never fights the keyboard. Voice transcripts keep the session alive.
+  if (voiceService && !opts.fromVoice) {
     voiceService.stop()
     voiceState.value = 'idle'
   }
@@ -244,13 +282,19 @@ async function sendMessage(text = null) {
 
   if (voiceService && result.source !== 'cooldown') {
     isSpeaking.value = true
-    voiceService.speak(result.answer)
-    const checkSpeaking = setInterval(() => {
-      if (!voiceService.speaking) {
-        isSpeaking.value = false
-        clearInterval(checkSpeaking)
-      }
-    }, 200)
+    // speak() sanitizes a TTS-only copy; the chat bubble keeps raw text.
+    // Inside a voice session the mic auto-resumes after TTS ends.
+    const started = voiceService.speak(result.answer)
+    if (!started) {
+      isSpeaking.value = false
+    } else {
+      const checkSpeaking = setInterval(() => {
+        if (!voiceService || !voiceService.speaking) {
+          isSpeaking.value = false
+          clearInterval(checkSpeaking)
+        }
+      }, 200)
+    }
   }
 
   isTyping.value = false
@@ -260,7 +304,9 @@ async function sendMessage(text = null) {
 onMounted(() => {
   voiceService = createVoiceService({
     onTranscript: (text) => {
-      sendMessage(text)
+      // Voice transcripts join the same chat history and engine pipeline;
+      // fromVoice keeps the continuous session alive (no full stop).
+      sendMessage(text, { fromVoice: true })
     },
     onStateChange: (s) => {
       voiceState.value = s
