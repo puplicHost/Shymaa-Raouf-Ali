@@ -8,10 +8,8 @@ const { t, isAr } = useLocale()
 
 const industries = [
   { en: 'Furniture & Home', ar: 'الأثاث والمنزل', enEx: 'Adrak Furniture', arEx: 'أدرك للأثاث' },
-  { en: 'Marble', ar: 'الرخام', enEx: 'Afaag Marble', arEx: 'عفاغ للرخام' },
   { en: 'Pharmacy & Healthcare', ar: 'الصيدلة والرعاية الصحية', enEx: 'Rosheta Pharmacies', arEx: 'صيدليات روشيتة' },
   { en: 'Education', ar: 'التعليم', enEx: 'Smart Junior Academy', arEx: 'سمارت جونيور أكاديمي' },
-  { en: 'Cleaning Services', ar: 'خدمات التنظيف', enEx: 'Alwan Happy Luck', arEx: 'ألوان هابي لوك' },
   { en: 'Beauty & E-commerce', ar: 'الجمال والتجارة الإلكترونية', enEx: 'Velora Cosmatics', arEx: 'فيلورا كوزماتكس' },
   { en: 'Social Media Projects', ar: 'مشاريع السوشيال ميديا', enEx: 'Various Brands', arEx: 'علامات متنوعة' },
 ]

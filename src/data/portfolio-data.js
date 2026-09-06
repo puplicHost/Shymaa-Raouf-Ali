@@ -3,12 +3,12 @@ export const portfolioData = {
     {
       id: 'project-1',
       name: 'Jarrash Sabia',
-      nameAr: 'جرش صبيا',
-      industry: 'E-commerce',
-      industryAr: 'تجارة إلكترونية',
+      nameAr: 'جراش صبيا',
+      industry: 'Medical Complex',
+      industryAr: 'مجمع طبي',
       url: 'https://www.instagram.com/jarrash_sabia',
-      description: 'E-commerce project for Jarrash Sabia brand.',
-      descriptionAr: 'مشروع تجارة إلكترونية لعلامة جرش صبيا التجارية.',
+      description: 'Medical complex project for Jarrash Sabia brand.',
+      descriptionAr: 'مشروع مجمع طبي لعلامة جراش صبيا.',
     },
     {
       id: 'project-2',

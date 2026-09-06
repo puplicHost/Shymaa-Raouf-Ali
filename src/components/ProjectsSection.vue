@@ -11,11 +11,11 @@ const { t, isAr } = useLocale()
 const projects = [
   {
     name: 'Jarrash Sabia',
-    nameAr: 'جرش صبيا',
-    industry: 'E-commerce',
-    industryAr: 'تجارة إلكترونية',
-    desc: 'Full social media management for a furniture e-commerce brand targeting the Saudi market.',
-    descAr: 'إدارة كاملة للسوشيال ميديا لعلامة أثاث وتجارة إلكترونية تستهدف السوق السعودي.',
+    nameAr: 'جراش صبيا',
+    industry: 'Medical Complex',
+    industryAr: 'مجمع طبي',
+    desc: 'Full social media management for a medical complex brand targeting the Saudi market.',
+    descAr: 'إدارة كاملة للسوشيال ميديا لمجمع طبي يستهدف السوق السعودي.',
     url: 'https://www.instagram.com/jarrash_sabia',
   },
   {
