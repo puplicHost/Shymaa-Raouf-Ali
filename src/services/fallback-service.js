@@ -6,13 +6,15 @@
 import { detectLanguage } from './text-utils.js'
 
 const FOLLOW_UP_AR = [
-  'ممكن أعرفك أكتر عن شيماء من خلال خبرتها، مهاراتها، مشاريعها، وطريقة شغلها. تحب تعرف عن أنهي جزء؟',
-  'تقدر تسألني عن مهارات شيماء، مشاريعها، دراسات الحالة، أو إزاي تشتغل. تحب نبدأ منين؟',
+  'أهلاً بيك! 😊 أنا هنا عشان أساعدك تتعرف على شيماء وشغلها. ممكن أعرفك أكتر من خلال خبرتها، مهاراتها، مشاريعها، وطريقة شغلها. تحب تعرف عن أنهي جزء؟',
+  'جميل جداً سؤالك! خليني أوضح لك اللي أقدر أساعدك فيه 👇 تقدر تسألني عن مهارات شيماء، مشاريعها، دراسات الحالة، أو إزاي تشتغل. تحب نبدأ منين؟',
+  'بص يا صاحبي، شيماء متخصصة في السوشيال ميديا وصناعة المحتوى، وأنا هساعدك توصل للمعلومة اللي محتاجها. تحب تعرف عن خبرتها، مشاريعها، ولا طريقة شغلها؟',
 ]
 
 const FOLLOW_UP_EN = [
-  "I can tell you more about Shymaa through her experience, skills, projects, and the way she works. What would you like to know about?",
-  "You can ask me about Shymaa's skills, projects, case studies, or how she approaches social media. Where shall we start?",
+  "Hey there! 😊 I'm here to help you explore Shymaa and her work. I can tell you more through her experience, skills, projects, and the way she works. What would you like to know about?",
+  "Great question! Let me clarify what I can help you with 👇 You can ask me about Shymaa's skills, projects, case studies, or how she approaches social media. Where shall we start?",
+  "Here's the thing — Shymaa specializes in social media and content creation, and I'll help you find exactly what you need. Her experience, projects, or how she works?",
 ]
 
 const SUPPORTED_QUESTIONS_AR = 'تقدر تسألني: مين شيماء؟ مهاراتها إيه؟ وريني مشاريعها؟ شغلت فين؟ أو عايز أشتغل معاها.'

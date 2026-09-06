@@ -123,6 +123,34 @@ function cosineSimilarity(vecA, vecB) {
   return mag === 0 ? 0 : dot / mag
 }
 
+/**
+ * Jaccard similarity between the query token set and each intent phrase.
+ * Returns the best score (0..1) across all phrases. Longer queries sharing
+ * many tokens with an intent get a confidence boost via `composite`.
+ *
+ * Single-token queries are excluded (return 0): a lone generic word like
+ * "good" would otherwise score a perfect 1.0 against a short phrase such as
+ * "good at" and gain unearned confidence. The boost targets long questions.
+ */
+export function jaccardMatch(queryTokens, intentPhrases, lang = 'ar') {
+  const qSet = new Set(queryTokens || [])
+  if (qSet.size < 2 || !intentPhrases || intentPhrases.length === 0) return 0
+  let best = 0
+  for (const phrase of intentPhrases) {
+    if (!phrase) continue
+    const pTokens = removeStopWords(tokenize(phrase), lang)
+    if (pTokens.length === 0) continue
+    const pSet = new Set(pTokens)
+    let inter = 0
+    for (const t of pSet) if (qSet.has(t)) inter++
+    if (inter === 0) continue
+    const union = new Set([...qSet, ...pSet]).size
+    const score = union === 0 ? 0 : inter / union
+    if (score > best) best = score
+  }
+  return best
+}
+
 // ---------------------------------------------------------------------------
 // Layer 2 — Fuzzy scoring (TF-IDF cosine + conservative keyword boost).
 // Guards against incidental matches: a phrase only counts when it shares at
@@ -288,17 +316,34 @@ export function searchLocal(query) {
 
     // Best evidence weighted by query coverage (avoids incidental keyword hits).
     // Aliases are treated as a first-class signal (same weight as synonyms).
+    // Jaccard boost: long queries sharing many tokens with an intent gain confidence.
     const bestRaw = Math.max(kw.match * 0.9, sy.match * 1.0, al.match * 1.0, qu.match * 0.8)
     const bestCoverage = Math.max(kw.coverage, sy.coverage, qu.coverage, al.coverage)
-    const composite = bestRaw * (0.5 + 0.5 * bestCoverage)
+    const jaccard = jaccardMatch(tokens, [...keywords, ...synonyms, ...aliases], lang)
+    const composite = (bestRaw * (0.5 + 0.5 * bestCoverage)) + (jaccard * 0.3)
 
-    ranked.push({ intent, composite, keyword: kw.match, synonym: sy.match, question: qu.match, similarity })
+    ranked.push({ intent, composite, keyword: kw.match, synonym: sy.match, question: qu.match, similarity, jaccard })
   }
 
   ranked.sort((a, b) => {
     if (b.composite !== a.composite) return b.composite - a.composite
     return (a.intent.intentPriority || 9) - (b.intent.intentPriority || 9)
   })
+
+  // Guard against `identity` dominating long, non-introductory questions:
+  // identity aliases ("شيماء", "she", "work experience") appear inside many
+  // queries, so when the top intent is identity on a long query and the
+  // runner-up is close behind, demote identity and re-rank.
+  if (ranked.length > 1 && ranked[0].intent.id === 'identity' && tokens.length > 3) {
+    const gap = ranked[0].composite - ranked[1].composite
+    if (gap < 0.3) {
+      ranked[0].composite -= 0.2
+      ranked.sort((a, b) => {
+        if (b.composite !== a.composite) return b.composite - a.composite
+        return (a.intent.intentPriority || 9) - (b.intent.intentPriority || 9)
+      })
+    }
+  }
 
   const top = ranked[0]
   const THRESHOLD = 0.45
@@ -314,11 +359,40 @@ export function searchLocal(query) {
         synonym: top.synonym,
         question: top.question,
         similarity: top.similarity,
+        jaccard: top.jaccard,
       },
     }
   }
 
   return { found: false, match: null, score: top ? top.composite : 0, source: null, lang }
+}
+
+/**
+ * Session-level guard against repeating the exact same answer variation twice
+ * in a row. Reset alongside the rate limit so every test starts clean.
+ */
+let lastReply = null
+
+export function resetLastReply() {
+  lastReply = null
+}
+
+/**
+ * Picks one variation from an intent's `answers` pool (random, never repeating
+ * the immediately-previous reply when alternatives exist). Falls back to the
+ * legacy single `answer` field when no variations are defined.
+ */
+export function pickAnswerVariation(intent, lang) {
+  const pool = intent.answers?.[lang] || intent.answers?.en || null
+  const fallback = intent.answer?.[lang] || intent.answer?.en || ''
+  const answers = pool && pool.length > 0 ? pool : [fallback]
+  let selected = answers[Math.floor(Math.random() * answers.length)]
+  if (answers.length > 1 && selected === lastReply) {
+    const others = answers.filter((a) => a !== selected)
+    selected = others[Math.floor(Math.random() * others.length)]
+  }
+  lastReply = selected
+  return selected
 }
 
 /**
@@ -328,7 +402,7 @@ export function findLocalAnswer(query) {
   const result = searchLocal(query)
   if (!result.found || !result.match) return null
 
-  const answer = result.match.answer[result.lang] || result.match.answer.en || ''
+  const answer = pickAnswerVariation(result.match, result.lang)
   return {
     answer,
     intentId: result.match.id,
@@ -340,4 +414,4 @@ export function findLocalAnswer(query) {
   }
 }
 
-export default { searchLocal, findLocalAnswer, detectExactIntent }
+export default { searchLocal, findLocalAnswer, detectExactIntent, jaccardMatch, pickAnswerVariation, resetLastReply }

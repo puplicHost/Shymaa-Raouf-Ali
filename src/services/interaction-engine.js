@@ -10,6 +10,7 @@ const WHATSAPP = '201282354052'
 export const SECTION_IDS = {
   hero: 'hero',
   about: 'about',
+  experience: 'experience',
   skills: 'skills',
   work: 'work',
   industries: 'industries',

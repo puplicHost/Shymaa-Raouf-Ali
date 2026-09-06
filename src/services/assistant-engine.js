@@ -10,12 +10,13 @@
 //
 // The UI component never holds this business logic.
 
-import { findLocalAnswer } from './local-knowledge-engine.js'
-import { detectLanguage, preprocessQuery } from './text-utils.js'
+import { findLocalAnswer, pickAnswerVariation, resetLastReply } from './local-knowledge-engine.js'
+import { detectLanguage, normalizeText, preprocessQuery } from './text-utils.js'
 import { getAIAnswer, genericFallback, followUp } from './ai-service.js'
 import { executeAction } from './interaction-engine.js'
 import { detectConversation } from './conversation-service.js'
 import knowledgeBase from '../data/knowledge-base.json'
+import { portfolioData } from '../data/portfolio-data.js'
 
 const MAX_INPUT_LENGTH = 500
 const COOLDOWN_MS = 1200
@@ -44,6 +45,9 @@ export function resetRateLimit() {
   lastRequestAt = 0
   processing = false
   recentIntentIds = []
+  lastIntentId = null
+  lastTopic = null
+  resetLastReply()
 }
 
 function trackRecentIntent(intentId) {
@@ -51,6 +55,120 @@ function trackRecentIntent(intentId) {
   recentIntentIds = recentIntentIds.filter((id) => id !== intentId)
   recentIntentIds.push(intentId)
   if (recentIntentIds.length > RECENT_LIMIT) recentIntentIds.shift()
+}
+
+// Maps portfolio section ids (portfolioData.navigation) to knowledge-base
+// intent ids so navigation commands can reuse follow-up suggestions.
+const SECTION_TO_INTENT = {
+  about: 'identity',
+  skills: 'skills',
+  experience: 'experience',
+  work: 'projects',
+  industries: 'industries',
+  approach: 'approach',
+  certifications: 'certifications',
+  contact: 'contact',
+}
+
+/**
+ * Matches explicit navigation commands ("روح للتعريف", "go to about", ...)
+ * against portfolioData.navigation phrases. Longest-phrase wins; matching is
+ * done on normalized text with padding so short phrases like "top" never hit
+ * inside longer words ("stop"). Returns { key, entry } or null.
+ */
+export function matchNavigationCommand(input) {
+  const norm = ` ${normalizeText(input || '')} `
+  if (!norm.trim()) return null
+  let best = null
+  for (const [key, entry] of Object.entries(portfolioData.navigation || {})) {
+    for (const phrase of entry.phrases || []) {
+      const p = normalizeText(phrase || '')
+      if (!p) continue
+      if (norm.includes(` ${p} `) && (!best || p.length > best.phrase.length)) {
+        best = { key, entry, phrase: p }
+      }
+    }
+  }
+  return best
+}
+
+/**
+ * Session-level conversation memory: the last answered intent plus an optional
+ * topic keyword (e.g. "furniture", "banking") extracted from the user's own
+ * words. Lets short continuations ("طب في الأثاث؟", "and furniture?") resolve
+ * to the running topic when the direct local match is weak. Reset with
+ * resetRateLimit() so every test starts from a clean conversation state.
+ */
+let lastIntentId = null
+let lastTopic = null
+
+// Concrete topic keywords (raw forms; normalized once at load so matching
+// against normalized query tokens is exact).
+const TOPIC_KEYWORDS_RAW = {
+  furniture: ['أثاث', 'furniture'],
+  banking: ['بنوك', 'بنك', 'banking', 'bank'],
+  education: ['تعليم', 'education', 'school'],
+  marble: ['رخام', 'marble'],
+  pharmacy: ['صيدلي', 'صيدلية', 'صيدليات', 'pharmacy', 'healthcare'],
+  cleaning: ['تنظيف', 'cleaning'],
+  ecommerce: ['تجارة', 'ecommerce', 'e-commerce', 'online'],
+  saudi: ['سعودي', 'saudi'],
+}
+
+const TOPIC_LOOKUP = (() => {
+  const map = new Map()
+  for (const [topic, words] of Object.entries(TOPIC_KEYWORDS_RAW)) {
+    for (const w of words) map.set(normalizeText(w), topic)
+  }
+  return map
+})()
+
+// Continuation cues: the current message only makes sense with prior context.
+// Matched as whole words on normalized text (never substrings).
+const CONTEXT_CUES = [
+  'طب', 'ده', 'دا', 'دي', 'ديه', 'هذا', 'هذه', 'كمان', 'برضه',
+  'بالنسبه', 'بالنسبة', 'وايه', 'طيب',
+  'and', 'also', 'it', 'that', 'this', 'those', 'these',
+]
+
+function extractTopic(tokens) {
+  for (const raw of tokens || []) {
+    // Tokens may carry the definite article (الاثاث) or a trailing ؟ —
+    // both are stripped so "الأثاث؟" still maps to the furniture topic.
+    const clean = String(raw || '').replace(/[^\p{L}\p{N}]+$/gu, '')
+    const hit = TOPIC_LOOKUP.get(clean) || TOPIC_LOOKUP.get(stripArabicPrefix(clean))
+    if (hit) return hit
+  }
+  return null
+}
+
+function stripArabicPrefix(t) {
+  for (const p of ['وال', 'بال', 'كال', 'فال', 'لل', 'ال']) {
+    if (t.startsWith(p) && t.length > p.length + 2) return t.slice(p.length)
+  }
+  return t
+}
+
+function hasContinuationCue(input) {
+  const norm = ` ${normalizeText(input || '')} `
+  return CONTEXT_CUES.some((c) => norm.includes(` ${normalizeText(c)} `))
+}
+
+function updateContextMemory(intentId, tokens) {
+  lastIntentId = intentId || null
+  lastTopic = extractTopic(tokens)
+}
+
+/**
+ * Resolves a pronoun-like continuation to the stored conversation topic.
+ * Only fires when: a topic is remembered AND the message carries a
+ * continuation cue AND the direct local search found nothing (caller
+ * guarantees the last condition). Returns the stored intent or null.
+ */
+export function resolveContextFollowUp(input) {
+  if (!lastTopic || !lastIntentId) return null
+  if (!hasContinuationCue(input)) return null
+  return (knowledgeBase.intents || []).find((i) => i.id === lastIntentId) || null
 }
 
 /**
@@ -69,6 +187,8 @@ const FALLBACK_LABELS = {
   contentTypes: { ar: '📱 إيه نوع المحتوى اللي بتعمله؟', en: '📱 What type of content does she create?' },
   industries: { ar: '🌍 اشتغلت في صناعات إيه؟', en: '🌍 Which industries has she worked in?' },
   approach: { ar: '🛠️ إزاي بتشتغل؟', en: '🛠️ How does she approach work?' },
+  experience: { ar: '💼 شيماء اشتغلت فين؟', en: '💼 Where has she worked?' },
+  certifications: { ar: '🎓 إيه شهاداتها؟', en: '🎓 What certifications does she hold?' },
   contact: { ar: '📧 عايز أتواصل معاها', en: '📧 I want to contact her' },
   availability: { ar: '📅 شيماء متاحة للشغل؟', en: '📅 Is Shymaa available for work?' },
 }
@@ -217,7 +337,28 @@ export async function process(inputText) {
   lastRequestAt = Date.now()
 
   try {
-    // 0) Everyday conversational inputs (greeting / thanks / ack) resolve
+    // 0a) Explicit navigation commands ("روح للتعريف", "go to about", ...).
+    //     Checked before everything else: an explicit scroll command is never
+    //     a portfolio question, so it resolves directly with a confirmation.
+    const nav = matchNavigationCommand(input)
+    if (nav) {
+      const action = { type: 'scroll', target: nav.entry.sectionId, label: nav.key }
+      executeAction(action)
+      const navIntentId = SECTION_TO_INTENT[nav.entry.sectionId] || null
+      if (navIntentId) trackRecentIntent(navIntentId)
+      return {
+        answer: lang === 'ar'
+          ? (nav.entry.response || nav.entry.responseEn)
+          : (nav.entry.responseEn || nav.entry.response),
+        action,
+        followUps: navIntentId ? getFollowUps(navIntentId, lang, recentIntentIds) : [],
+        lang,
+        intentId: navIntentId,
+        source: 'navigation',
+      }
+    }
+
+    // 0b) Everyday conversational inputs (greeting / thanks / ack) resolve
     //    first — they are not portfolio questions, so they never hit the
     //    intent engine nor produce follow-up suggestions.
     const conv = detectConversation(input)
@@ -237,12 +378,33 @@ export async function process(inputText) {
       // Execute the interaction action from the verified local answer.
       if (local.action) executeAction(local.action)
       trackRecentIntent(local.intentId)
+      updateContextMemory(local.intentId, preprocessQuery(input).tokens)
       return {
         answer: local.answer,
         action: local.action,
         followUps: getFollowUps(local.intentId, local.lang, recentIntentIds),
         lang: local.lang,
         intentId: local.intentId,
+        source: 'local',
+      }
+    }
+
+    // 1b) Contextual continuation ("طب في الأثاث؟", "and furniture?").
+    //      Fires only on a local miss while a topic is remembered: the stored
+    //      intent answers with a fresh variation, so short follow-ups keep the
+    //      thread instead of falling back.
+    const ctxIntent = resolveContextFollowUp(input)
+    if (ctxIntent) {
+      const ctxAction = ctxIntent.action || null
+      if (ctxAction) executeAction(ctxAction)
+      trackRecentIntent(ctxIntent.id)
+      updateContextMemory(ctxIntent.id, preprocessQuery(input).tokens)
+      return {
+        answer: pickAnswerVariation(ctxIntent, lang),
+        action: ctxAction,
+        followUps: getFollowUps(ctxIntent.id, lang, recentIntentIds),
+        lang,
+        intentId: ctxIntent.id,
         source: 'local',
       }
     }
@@ -291,4 +453,4 @@ export function getFollowUp(text) {
 
 export { preprocessQuery, detectLanguage }
 
-export default { process, canProcessInput, getFollowUp, getFollowUps, pickFollowUps, resetRateLimit }
+export default { process, canProcessInput, getFollowUp, getFollowUps, pickFollowUps, resetRateLimit, matchNavigationCommand, resolveContextFollowUp }
