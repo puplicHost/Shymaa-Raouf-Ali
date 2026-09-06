@@ -87,7 +87,7 @@
       </div>
     </Transition>
 
-    <button class="chat-toggle" @click="toggleChat" :aria-label="isOpen ? 'Close chat' : 'Ask Shymaa'">
+    <button class="chat-toggle" :class="toggleStateClass" @click="toggleChat" :aria-label="isOpen ? 'Close chat' : 'Ask Shymaa'">
       <Transition name="icon" mode="out-in">
         <span v-if="isTyping && !isOpen" key="typing" class="chat-toggle-label typing-indicator">
           <span class="typing-dots"><span></span><span></span><span></span></span>
@@ -146,6 +146,17 @@ const suggestionHeader = computed(() =>
 const voiceSessionActive = computed(
   () => voiceState.value === 'listening' || voiceState.value === 'responding' || voiceState.value === 'processing'
 )
+
+// Launcher icon mirrors the voice state so the assistant itself looks alive:
+// pulsing ring while listening, glow while speaking. Purely visual.
+const toggleStateClass = computed(() => {
+  if (!isOpen.value) {
+    if (voiceState.value === 'listening') return 'is-listening'
+    if (voiceState.value === 'responding' || isSpeaking.value) return 'is-speaking'
+    if (voiceState.value === 'processing') return 'is-thinking'
+  }
+  return ''
+})
 
 // Human-readable voice state (Arabic/English), never technical jargon.
 const voiceStatusText = computed(() => {
@@ -645,6 +656,7 @@ watch(isOpen, async (val) => {
 
 .chat-input {
   flex: 1;
+  min-width: 0;
   padding: 0.72rem 0.9rem;
   border: 1px solid var(--border-strong);
   border-radius: 12px;
@@ -782,6 +794,29 @@ watch(isOpen, async (val) => {
     0 18px 40px rgba(166, 116, 255, 0.3);
 }
 
+/* Voice state on the launcher itself: pulsing ring while listening,
+   steady glow while speaking, dimmed while thinking. */
+.chat-toggle.is-listening {
+  border: 1px solid var(--accent);
+  animation: voicePulse 1.8s ease-in-out infinite;
+}
+
+.chat-toggle.is-speaking {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 0 0 2px var(--accent-soft),
+    0 0 28px rgba(166, 116, 255, 0.55);
+}
+
+.chat-toggle.is-thinking {
+  opacity: 0.85;
+}
+
+@keyframes voicePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(166, 116, 255, 0.45), 0 14px 34px rgba(0, 0, 0, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(166, 116, 255, 0), 0 14px 34px rgba(0, 0, 0, 0.4); }
+}
+
 .chat-toggle::before {
   content: '';
   position: absolute;
@@ -824,17 +859,43 @@ watch(isOpen, async (val) => {
   .ai-assistant {
     bottom: 1.1rem;
     right: 1.1rem;
+    bottom: calc(1.1rem + env(safe-area-inset-bottom, 0px));
+    right: calc(1.1rem + env(safe-area-inset-right, 0px));
   }
 
   [dir='rtl'] .ai-assistant {
     right: auto;
     left: 1.1rem;
+    left: calc(1.1rem + env(safe-area-inset-left, 0px));
   }
 
   .chat-window {
     width: calc(100vw - 2.2rem);
+    max-width: calc(100vw - 2.2rem);
     right: 0;
     max-height: 78vh;
+    max-height: 78dvh;
+  }
+
+  .chat-messages {
+    min-height: 120px;
+    padding: 1rem;
+  }
+
+  .chat-input-area {
+    padding: 0.8rem 0.9rem;
+    padding-bottom: calc(0.8rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .chat-input {
+    min-width: 0;
+    font-size: 1rem;
+  }
+
+  .chat-mic,
+  .chat-send {
+    width: 44px;
+    height: 44px;
   }
 
   .chat-toggle {
@@ -855,6 +916,15 @@ watch(isOpen, async (val) => {
   .speaking-bars span {
     animation: none;
     transition: none;
+  }
+
+  .chat-toggle.is-listening {
+    border: 1px solid var(--accent);
+  }
+
+  .chat-toggle.is-speaking {
+    background: var(--accent);
+    color: var(--on-accent);
   }
 
   .speaking-bars span {

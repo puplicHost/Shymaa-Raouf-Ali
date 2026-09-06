@@ -4,6 +4,7 @@ import {
   createVoiceService,
   prepareTextForSpeech,
   pickVoice,
+  analyzeTranscriptLang,
   VState,
 } from '../src/services/voice-service.js'
 import * as assistantEngine from '../src/services/assistant-engine.js'
@@ -147,6 +148,20 @@ describe('pickVoice', () => {
   })
 })
 
+describe('analyzeTranscriptLang', () => {
+  it('classifies clearly-Arabic, clearly-English and mixed input', () => {
+    expect(analyzeTranscriptLang('مين شيماء؟')).toBe('ar')
+    expect(analyzeTranscriptLang('show me her skills')).toBe('en')
+    expect(analyzeTranscriptLang('شيماء skills')).toBe('mixed')
+    expect(analyzeTranscriptLang('')).toBeNull()
+    expect(analyzeTranscriptLang('😊 123')).toBeNull()
+  })
+
+  it('does not let one stray word flip the message', () => {
+    expect(analyzeTranscriptLang('قوليلي عن مهاراتها يا حبيبي please')).toBe('ar')
+  })
+})
+
 describe('voice session state machine', () => {
   it('is a safe no-op without browser APIs', () => {
     uninstallMocks()
@@ -241,6 +256,53 @@ describe('voice session state machine', () => {
   })
 })
 
+describe('recognition language strategy', () => {
+  it('defaults from browser locale, then adapts per heard turn', () => {
+    // dom-stub navigator is en-US: session starts in English, no hardcoded ar.
+    const { svc } = makeService()
+    svc.startSession()
+    expect(svc.recognitionLang).toBe('en')
+    expect(MockRecognition.instances[0].lang).toBe('en-US')
+    // Clearly-Arabic turn flips the recognizer for the next listen…
+    MockRecognition.instances[0].onresult(finalResultEvent('مين شيماء؟'))
+    expect(svc.recognitionLang).toBe('ar')
+    // …mixed turns keep whatever was set.
+    svc.endSession()
+    svc.startSession()
+    expect(MockRecognition.instances[0].lang).toBe('ar-EG')
+  })
+
+  it('explicit session language wins over the default', () => {
+    const { svc } = makeService()
+    svc.startSession('ar')
+    expect(svc.recognitionLang).toBe('ar')
+    expect(MockRecognition.instances[0].lang).toBe('ar-EG')
+  })
+})
+
+describe('TTS voice follows the answer language', () => {
+  const AR_EG = { lang: 'ar-EG', name: 'Arabic Egypt' }
+  const EN = { lang: 'en-US', name: 'English US' }
+
+  it('uses an Arabic voice for Arabic answers, English for English', () => {
+    installMocks([EN, AR_EG])
+    const { svc } = makeService()
+    svc.speak('أكيد، أقدر أعرفك على مشاريع شيماء الكثيرة والمتنوعة جدا')
+    expect(MockUtterance.last.voice).toBe(AR_EG)
+    expect(MockUtterance.last.lang).toBe('ar-EG')
+    expect(MockUtterance.last.rate).toBe(0.95)
+    svc.speak("Sure! I can show you Shymaa's many different projects today")
+    expect(MockUtterance.last.voice).toBe(EN)
+    expect(MockUtterance.last.lang).toBe('en-US')
+    expect(MockUtterance.last.rate).toBe(1)
+  })
+
+  it('interrupt on idle returns false and changes nothing', () => {
+    const { svc } = makeService()
+    expect(svc.interrupt()).toBe(false)
+    expect(svc.state).toBe(VState.IDLE)
+  })
+})
 describe('local core independence (AI kill-switch observable behavior)', () => {
   it('local answers, context, follow-ups and actions work with AI failing', async () => {
     globalThis.fetch = vi.fn(async () => {

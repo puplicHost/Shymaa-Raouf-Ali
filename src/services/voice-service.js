@@ -32,10 +32,12 @@ export const VState = Object.freeze({
 const DEDUPE_WINDOW_MS = 1800
 const SILENCE_MS = 2600
 
-// Conservative, human-paced speech settings (Arabic-friendly).
-const TTS_RATE = 0.95
-const TTS_PITCH = 1
-const TTS_VOLUME = 1
+// Conservative, human-paced speech settings per language (Arabic-friendly).
+// Kept as module constants (not UI): tweak here, never in components.
+const TTS_SETTINGS = {
+  ar: { rate: 0.95, pitch: 1, volume: 1 },
+  en: { rate: 1.0, pitch: 1, volume: 1 },
+}
 
 // Recognition errors that mean "do not retry automatically" (permission or
 // hardware problems). Anything else is treated as transient.
@@ -47,6 +49,24 @@ const FATAL_RECOGNITION_ERRORS = new Set([
 
 function isArabic(text) {
   return detectLanguage(text) === 'ar'
+}
+
+/**
+ * Script analysis of a transcript (or any text): 'ar' when clearly Arabic,
+ * 'en' when clearly Latin, 'mixed' when both scripts are substantial, null
+ * when there are no letters at all. Used to adapt recognition language and
+ * to pick the TTS voice per answer. Deliberately conservative: one stray
+ * word never flips the whole message.
+ */
+export function analyzeTranscriptLang(text) {
+  const s = String(text || '')
+  const ar = (s.match(/[\u0600-\u06FF]/g) || []).length
+  const en = (s.match(/[A-Za-z]/g) || []).length
+  const total = ar + en
+  if (total === 0) return null
+  if (ar / total > 0.7) return 'ar'
+  if (en / total > 0.7) return 'en'
+  return 'mixed'
 }
 
 function speechRecognitionAvailable() {
@@ -149,6 +169,10 @@ export function createVoiceService({ onTranscript, onStateChange }) {
   let disposed = false
   let sessionActive = false
   let sessionToken = 0
+  // Adaptive recognition language for the session ('ar' | 'en'). Never
+  // hardcoded per turn: explicit arg wins, otherwise the last clearly-heard
+  // language persists, otherwise the browser locale decides the first turn.
+  let recLang = null
   let silenceTimer = null
   let lastFinal = null
   let lastFinalAt = 0
@@ -204,6 +228,14 @@ export function createVoiceService({ onTranscript, onStateChange }) {
     lastFinal = text
     lastFinalAt = now
 
+    // Adaptive recognition language: a clearly-Arabic / clearly-English turn
+    // retunes the recognizer for the NEXT listen (mixed turns keep current).
+    // The transcript itself is never rewritten.
+    const heard = analyzeTranscriptLang(text)
+    if ((heard === 'ar' || heard === 'en') && heard !== recLang) {
+      recLang = heard
+    }
+
     // If we're mid-request, don't start another.
     if (state.current === VState.PROCESSING || state.current === VState.RESPONDING) {
       return
@@ -215,7 +247,14 @@ export function createVoiceService({ onTranscript, onStateChange }) {
     if (onTranscript) onTranscript(text)
   }
 
-  function startRecognition(lang) {
+  // Recognition locale follows the adaptive session language (NOT a fixed
+  // ar-EG): English speech must be recognized as English. The browser API
+  // has no reliable auto-detect, so we track it per session instead.
+  function recognitionLocale() {
+    return recLang === 'ar' ? 'ar-EG' : 'en-US'
+  }
+
+  function startRecognition() {
     if (!speechRecognitionAvailable() || disposed) return false
     if (!sessionActive) return false
     if (state.current === VState.PROCESSING || state.current === VState.RESPONDING) return false
@@ -293,7 +332,7 @@ export function createVoiceService({ onTranscript, onStateChange }) {
       }
     }
     try {
-      recognition.lang = lang === 'ar' ? 'ar-EG' : 'en-US'
+      recognition.lang = recognitionLocale()
     } catch {
       /* ignore */
     }
@@ -309,6 +348,23 @@ export function createVoiceService({ onTranscript, onStateChange }) {
     }
   }
 
+  function defaultRecLang() {
+    try {
+      const nav = typeof navigator !== 'undefined' ? navigator.language || '' : ''
+      return String(nav).toLowerCase().startsWith('ar') ? 'ar' : 'en'
+    } catch {
+      return 'ar'
+    }
+  }
+
+  // TTS language follows the ANSWER text (majority script), not the session:
+  // an English answer gets an English voice even inside an Arabic session.
+  function ttsLangForText(text) {
+    const kind = analyzeTranscriptLang(text)
+    if (kind === 'ar' || kind === 'en') return kind
+    return recLang === 'en' ? 'en' : 'ar'
+  }
+
   function startSession(lang) {
     if (!speechRecognitionAvailable() || disposed) {
       setState(VState.IDLE)
@@ -317,9 +373,14 @@ export function createVoiceService({ onTranscript, onStateChange }) {
     if (sessionActive && (state.current === VState.LISTENING || state.current === VState.RESPONDING || state.current === VState.PROCESSING)) {
       return true // already in a live session
     }
+    if (lang === 'ar' || lang === 'en') {
+      recLang = lang
+    } else if (!recLang) {
+      recLang = defaultRecLang()
+    }
     sessionActive = true
     sessionToken += 1
-    return startRecognition(lang === 'en' ? 'en' : 'ar')
+    return startRecognition()
   }
 
   function endSession() {
@@ -333,7 +394,7 @@ export function createVoiceService({ onTranscript, onStateChange }) {
   return {
     /** Begins a continuous voice session (mic stays live across turns). */
     startSession(lang) {
-      return startSession(typeof lang === 'string' ? lang : 'ar')
+      return startSession(typeof lang === 'string' ? lang : null)
     },
 
     /** One-shot listen (kept for backward compatibility). */
@@ -346,7 +407,7 @@ export function createVoiceService({ onTranscript, onStateChange }) {
       if (state.current !== VState.IDLE && state.current !== VState.STOPPED && state.current !== VState.ERROR) {
         return false
       }
-      return startSession('ar') // default to Arabic; refined per transcript
+      return startSession(null) // language resolves inside (explicit > heard > browser)
     },
 
     stopListening() {
@@ -375,7 +436,7 @@ export function createVoiceService({ onTranscript, onStateChange }) {
         // Leave RESPONDING first: startRecognition refuses to mic while the
         // state still claims we are speaking.
         setState(VState.LISTENING)
-        startRecognition('ar')
+        startRecognition()
       } else {
         setState(VState.IDLE)
       }
@@ -388,12 +449,14 @@ export function createVoiceService({ onTranscript, onStateChange }) {
       if (!spoken) return false
       stopSynthesis()
       const token = sessionToken
-      const langTag = isArabic(text) ? 'ar-EG' : 'en-US'
+      const ttsLang = ttsLangForText(text)
+      const langTag = ttsLang === 'ar' ? 'ar-EG' : 'en-US'
+      const settings = TTS_SETTINGS[ttsLang] || TTS_SETTINGS.en
       const utterance = new SpeechSynthesisUtterance(spoken)
       utterance.lang = langTag
-      utterance.rate = TTS_RATE
-      utterance.pitch = TTS_PITCH
-      utterance.volume = TTS_VOLUME
+      utterance.rate = settings.rate
+      utterance.pitch = settings.pitch
+      utterance.volume = settings.volume
       const voice = pickVoice(langTag)
       if (voice) {
         try {
@@ -413,9 +476,10 @@ export function createVoiceService({ onTranscript, onStateChange }) {
         currentUtterance = null
         // Continuous session: mic resumes only after TTS fully ends,
         // so the assistant never hears its own voice (no feedback loop).
+        // It resumes in the session recognition language.
         if (sessionActive) {
           setState(VState.LISTENING)
-          startRecognition(isArabic(text) ? 'ar' : 'en')
+          startRecognition()
         } else {
           setState(VState.IDLE)
         }
@@ -478,6 +542,9 @@ export function createVoiceService({ onTranscript, onStateChange }) {
     },
     get session() {
       return sessionActive
+    },
+    get recognitionLang() {
+      return recLang
     },
     get available() {
       return speechRecognitionAvailable() || speechSynthesisAvailable()
