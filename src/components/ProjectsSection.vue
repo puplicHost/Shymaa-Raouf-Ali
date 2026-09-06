@@ -11,7 +11,7 @@ const { t, isAr } = useLocale()
 const projects = [
   {
     name: 'Jarrash Sabia',
-    nameAr: 'جرش صبية',
+    nameAr: 'جرش صبيا',
     industry: 'E-commerce',
     industryAr: 'تجارة إلكترونية',
     desc: 'Full social media management for a furniture e-commerce brand targeting the Saudi market.',
@@ -20,7 +20,7 @@ const projects = [
   },
   {
     name: 'Wagf Momnah',
-    nameAr: 'وقف ممنوع',
+    nameAr: 'وقف مؤمنة',
     industry: 'Social / NGO',
     industryAr: 'اجتماعي / جمعية',
     desc: 'Content strategy and community management for a social initiative brand.',

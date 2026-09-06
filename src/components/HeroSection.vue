@@ -44,6 +44,13 @@ onMounted(() => {
                 <IconGlyph :path="ui.arrowRight" :size="15" class="arrow" />
               </a>
               <a href="#contact" class="btn btn-ghost">{{ t('hero.ctaContact') }}</a>
+              <a
+                href="/ALSHYMAA%20RAOUF%20ALI.pdf"
+                download="ALSHYMAA RAOUF ALI.pdf"
+                class="btn btn-ghost"
+              >
+                {{ t('hero.ctaCv') }}
+              </a>
             </div>
           </div>
 
@@ -63,7 +70,7 @@ onMounted(() => {
           <span>MEDIA</span>
         </div>
         <div class="deco-label">
-          <span class="deco-label-text">{{ isAr ? 'مصممة محتوى' : 'Content Designer' }}</span>
+          <span class="deco-label-text">{{ isAr ? 'صانعة محتوى' : 'Content Designer' }}</span>
         </div>
         <div class="deco-keywords">
           <span>STRATEGY</span>

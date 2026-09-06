@@ -191,7 +191,7 @@ const messages = ref([
   {
     role: 'assistant',
     text: navigator.language.startsWith('ar')
-      ? '!مرحباً أنا المساعد الذكي لموقع شيماء. اسأل عن مهاراتها ومشاريعها وطريقة شغلها'
+      ? 'مرحباً! أنا المساعد الذكي لموقع شيماء. اسأل عن مهاراتها ومشاريعها وطريقة شغلها'
       : "Hi! I'm Shymaa's portfolio assistant. Ask me about her skills, projects, or how she works!",
   },
 ])

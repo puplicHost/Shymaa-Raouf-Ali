@@ -23,19 +23,19 @@ const skills = [
     en: 'Content Calendars & Planning',
     ar: 'تقويم المحتوى والتخطيط',
     enDesc: 'Structured monthly calendars for a consistent brand voice.',
-    arDesc: 'تقويمات شهرية منظمة لصوت علامة ثابت.',
+    arDesc: 'تقويمات شهرية منظمة لصوت علامة تجارية ثابت.',
   },
   {
     en: 'Reels & Short-form Content',
     ar: 'الريلز والمحتوى القصير',
     enDesc: 'Eye-catching short videos designed for maximum engagement.',
-    arDesc: 'فيديوهات قصيرة لافتة مصممة لأقصى تفاعل.',
+    arDesc: 'فيديوهات قصيرة لافتة تحقق أقصى تفاعل.',
   },
   {
     en: 'Copywriting & Captions',
     ar: 'كتابة النصوص والكابشنز',
     enDesc: 'Persuasive, on-brand copy that drives conversations.',
-    arDesc: 'نصوص مؤثرة وعلى هوية العلامة تحرّك الحوار.',
+    arDesc: 'نصوص مؤثرة تعكس هوية العلامة وتحرّك الحوار.',
   },
   {
     en: 'Creative Content Ideas',
@@ -47,7 +47,7 @@ const skills = [
     en: 'Audience & Competitor Research',
     ar: 'بحث الجمهور والمنافسين',
     enDesc: 'Data-driven insights to refine targeting and positioning.',
-    arDesc: 'رؤى مبنية على البيانات لضبط الاستهداف والتوضع.',
+    arDesc: 'رؤى مبنية على البيانات لضبط الاستهداف والتموضع.',
   },
   {
     en: 'Digital Marketing',
