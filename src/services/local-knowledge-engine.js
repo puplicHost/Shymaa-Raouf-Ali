@@ -5,6 +5,8 @@ import {
   detectLanguage,
   removeStopWords,
   preprocessQuery,
+  stripDefiniteArticle,
+  tokensEquivalent,
 } from './text-utils.js'
 
 const intents = knowledgeBase.intents || []
@@ -133,12 +135,12 @@ function cosineSimilarity(vecA, vecB) {
  * "good at" and gain unearned confidence. The boost targets long questions.
  */
 export function jaccardMatch(queryTokens, intentPhrases, lang = 'ar') {
-  const qSet = new Set(queryTokens || [])
+  const qSet = new Set((queryTokens || []).map(stripDefiniteArticle))
   if (qSet.size < 2 || !intentPhrases || intentPhrases.length === 0) return 0
   let best = 0
   for (const phrase of intentPhrases) {
     if (!phrase) continue
-    const pTokens = removeStopWords(tokenize(phrase), lang)
+    const pTokens = removeStopWords(tokenize(phrase), lang).map(stripDefiniteArticle)
     if (pTokens.length === 0) continue
     const pSet = new Set(pTokens)
     let inter = 0
@@ -157,22 +159,100 @@ export function jaccardMatch(queryTokens, intentPhrases, lang = 'ar') {
 // least one NON-stopword token with the query.
 // ---------------------------------------------------------------------------
 
-function intentLists(intent, lang) {
-  const k = intent.keywords || {}
-  const s = intent.synonyms || {}
-  const q = intent.questions || {}
-  const a = intent.aliases || {}
-  // lang 'ar' covers MSA + Egyptian + Gulf lists (detectLanguage only yields ar/en).
-  const pick = (o) =>
-    lang === 'ar'
-      ? [...(o.ar || []), ...(o['ar-eg'] || []), ...(o['ar-gulf'] || [])]
-      : o[lang] || o.en || []
-  return {
-    keywords: pick(k).map(normalizeText),
-    synonyms: pick(s).map(normalizeText),
-    questions: pick(q).map(normalizeText),
-    aliases: (a[lang] || a.en || []).map(normalizeText),
+// ---------------------------------------------------------------------------
+// Precomputed retrieval index (built ONCE at module load).
+// Previously every query re-normalized ~5000 phrases, re-tokenized them, and
+// rebuilt TF-IDF structures per intent. Now all static work happens here:
+// normalized + tokenized phrase lists, TF-IDF idf/doc vectors, and an
+// inverted token -> intent index for candidate filtering. Per-query work is
+// normalization of the query itself plus scoring of candidate intents only.
+// ---------------------------------------------------------------------------
+
+function precomputePhrases(rawList) {
+  const out = []
+  for (const raw of rawList || []) {
+    const t = normalizeText(raw)
+    if (!t) continue
+    // tok mirrors the old per-query `tokenize(normalizedPhrase)` exactly.
+    out.push({ t, tok: tokenize(t) })
   }
+  return out
+}
+
+function buildIntentRecord(intent) {
+  const rec = { intent, byLang: {} }
+  for (const lang of ['ar', 'en']) {
+    const k = intent.keywords || {}
+    const s = intent.synonyms || {}
+    const q = intent.questions || {}
+    const a = intent.aliases || {}
+    // lang 'ar' covers MSA + Egyptian + Gulf lists (detectLanguage only yields ar/en).
+    const pick = (o) =>
+      lang === 'ar'
+        ? [...(o.ar || []), ...(o['ar-eg'] || []), ...(o['ar-gulf'] || [])]
+        : o[lang] || o.en || []
+    const L = {
+      keywords: precomputePhrases(pick(k)),
+      synonyms: precomputePhrases(pick(s)),
+      questions: precomputePhrases(pick(q)),
+      aliases: precomputePhrases(a[lang] || a.en || []),
+    }
+    // TF-IDF documents over the searchable union, in the same order as before.
+    const docs = [...L.synonyms, ...L.aliases, ...L.keywords, ...L.questions]
+      .map((e) => removeStopWords(e.tok, lang))
+      .filter((d) => d.length > 0)
+    L.idf = buildIDF(docs)
+    L.docVecs = docs.map((d) => tfidfVector(termFrequency(d), L.idf))
+    rec.byLang[lang] = L
+  }
+  return rec
+}
+
+const RECORDS = intents.map(buildIntentRecord)
+
+// Inverted index: non-stopword token -> intent record indices, per language.
+// A query token hits a key on the same prefix rule the scorer uses, so any
+// intent that could score above zero is always retrieved (superset filter).
+function buildTokenIndex(lang) {
+  const idx = new Map()
+  const addKey = (key, i) => {
+    let s = idx.get(key)
+    if (!s) {
+      s = new Set()
+      idx.set(key, s)
+    }
+    s.add(i)
+  }
+  for (let i = 0; i < RECORDS.length; i++) {
+    const L = RECORDS[i].byLang[lang]
+    for (const list of [L.keywords, L.synonyms, L.questions, L.aliases]) {
+      for (const e of list) {
+        for (const t of removeStopWords(e.tok, lang)) {
+          addKey(t, i)
+          // Canonical form too, so البنوك finds بنوك-indexed intents and back.
+          const c = stripDefiniteArticle(t)
+          if (c !== t) addKey(c, i)
+        }
+      }
+    }
+  }
+  return idx
+}
+
+const TOKEN_INDEX = { ar: buildTokenIndex('ar'), en: buildTokenIndex('en') }
+
+function candidateIntents(lang, queryTokens) {
+  const out = new Set()
+  const index = TOKEN_INDEX[lang]
+  if (!index || queryTokens.length === 0) return out
+  for (const q of queryTokens) {
+    for (const [key, ids] of index) {
+      if (tokensEquivalent(key, q)) {
+        for (const id of ids) out.add(id)
+      }
+    }
+  }
+  return out
 }
 
 /**
@@ -180,20 +260,20 @@ function intentLists(intent, lang) {
  * - Exact substring for multi-token phrases -> strong (1.0)
  * - Token overlap for shared, non-stopword tokens -> proportional
  * - Returns { match, coverage }
+ * Takes precomputed { t, tok } entries (identical math to the old version,
+ * without re-tokenizing phrases on every query).
  */
-function scoreList(normalizedQuery, queryTokens, lang, phrases) {
-  if (!phrases || phrases.length === 0) return { match: 0, coverage: 0 }
+function scoreList(normalizedQuery, queryTokens, lang, cached) {
+  if (!cached || cached.length === 0) return { match: 0, coverage: 0 }
   let bestMatch = 0
   let covered = new Set()
   // Trailing punctuation (؟ ? ! .) must not break exact-phrase matching:
   // "فين اشتغلت" and "فين اشتغلت؟" are the same question.
   const cleanQuery = normalizedQuery.replace(/[؟?!.,،;:\s]+$/u, '')
 
-  for (const p of phrases) {
-    if (!p) continue
-    const pTokens = tokenize(p) // raw phrase tokens (punctuation-free, normalized)
+  for (const { t: p, tok: pTokens } of cached) {
     if (pTokens.length === 0) continue
-    const pFiltered = removeStopWords(pTokens, lang).filter((t) => queryTokens.some((qt) => qt.startsWith(t) || t.startsWith(qt)))
+    const pFiltered = removeStopWords(pTokens, lang).filter((t) => queryTokens.some((qt) => tokensEquivalent(qt, t)))
     if (pFiltered.length === 0) continue
 
     // Only tokens that actually matched are "covered"; stop words inside the
@@ -238,17 +318,17 @@ function matchConceptIntent(normalizedQuery, lang) {
   let best = null
   let bestLen = 0
 
-  for (const intent of intents) {
-    const { aliases, synonyms } = intentLists(intent, lang)
-    const phrases = [...aliases, ...synonyms].filter(Boolean)
+  for (const rec of RECORDS) {
+    const L = rec.byLang[lang]
+    const phrases = [...L.aliases, ...L.synonyms]
 
-    for (const p of phrases) {
-      const cp = normalizeText(p)
+    for (const e of phrases) {
+      const cp = e.t
       if (!cp) continue
       // Exact or full-phrase containment.
       if (cp === normalizedQuery) {
         // Exact match always wins.
-        return intent.id
+        return rec.intent.id
       }
       // Multi-word containment only (avoids "about" hijacking a longer query).
       const multiP = cp.split(/\s+/).length > 1
@@ -256,9 +336,34 @@ function matchConceptIntent(normalizedQuery, lang) {
       if (multiP && multiQ && (normalizedQuery.includes(cp) || cp.includes(normalizedQuery))) {
         if (cp.length > bestLen) {
           bestLen = cp.length
-          best = intent.id
+          best = rec.intent.id
         }
       }
+    }
+  }
+  return best
+}
+
+/**
+ * Cached variant of jaccardMatch over precomputed phrase entries.
+ * Same math (exact token-set Jaccard, single-token queries excluded).
+ */
+function jaccardCached(qSet, cachedLists, lang) {
+  if (qSet.size < 2) return 0
+  const qCanon = new Set([...qSet].map(stripDefiniteArticle))
+  if (qCanon.size < 2) return 0
+  let best = 0
+  for (const list of cachedLists) {
+    for (const e of list) {
+      const pTokens = removeStopWords(e.tok, lang).map(stripDefiniteArticle)
+      if (pTokens.length === 0) continue
+      const pSet = new Set(pTokens)
+      let inter = 0
+      for (const t of pSet) if (qSet.has(t)) inter++
+      if (inter === 0) continue
+      const union = new Set([...qSet, ...pSet]).size
+      const score = union === 0 ? 0 : inter / union
+      if (score > best) best = score
     }
   }
   return best
@@ -301,28 +406,29 @@ export function searchLocal(query) {
     if (intent) return { found: true, match: intent, score: 1.0, source: intent.id, lang }
   }
 
-  // Layer 2: fuzzy ranking
+  // Layer 2: fuzzy ranking over candidate intents only. The inverted index
+  // is a proven superset filter (any intent able to score above zero shares a
+  // prefix-overlapping non-stopword token with the query), so skipped intents
+  // would all score exactly 0 and can never win.
+  const qSet = new Set(tokens)
+  const queryTF = termFrequency(tokens)
   const ranked = []
-  for (const intent of intents) {
-    const { keywords, synonyms, questions, aliases } = intentLists(intent, lang)
+  for (const i of candidateIntents(lang, tokens)) {
+    const rec = RECORDS[i]
+    const intent = rec.intent
+    const { keywords, synonyms, questions, aliases } = rec.byLang[lang]
 
     const kw = scoreList(normalizedQuery, tokens, lang, keywords)
     const sy = scoreList(normalizedQuery, tokens, lang, synonyms)
     const qu = scoreList(normalizedQuery, tokens, lang, questions)
     const al = scoreList(normalizedQuery, tokens, lang, aliases)
 
-    // Similarity via TF-IDF over the searchable union (conservative).
-    const searchable = [...synonyms, ...aliases, ...keywords, ...questions]
-    const docs = searchable
-      .map((s) => removeStopWords(tokenize(s), lang))
-      .filter((d) => d.length > 0)
+    // Similarity via TF-IDF with precomputed idf/doc vectors (same math).
+    const L = rec.byLang[lang]
     let similarity = 0
-    if (docs.length > 0) {
-      const idf = buildIDF(docs)
-      const queryTF = termFrequency(tokens)
-      const queryVec = tfidfVector(queryTF, idf)
-      for (const doc of docs) {
-        const vec = tfidfVector(termFrequency(doc), idf)
+    if (L.docVecs.length > 0) {
+      const queryVec = tfidfVector(queryTF, L.idf)
+      for (const vec of L.docVecs) {
         similarity = Math.max(similarity, cosineSimilarity(queryVec, vec))
       }
     }
@@ -334,10 +440,14 @@ export function searchLocal(query) {
     const quScore = qu.match >= 1 ? 1.0 : qu.match * 0.8
     const bestRaw = Math.max(kw.match * 0.9, sy.match * 1.0, al.match * 1.0, quScore)
     const bestCoverage = Math.max(kw.coverage, sy.coverage, qu.coverage, al.coverage)
-    const jaccard = jaccardMatch(tokens, [...keywords, ...synonyms, ...aliases], lang)
+    const jaccard = jaccardCached(qSet, [keywords, synonyms, aliases], lang)
     const composite = (bestRaw * (0.5 + 0.5 * bestCoverage)) + (jaccard * 0.3)
 
     ranked.push({ intent, composite, keyword: kw.match, synonym: sy.match, question: qu.match, similarity, jaccard })
+  }
+
+  if (ranked.length === 0) {
+    return { found: false, match: null, score: 0, source: null, lang }
   }
 
   ranked.sort((a, b) => {

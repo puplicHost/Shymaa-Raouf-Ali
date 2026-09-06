@@ -78,9 +78,12 @@ function expandShorthand(text) {
  * ta marbuta and alef maqsura. For English, just lowercases. Also expands a
  * tiny set of unambiguous shorthand forms and collapses punctuation/whitespace
  * so "contact info.", "u want info" and "info" all reach the same tokens.
+ * Arabic-block punctuation (؟ ، ؛) is treated as a separator so tokens never
+ * carry trailing marks ("البنوك؟" -> "البنوك").
  */
 export function normalizeText(text) {
   let result = expandShorthand(text)
+  result = result.replace(/[؟،؛]/g, ' ')
   result = result.replace(/[^\p{L}\p{N}\s\u0600-\u06FF]/gu, ' ')
   for (const [pattern, replacement] of ARABIC_NORMALIZATIONS) {
     result = result.replace(pattern, replacement)
@@ -95,6 +98,46 @@ export function tokenize(text) {
   return normalizeText(text)
     .split(/\s+/)
     .filter((t) => t.length > 1)
+}
+
+// Words where a leading ال is radical (part of the word itself), never a
+// detachable definite article. Listed in NORMALIZED form because stripping
+// always runs on normalized tokens.
+const ARTICLE_GUARD = new Set([
+  'الله', 'اللهم', 'الذي', 'التي', 'الذين', 'اللذين', 'اللتين',
+  'اللاتي', 'اللواتي', 'الان', 'الياس',
+])
+
+const ARTICLE_PREFIXES = ['وال', 'بال', 'كال', 'فال', 'لل', 'ال']
+
+/**
+ * Strips one Arabic definite-article prefix (ال، لل، بال، كال، وال، فال).
+ * Conservative: guarded words are untouched and the remainder must keep at
+ * least 2 characters, so بنك/البنك/بنوك/البنوك collapse while pronouns and
+ * divine names (التي، الذي، الله) are preserved. Used for MATCHING
+ * equivalence only — token streams themselves are never rewritten.
+ */
+export function stripDefiniteArticle(token) {
+  const t = String(token || '')
+  if (t.length < 4 || ARTICLE_GUARD.has(t)) return t
+  for (const p of ARTICLE_PREFIXES) {
+    if (t.startsWith(p) && t.length - p.length >= 2) {
+      const rest = t.slice(p.length)
+      if (!ARTICLE_GUARD.has(rest)) return rest
+    }
+  }
+  return t
+}
+
+/**
+ * Token equivalence for retrieval: identical, prefix-related (existing
+ * behavior), or equal after article stripping (بنوك == البنوك).
+ */
+export function tokensEquivalent(a, b) {
+  if (a === b) return true
+  if (!a || !b) return false
+  if (a.startsWith(b) || b.startsWith(a)) return true
+  return stripDefiniteArticle(a) === stripDefiniteArticle(b)
 }
 
 /**

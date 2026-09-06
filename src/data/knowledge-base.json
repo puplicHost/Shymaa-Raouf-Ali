@@ -3,7 +3,7 @@
     "version": 16,
     "languages": ["ar", "ar-eg", "ar-gulf", "en"],
     "lastUpdated": "2026-09-06",
-    "totalQuestions": 5055
+    "totalQuestions": 5034
   },
   "followUpPool": {
     "identity": [
@@ -13,14 +13,6 @@
       { "label": { "ar": "🌍 اشتغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
       { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
       { "label": { "ar": "📧 عايز أتواصل معاها", "en": "📧 I want to contact her" }, "intent": "contact" }
-    ],
-    "work": [
-      { "label": { "ar": "🌍 شغلت في صناعات إيه؟", "en": "🌍 Which industries has she worked in?" }, "intent": "industries" },
-      { "label": { "ar": "🛠️ إزاي بتشتغل؟", "en": "🛠️ How does she approach work?" }, "intent": "approach" },
-      { "label": { "ar": "📈 وريني المشاريع", "en": "📈 Show me the projects" }, "intent": "projects" },
-      { "label": { "ar": "📚 شيماء بتتعلم إيه؟", "en": "📚 What is she learning?" }, "intent": "education" },
-      { "label": { "ar": "💪 إيه مهاراتها؟", "en": "💪 What are her skills?" }, "intent": "skills" },
-      { "label": { "ar": "📊 شاورلي دراسات الحالة", "en": "📊 Tell me about the case studies" }, "intent": "caseStudies" }
     ],
     "projects": [
       { "label": { "ar": "📊 شاورلي دراسات الحالة", "en": "📊 Tell me about the case studies" }, "intent": "caseStudies" },
@@ -143,7 +135,7 @@
           "مين الشخصية دي؟", "عرفني بنفسك", "حكيني عن شيماء", "شيماء بتعمل إيه؟", "ايه هو شيماء؟",
           "مين هي شيماء رؤوف؟", "شيماء دي مين بالضبط؟", "عرفني أكتر عن شيماء", "مين اللي قدامي؟", "ايه هي قصة شيماء؟",
           "من هي شيماء رؤوف علي؟", "حابة أعرف مين شيماء", "عايزة أعرف شيماء", "قولي لي مين شيماء", "شيماء دي مين في السوشيال ميديا؟",
-          "عرفني بشيماء رؤوف", "ايه الخلفية بتاعة شيماء؟", "شيماء اشتغلت في إيه؟", "مين هي شيماء رؤوف؟", "عايز أعرف عن شيماء",
+          "عرفني بشيماء رؤوف", "ايه الخلفية بتاعة شيماء؟", "مين هي شيماء رؤوف؟", "عايز أعرف عن شيماء",
           "حابب أتعرف على شيماء", "قولي لي عن شيماء", "من هي صاحبة الموقع؟", "ايه هي المهنة بتاعة شيماء؟", "شيماء بتقدم إيه؟",
           "مين هي شيماء في مجالها؟", "عرفني على شيماء", "ايه هو شيماء رؤوف؟", "مين شيماء رؤوف علي؟", "شيماء رؤوف دي مين؟",
           "عايز أعرف مين شيماء", "مين هي اللي بتشتغل هنا؟", "مين هي شيماء في السوشيال ميديا؟", "شيماء عندها خبرة في إيه؟", "عرفني بشخصية شيماء"
@@ -391,7 +383,7 @@
           "Introduce Shymaa Raouf", "What is Shymaa's story?", "What does Shymaa work in?", "Who is Shymaa Raouf Ali?", "I'd like to know about Shymaa",
           "I want to know about Shymaa", "Tell me about her", "Who owns this portfolio?", "What does Shymaa do professionally?", "What does Shymaa offer?",
           "Who is Shymaa in her field?", "Tell me about Shymaa", "Who is Shymaa Raouf?", "Who is Shymaa Raouf Ali?", "Who is this Shymaa?",
-          "I want to know who Shymaa is", "Who is the person working here?", "Who is Shymaa in social media?", "What is Shymaa's experience?", "Tell me about Shymaa's personality"
+          "I want to know who Shymaa is", "Who is the person working here?", "Who is Shymaa in social media?", "Tell me about Shymaa's personality"
         ,
           "Tell me about who Shymaa is?",
           "Tell me about Shymaa Raouf Ali?",
@@ -1140,7 +1132,6 @@
         ,
           "Tell me about her work?",
           "Tell me about her portfolio?",
-          "Tell me about the brands she worked with?",
           "Tell me about her past projects?",
           "Tell me about samples of her work?",
           "Tell me about her selected work?",
@@ -1152,7 +1143,6 @@
           "Can you tell me about her projects?",
           "Can you tell me about her work?",
           "Can you tell me about her portfolio?",
-          "Can you tell me about the brands she worked with?",
           "Can you tell me about her past projects?",
           "Can you tell me about samples of her work?",
           "Can you tell me about her selected work?",
@@ -1164,7 +1154,6 @@
           "I'd like to know about her projects?",
           "I'd like to know about her work?",
           "I'd like to know about her portfolio?",
-          "I'd like to know about the brands she worked with?",
           "I'd like to know about her past projects?",
           "I'd like to know about samples of her work?",
           "I'd like to know about her selected work?",
@@ -1176,7 +1165,6 @@
           "What do you know about her projects?",
           "What do you know about her work?",
           "What do you know about her portfolio?",
-          "What do you know about the brands she worked with?",
           "What do you know about her past projects?",
           "What do you know about samples of her work?",
           "What do you know about her selected work?",
@@ -1188,7 +1176,6 @@
           "Give me details on her projects?",
           "Give me details on her work?",
           "Give me details on her portfolio?",
-          "Give me details on the brands she worked with?",
           "Give me details on her past projects?",
           "Give me details on samples of her work?",
           "Give me details on her selected work?",
@@ -1200,7 +1187,6 @@
           "Could you explain her projects?",
           "Could you explain her work?",
           "Could you explain her portfolio?",
-          "Could you explain the brands she worked with?",
           "Could you explain her past projects?",
           "Could you explain samples of her work?",
           "Could you explain her selected work?",
@@ -1593,16 +1579,16 @@
       },
       "answers": {
         "ar": [
-          "شيماء اشتغلت على مشاريع سوشيال ميديا ومحتوى في مجالات متنوعة، منها:\n• الأثاث والمنزل: أدفراك للأثاث (Adrak Furniture)\n• الرخام: أفاق للرخام (Afaag Marble)\n• الصيدلة والرعاية الصحية: روشيتا الصيدليات (Rosheta Pharmacies)\n• التعليم: سمارت جينيور أكاديمي للغات (Smart Junior English Academy)\n• خدمات التنظيف: ألوان هابي لوك (Alwan Happy Luck)\n• التجارة الإلكترونية وأعمال أخرى: مشاريع سوشيال ميديا متنوعة\n\nالشغل في مجالات مختلفة ساعدها تتعلم إزاي تكيّف المحتوى مع جمهور ومنتجات وشخصيات براند مختلفة.\n\nلا، شيماء مش بتشتغل في البنوك. هي متخصصة في السوشيال ميديا وصناعة المحتوى للعلامات التجارية، ومجالاتها الأساسية الأثاث، الرخام، الصيدليات، التعليم، خدمات التنظيف، والتجارة الإلكترونية.\n\nبالنسبة لسؤالك عن شركة الأثاث: أيوة، شيماء مناسبة جداً. عندها خبرة عملية في مجال الأثاث (أدفراك للأثاث) وفاهمة المحتوى الفاخر وطريقة تقديمه للعلامات التجارية.",
-          "شيماء اشتغلت في الأثاث والرخام والصيدليات والتعليم وخدمات التنظيف والتجارة الإلكترونية — ومش بتشتغل في البنوك.",
-          "🌍 شيماء لفت مجالات كتير: أثاث ورخام وصيدليات وتعليم وتنظيف وتجارة إلكترونية! ولو بتسأل عن البنوك — لا، ده مش مجالها خالص 😄",
-          "السيدة شيماء عملت في قطاعات الأثاث والمنزل والرخام والصيدلة والرعاية الصحية والتعليم وخدمات التنظيف والتجارة الإلكترونية. ونحيطكم علماً بأن العمل المصرفي (البنوك) ليس من ضمن مجالات تخصصها."
+          "لا، شيماء مش بتشتغل في البنوك. هي متخصصة في السوشيال ميديا وصناعة المحتوى للعلامات التجارية، ومجالاتها الأساسية الأثاث، الرخام، الصيدليات، التعليم، خدمات التنظيف، والتجارة الإلكترونية.\n\nشيماء اشتغلت على مشاريع سوشيال ميديا ومحتوى في مجالات متنوعة، منها:\n• الأثاث والمنزل: أدفراك للأثاث (Adrak Furniture)\n• الرخام: أفاق للرخام (Afaag Marble)\n• الصيدلة والرعاية الصحية: روشيتا الصيدليات (Rosheta Pharmacies)\n• التعليم: سمارت جينيور أكاديمي للغات (Smart Junior English Academy)\n• خدمات التنظيف: ألوان هابي لوك (Alwan Happy Luck)\n• التجارة الإلكترونية وأعمال أخرى: مشاريع سوشيال ميديا متنوعة\n\nالشغل في مجالات مختلفة ساعدها تتعلم إزاي تكيّف المحتوى مع جمهور ومنتجات وشخصيات براند مختلفة.\n\nبالنسبة لسؤالك عن شركة الأثاث: أيوة، شيماء مناسبة جداً. عندها خبرة عملية في مجال الأثاث (أدفراك للأثاث) وفاهمة المحتوى الفاخر وطريقة تقديمه للعلامات التجارية.",
+          "لا، شيماء مش بتشتغل في البنوك — هي متخصصة في السوشيال ميديا وصناعة المحتوى، ومجالاتها الأثاث والرخام والصيدليات والتعليم وخدمات التنظيف والتجارة الإلكترونية.",
+          "لا، البنوك مش من مجالات شيماء خالص 😄 شيماء لفت مجالات كتير: أثاث ورخام وصيدليات وتعليم وتنظيف وتجارة إلكترونية! 🌍",
+          "نحيطكم علماً بأن العمل المصرفي (البنوك) ليس من ضمن مجالات تخصص السيدة شيماء. وقد عملت سيادتها في قطاعات الأثاث والمنزل والرخام والصيدلة والرعاية الصحية والتعليم وخدمات التنظيف والتجارة الإلكترونية."
         ],
         "en": [
-          "Shymaa has worked on social media and content projects across different industries, including:\n• Furniture & Home: Adrak Furniture\n• Marble: Afaag Marble\n• Pharmacy & Healthcare: Rosheta Pharmacies\n• Education: Smart Junior English Academy\n• Cleaning Services: Alwan Happy Luck\n• E-commerce & Other Businesses: Various social media projects\n\nWorking across different industries has helped her learn how to adapt content to different audiences, products, and brand personalities.\n\nNo, Shymaa does not work in banking. She specializes in social media and content creation for brands, and her core industries are furniture, marble, pharmacies, education, cleaning services, and e-commerce.\n\nRegarding your question about the furniture company: Yes, Shymaa is very suitable. She has practical experience in the furniture industry (Adrak Furniture) and understands luxury content and how to present it for brands.",
-          "Shymaa has worked in furniture, marble, pharmacies, education, cleaning services, and e-commerce — she does not work in banking.",
-          "🌍 Shymaa has covered so many industries: furniture, marble, pharmacies, education, cleaning, and e-commerce! Banking? Nope — not her field 😄",
-          "Ms. Shymaa has worked across the furniture, marble, pharmacy, education, cleaning services, and e-commerce sectors. Please note that banking is not among her areas of specialization."
+          "No, Shymaa does not work in banking. She specializes in social media and content creation for brands, and her core industries are furniture, marble, pharmacies, education, cleaning services, and e-commerce.\n\nShymaa has worked on social media and content projects across different industries, including:\n• Furniture & Home: Adrak Furniture\n• Marble: Afaag Marble\n• Pharmacy & Healthcare: Rosheta Pharmacies\n• Education: Smart Junior English Academy\n• Cleaning Services: Alwan Happy Luck\n• E-commerce & Other Businesses: Various social media projects\n\nWorking across different industries has helped her learn how to adapt content to different audiences, products, and brand personalities.\n\nRegarding your question about the furniture company: Yes, Shymaa is very suitable. She has practical experience in the furniture industry (Adrak Furniture) and understands luxury content and how to present it for brands.",
+          "No, Shymaa does not work in banking — she specializes in social media and content creation, with core industries in furniture, marble, pharmacies, education, cleaning services, and e-commerce.",
+          "Nope — banking is not Shymaa's field 😄 Shymaa has covered so many industries: furniture, marble, pharmacies, education, cleaning, and e-commerce! 🌍",
+          "Please note that banking is not among Ms. Shymaa's areas of specialization. She has worked across the furniture, marble, pharmacy, education, cleaning services, and e-commerce sectors."
         ]
       },
       "action": { "type": "scroll", "target": "work", "label": "Projects" },
@@ -2753,7 +2739,7 @@
           "خريجة كلية إيه؟", "جامعتها إيه؟", "قسمها إيه؟", "التخصص بتاعها؟", "المؤهل العلمي؟",
           "بتتعلم دلوقتي؟", "عندها دورات؟", "حاصلة على شهادات؟", "ايه هو تعليمها الجامعي؟", "ايه هو خلفيتها الأكاديمية؟",
           "درست إيه؟", "خريجة سنة كام؟", "تقديرها إيه؟", "لغاتها إيه؟", "بتتعلم في جامعة إيه؟",
-          "التعليم المستمر عندها؟", "بتطور نفسها في إيه؟", "بتاخد كورسات؟", "بتتعلم مهارات جديدة؟", "عندها شهادات مهنية؟",
+          "التعليم المستمر عندها؟", "بتطور نفسها في إيه؟", "بتاخد كورسات؟", "بتتعلم مهارات جديدة؟",
           "ايه هو تخصصها؟", "قسم اللغة الفرنسية؟", "خريجة آداب؟", "بتتعلم إزاي؟", "طريقة تعلمها؟",
           "بتقرأ في إيه؟", "مهتمة بتعلم إيه؟", "خلفيتها التعليمية؟", "دراستها الجامعية؟", "عندها تعليم عالي؟",
           "بتتعلم ذاتياً؟", "بتتابع كورسات أونلاين؟", "مؤهلها العلمي إيه؟", "خريجة جامعة قناة السويس؟"
@@ -3640,7 +3626,6 @@
           "شنو سنين خبرة شيماء؟",
           "شنو تدرج شيماء الوظيفي؟",
           "شنو خبرة شيماء هذي؟",
-          "شنو شغل شيماء هذي؟",
           "إيش خبرة شيماء؟",
           "إيش شغل شيماء في تميز؟",
           "إيش وظيفة شيماء الحالية؟",
@@ -3654,7 +3639,6 @@
           "إيش سنين خبرة شيماء؟",
           "إيش تدرج شيماء الوظيفي؟",
           "إيش خبرة شيماء هذي؟",
-          "إيش شغل شيماء هذي؟",
           "أبغى أعرف خبرة شيماء؟",
           "أبغى أعرف شغل شيماء في تميز؟",
           "أبغى أعرف وظيفة شيماء الحالية؟",
@@ -3668,7 +3652,6 @@
           "أبغى أعرف سنين خبرة شيماء؟",
           "أبغى أعرف تدرج شيماء الوظيفي؟",
           "أبغى أعرف خبرة شيماء هذي؟",
-          "أبغى أعرف شغل شيماء هذي؟",
           "أبي أعرف خبرة شيماء؟",
           "أبي أعرف شغل شيماء في تميز؟",
           "أبي أعرف وظيفة شيماء الحالية؟",
@@ -3682,7 +3665,6 @@
           "أبي أعرف سنين خبرة شيماء؟",
           "أبي أعرف تدرج شيماء الوظيفي؟",
           "أبي أعرف خبرة شيماء هذي؟",
-          "أبي أعرف شغل شيماء هذي؟",
           "قولي خبرة شيماء؟",
           "قولي شغل شيماء في تميز؟",
           "قولي وظيفة شيماء الحالية؟",
@@ -3696,7 +3678,6 @@
           "قولي سنين خبرة شيماء؟",
           "قولي تدرج شيماء الوظيفي؟",
           "قولي خبرة شيماء هذي؟",
-          "قولي شغل شيماء هذي؟",
           "وين خبرة شيماء؟",
           "وين شغل شيماء في تميز؟",
           "وين وظيفة شيماء الحالية؟",
@@ -3710,7 +3691,6 @@
           "وين سنين خبرة شيماء؟",
           "وين تدرج شيماء الوظيفي؟",
           "وين خبرة شيماء هذي؟",
-          "وين شغل شيماء هذي؟",
           "كيف خبرة شيماء؟",
           "كيف شغل شيماء في تميز؟",
           "كيف وظيفة شيماء الحالية؟",
@@ -3724,7 +3704,6 @@
           "كيف سنين خبرة شيماء؟",
           "كيف تدرج شيماء الوظيفي؟",
           "كيف خبرة شيماء هذي؟",
-          "كيف شغل شيماء هذي؟",
           "تكفى قولي خبرة شيماء؟",
           "تكفى قولي شغل شيماء في تميز؟",
           "تكفى قولي وظيفة شيماء الحالية؟",
@@ -4496,7 +4475,6 @@
           "Tell me about her availability?",
           "Tell me about whether she is available?",
           "Tell me about her openness to new projects?",
-          "Tell me about working with her?",
           "Tell me about her schedule?",
           "Tell me about hiring her?",
           "Tell me about if she takes new clients?",
@@ -4508,7 +4486,6 @@
           "Can you tell me about her availability?",
           "Can you tell me about whether she is available?",
           "Can you tell me about her openness to new projects?",
-          "Can you tell me about working with her?",
           "Can you tell me about her schedule?",
           "Can you tell me about hiring her?",
           "Can you tell me about if she takes new clients?",
@@ -4520,7 +4497,6 @@
           "I'd like to know about her availability?",
           "I'd like to know about whether she is available?",
           "I'd like to know about her openness to new projects?",
-          "I'd like to know about working with her?",
           "I'd like to know about her schedule?",
           "I'd like to know about hiring her?",
           "I'd like to know about if she takes new clients?",
@@ -4532,7 +4508,6 @@
           "What do you know about her availability?",
           "What do you know about whether she is available?",
           "What do you know about her openness to new projects?",
-          "What do you know about working with her?",
           "What do you know about her schedule?",
           "What do you know about hiring her?",
           "What do you know about if she takes new clients?",
@@ -4544,7 +4519,6 @@
           "Give me details on her availability?",
           "Give me details on whether she is available?",
           "Give me details on her openness to new projects?",
-          "Give me details on working with her?",
           "Give me details on her schedule?",
           "Give me details on hiring her?",
           "Give me details on if she takes new clients?",

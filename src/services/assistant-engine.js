@@ -11,7 +11,7 @@
 // The UI component never holds this business logic.
 
 import { findLocalAnswer, pickAnswerVariation, resetLastReply } from './local-knowledge-engine.js'
-import { detectLanguage, normalizeText, preprocessQuery } from './text-utils.js'
+import { detectLanguage, normalizeText, preprocessQuery, stripDefiniteArticle } from './text-utils.js'
 import { getAIAnswer, genericFallback, followUp } from './ai-service.js'
 import { executeAction } from './interaction-engine.js'
 import { detectConversation } from './conversation-service.js'
@@ -47,6 +47,9 @@ export function resetRateLimit() {
   recentIntentIds = []
   lastIntentId = null
   lastTopic = null
+  lastQuery = null
+  recentTopics = []
+  topicAge = 0
   resetLastReply()
 }
 
@@ -102,14 +105,18 @@ export function matchNavigationCommand(input) {
 }
 
 /**
- * Session-level conversation memory: the last answered intent plus an optional
- * topic keyword (e.g. "furniture", "banking") extracted from the user's own
- * words. Lets short continuations ("طب في الأثاث؟", "and furniture?") resolve
- * to the running topic when the direct local match is weak. Reset with
- * resetRateLimit() so every test starts from a clean conversation state.
+ * Structured session conversation state: the last answered intent, the active
+ * topic/entity, the last raw query, recent topics, and topic age (answered
+ * turns since the topic was set). Context expires after CONTEXT_TTL answered
+ * turns and is replaced whenever a newer topic appears. Navigation and
+ * small-talk turns leave it untouched (neutral). Reset with resetRateLimit().
  */
 let lastIntentId = null
 let lastTopic = null
+let lastQuery = null
+let recentTopics = []
+const CONTEXT_TTL_TURNS = 3
+let topicAge = 0
 
 // Concrete topic keywords (raw forms; normalized once at load so matching
 // against normalized query tokens is exact).
@@ -133,49 +140,84 @@ const TOPIC_LOOKUP = (() => {
 })()
 
 // Continuation cues: the current message only makes sense with prior context.
-// Matched as whole words on normalized text (never substrings).
-const CONTEXT_CUES = [
-  'طب', 'ده', 'دا', 'دي', 'ديه', 'هذا', 'هذه', 'كمان', 'برضه',
-  'بالنسبه', 'بالنسبة', 'وايه', 'طيب',
+// Pre-normalized once; matched whole-word (single) or whole-phrase on the
+// normalized input (never substrings).
+const CONTEXT_CUES_RAW = [
+  'طب', 'ده', 'دا', 'دي', 'ديه', 'وده', 'ودي', 'ودا',
+  'هذا', 'هذه', 'كمان', 'برضه', 'بالنسبه', 'بالنسبة', 'وايه', 'طيب',
+  'المشروع ده', 'الشغل ده', 'المجال ده', 'البراند ده',
+  'نفس المجال', 'نفس الكلام', 'ايه تاني', 'وفيه ايه تاني',
+  'كمل', 'كملي', 'امثله', 'مثال', 'تاني', 'غيره', 'غيرها',
+  'وريني تاني', 'كمان مره',
   'and', 'also', 'it', 'that', 'this', 'those', 'these',
+  'what about', 'how about', 'and what about', 'more', 'another one', 'the same',
 ]
+
+const CONTEXT_CUES = (() => {
+  const set = new Set()
+  for (const c of CONTEXT_CUES_RAW) {
+    const n = normalizeText(c)
+    if (n) set.add(n)
+  }
+  return [...set]
+})()
 
 function extractTopic(tokens) {
   for (const raw of tokens || []) {
-    // Tokens may carry the definite article (الاثاث) or a trailing ؟ —
-    // both are stripped so "الأثاث؟" still maps to the furniture topic.
-    const clean = String(raw || '').replace(/[^\p{L}\p{N}]+$/gu, '')
-    const hit = TOPIC_LOOKUP.get(clean) || TOPIC_LOOKUP.get(stripArabicPrefix(clean))
+    // Tokens may carry the definite article (الاثاث); the shared guarded
+    // stripper maps it to the topic key ("الأثاث؟" is already punctuation-free
+    // by the time tokens exist).
+    const clean = String(raw || '')
+    const hit = TOPIC_LOOKUP.get(clean) || TOPIC_LOOKUP.get(stripDefiniteArticle(clean))
     if (hit) return hit
   }
   return null
 }
 
-function stripArabicPrefix(t) {
-  for (const p of ['وال', 'بال', 'كال', 'فال', 'لل', 'ال']) {
-    if (t.startsWith(p) && t.length > p.length + 2) return t.slice(p.length)
-  }
-  return t
-}
-
 function hasContinuationCue(input) {
   const norm = ` ${normalizeText(input || '')} `
-  return CONTEXT_CUES.some((c) => norm.includes(` ${normalizeText(c)} `))
+  return CONTEXT_CUES.some((c) => norm.includes(` ${c} `))
 }
 
-function updateContextMemory(intentId, tokens) {
+function updateContextMemory(intentId, tokens, rawInput) {
   lastIntentId = intentId || null
-  lastTopic = extractTopic(tokens)
+  lastQuery = rawInput || null
+  const topic = extractTopic(tokens)
+  if (topic) {
+    lastTopic = topic
+    topicAge = 0
+    recentTopics = [topic, ...recentTopics.filter((t) => t !== topic)].slice(0, 3)
+  } else if (lastTopic) {
+    topicAge += 1
+  }
+}
+
+/**
+ * Snapshot of the conversation state (for tests and debugging).
+ */
+export function getConversationState() {
+  return {
+    lastIntent: lastIntentId,
+    lastTopic,
+    lastEntity: lastTopic,
+    lastQuery,
+    recentIntents: [...recentIntentIds],
+    recentTopics: [...recentTopics],
+    topicAge,
+  }
 }
 
 /**
  * Resolves a pronoun-like continuation to the stored conversation topic.
- * Only fires when: a topic is remembered AND the message carries a
- * continuation cue AND the direct local search found nothing (caller
- * guarantees the last condition). Returns the stored intent or null.
+ * Only fires when: a fresh topic is remembered (within TTL) AND the message
+ * carries a continuation cue AND the direct local search found nothing
+ * (caller guarantees the last condition). Explicit content always wins
+ * because this path is unreachable on a local hit. Returns the stored
+ * intent or null.
  */
 export function resolveContextFollowUp(input) {
   if (!lastTopic || !lastIntentId) return null
+  if (topicAge > CONTEXT_TTL_TURNS) return null
   if (!hasContinuationCue(input)) return null
   return (knowledgeBase.intents || []).find((i) => i.id === lastIntentId) || null
 }
@@ -187,7 +229,6 @@ export function resolveContextFollowUp(input) {
  */
 const FALLBACK_LABELS = {
   identity: { ar: '🤍 مين هي شيماء؟', en: '🤍 Who is Shymaa?' },
-  work: { ar: '💼 نوع الشغل اللي بتعمله؟', en: '💼 What type of work does she do?' },
   projects: { ar: '📈 وريني المشاريع', en: '📈 Show me the projects' },
   caseStudies: { ar: '📊 شاورلي دراسات الحالة', en: '📊 Tell me about the case studies' },
   education: { ar: '📚 شيماء بتتعلم إيه؟', en: '📚 What is she learning?' },
@@ -387,7 +428,7 @@ export async function process(inputText) {
       // Execute the interaction action from the verified local answer.
       if (local.action) executeAction(local.action)
       trackRecentIntent(local.intentId)
-      updateContextMemory(local.intentId, preprocessQuery(input).tokens)
+      updateContextMemory(local.intentId, preprocessQuery(input).tokens, input)
       return {
         answer: local.answer,
         action: local.action,
@@ -407,7 +448,7 @@ export async function process(inputText) {
       const ctxAction = ctxIntent.action || null
       if (ctxAction) executeAction(ctxAction)
       trackRecentIntent(ctxIntent.id)
-      updateContextMemory(ctxIntent.id, preprocessQuery(input).tokens)
+      updateContextMemory(ctxIntent.id, preprocessQuery(input).tokens, input)
       return {
         answer: pickAnswerVariation(ctxIntent, lang),
         action: ctxAction,
@@ -462,4 +503,4 @@ export function getFollowUp(text) {
 
 export { preprocessQuery, detectLanguage }
 
-export default { process, canProcessInput, getFollowUp, getFollowUps, pickFollowUps, resetRateLimit, matchNavigationCommand, resolveContextFollowUp }
+export default { process, canProcessInput, getFollowUp, getFollowUps, pickFollowUps, resetRateLimit, matchNavigationCommand, resolveContextFollowUp, getConversationState }
