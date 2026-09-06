@@ -12,6 +12,8 @@ export const ARABIC_STOP_WORDS = new Set([
   'شيء', 'ايه', 'ازاي', 'ليه', 'كام', 'وقت', 'فين', 'حد', 'طيب', 'بقى',
   'يعني', 'لوسمحت', 'لو سمحت', 'ممكن', 'إيه', 'دي', 'ده', 'بتاع', 'عند',
   'هات', 'وريني', 'عايز', 'عايزة', 'حاضر', 'إزاي', 'برضه', 'أهلا', 'اهلا', 'مرحبا',
+  // Gulf interrogatives/function words (normalized forms; raw variants match pre-normalization too)
+  'شنو', 'ايش', 'إيش', 'ليش', 'ابغي', 'أبغى', 'ابغى', 'ابي', 'أبي', 'وين', 'شلون', 'كيف', 'زين', 'وايد', 'وش', 'تكفي',
 ])
 
 export const ENGLISH_STOP_WORDS = new Set([

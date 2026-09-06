@@ -75,10 +75,16 @@ const SECTION_TO_INTENT = {
  * against portfolioData.navigation phrases. Longest-phrase wins; matching is
  * done on normalized text with padding so short phrases like "top" never hit
  * inside longer words ("stop"). Returns { key, entry } or null.
+ *
+ * Command-likeness guard: a bare topic phrase ("خبرة شيماء") must not hijack
+ * a longer real question ("عايز أعرف خبرة شيماء في الأثاث؟") — the input may
+ * carry at most one extra meaningful token beyond the matched phrase,
+ * otherwise it falls through to the local knowledge engine.
  */
 export function matchNavigationCommand(input) {
   const norm = ` ${normalizeText(input || '')} `
   if (!norm.trim()) return null
+  const inputTokens = preprocessQuery(input).tokens.length
   let best = null
   for (const [key, entry] of Object.entries(portfolioData.navigation || {})) {
     for (const phrase of entry.phrases || []) {
@@ -89,6 +95,9 @@ export function matchNavigationCommand(input) {
       }
     }
   }
+  if (!best) return null
+  const phraseTokens = preprocessQuery(best.phrase).tokens.length
+  if (inputTokens > phraseTokens + 1) return null
   return best
 }
 

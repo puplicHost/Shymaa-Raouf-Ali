@@ -22,7 +22,7 @@ const intents = knowledgeBase.intents || []
 const THEME_RULES = [
   {
     id: 'contact',
-    rx: /(عايز اشتغل|عايز اتعاون|اتواصل مع|عايز اتواصل|كلمها|اتصال|بريد|رقم تليفون|contact|email|phone|whatsapp|reach her|get in touch|work together|linkedin|hire her)/,
+    rx: /(عايز اشتغل|عايز اتعاون|اتواصل مع|عايز اتواصل|ابغي اتواصل|ابي اتواصل|ابغي اشتغل|ابي اشتغل|كلمها|اتصال|بريد|رقم تليفون|contact|email|phone|whatsapp|reach her|get in touch|work together|linkedin|hire her)/,
   },
   {
     id: 'availability',
@@ -34,7 +34,7 @@ const THEME_RULES = [
   },
   {
     id: 'approach',
-    rx: /((ازاي|ازي).*(بتشتغل|تشغل|شغل)|(بتشتغل|تشغل|شغل).*(ازاي|ازي)|طريقه (الشغل|العمل)|بتشتغل بطريقه|منهجيه|how does she (work|approach)|how she works|how does she do (it|this|content|social)|approach|methodology|workflow|work process)/,
+    rx: /((ازاي|ازي).*(بتشتغل|تشغل|شغل)|(بتشتغل|تشغل|شغل).*(ازاي|ازي)|(كيف|شلون).*(بتشتغل|تشتغل|تشغل|شغل)|(بتشتغل|تشتغل|تشغل|شغل).*(كيف|شلون)|طريقه (الشغل|العمل)|بتشتغل بطريقه|منهجيه|how does she (work|approach)|how she works|how does she do (it|this|content|social)|approach|methodology|workflow|work process)/,
   },
   {
     id: 'differentiator',
@@ -42,15 +42,15 @@ const THEME_RULES = [
   },
   {
     id: 'contentTypes',
-    rx: /(نوع المحتوى|انواع المحتوى|بتعمل محتوى|content types|type of content|content type|what content|what kind of content|make reels)/,
+    rx: /(نوع المحتوى|انواع المحتوى|بتعمل محتوى|شنو المحتوي|وش المحتوي|content types|type of content|content type|what content|what kind of content|make reels)/,
   },
   {
     id: 'industries',
-    rx: /(مجالات|القطاعات|اشتغلت مع|فين اشتغلت|شغلت فين|اشتغلت في|industries|sectors|clients|brands|where (did|has) she work|where she work)/,
+    rx: /(مجالات|القطاعات|اشتغلت مع|فين اشتغلت|شغلت فين|وين اشتغلت|تشتغل وين|اشتغلت في|industries|sectors|clients|brands|where (did|has) she work|where she work)/,
   },
   {
     id: 'identity',
-    rx: /(work experience|professional background|career history|خبرتها|خبره شيماء|الخبرة المهنية)/,
+    rx: /(work experience|professional background|career history|خبرتها|الخبرة المهنية)/,
   },
   {
     id: 'projects',
@@ -66,7 +66,7 @@ const THEME_RULES = [
   },
   {
     id: 'identity',
-    rx: /(مين شيماء|من هي شيماء|من شيماء|عرفني بشيماء|عرفني عن|تعرف على شيماء|هويت|who is|tell me about|introduce|what does (she|shymaa) do|about shymaa)/,
+    rx: /(مين شيماء|من هي شيماء|من شيماء|منو شيماء|منو هي|شنو تشتغل|وش تشتغل|عرفني بشيماء|عرفني عن|تعرف على شيماء|هويت|who is|tell me about|introduce|what does (she|shymaa) do|about shymaa)/,
   },
 ]
 
@@ -162,10 +162,15 @@ function intentLists(intent, lang) {
   const s = intent.synonyms || {}
   const q = intent.questions || {}
   const a = intent.aliases || {}
+  // lang 'ar' covers MSA + Egyptian + Gulf lists (detectLanguage only yields ar/en).
+  const pick = (o) =>
+    lang === 'ar'
+      ? [...(o.ar || []), ...(o['ar-eg'] || []), ...(o['ar-gulf'] || [])]
+      : o[lang] || o.en || []
   return {
-    keywords: (k[lang] || k.en || []).map(normalizeText),
-    synonyms: (s[lang] || s.en || []).map(normalizeText),
-    questions: (q[lang] || q.en || []).map(normalizeText),
+    keywords: pick(k).map(normalizeText),
+    synonyms: pick(s).map(normalizeText),
+    questions: pick(q).map(normalizeText),
     aliases: (a[lang] || a.en || []).map(normalizeText),
   }
 }
@@ -180,6 +185,9 @@ function scoreList(normalizedQuery, queryTokens, lang, phrases) {
   if (!phrases || phrases.length === 0) return { match: 0, coverage: 0 }
   let bestMatch = 0
   let covered = new Set()
+  // Trailing punctuation (؟ ? ! .) must not break exact-phrase matching:
+  // "فين اشتغلت" and "فين اشتغلت؟" are the same question.
+  const cleanQuery = normalizedQuery.replace(/[؟?!.,،;:\s]+$/u, '')
 
   for (const p of phrases) {
     if (!p) continue
@@ -194,7 +202,10 @@ function scoreList(normalizedQuery, queryTokens, lang, phrases) {
     pFiltered.forEach((t) => covered.add(t))
 
     // Multi-token exact substring phrase -> strongest signal.
-    if (pTokens.length > 1 && p.length > 2 && normalizedQuery.includes(p)) {
+    // Compared punctuation-insensitively so a stored "…؟" still matches a
+    // query typed without it (and vice versa).
+    const cleanPhrase = p.replace(/[؟?!.,،;:\s]+$/u, '')
+    if (pTokens.length > 1 && cleanPhrase.length > 2 && cleanQuery.includes(cleanPhrase)) {
       bestMatch = Math.max(bestMatch, 1.0)
       continue
     }
@@ -203,9 +214,11 @@ function scoreList(normalizedQuery, queryTokens, lang, phrases) {
     bestMatch = Math.max(bestMatch, exactRatio)
   }
 
-  // Coverage of the query's meaningful tokens by this list.
+  // Coverage of the query's meaningful tokens by this list, capped at 1:
+  // with a large knowledge base many phrases can collectively "cover" more
+  // distinct tokens than a short query holds, which must not inflate confidence.
   const coverage =
-    queryTokens.length === 0 ? 1 : covered.size / queryTokens.length
+    queryTokens.length === 0 ? 1 : Math.min(1, covered.size / queryTokens.length)
 
   return { match: bestMatch, coverage }
 }
@@ -316,8 +329,10 @@ export function searchLocal(query) {
 
     // Best evidence weighted by query coverage (avoids incidental keyword hits).
     // Aliases are treated as a first-class signal (same weight as synonyms).
-    // Jaccard boost: long queries sharing many tokens with an intent gain confidence.
-    const bestRaw = Math.max(kw.match * 0.9, sy.match * 1.0, al.match * 1.0, qu.match * 0.8)
+    // An exact full-question match is the strongest possible evidence, so it
+    // is not discounted like partial question overlap is.
+    const quScore = qu.match >= 1 ? 1.0 : qu.match * 0.8
+    const bestRaw = Math.max(kw.match * 0.9, sy.match * 1.0, al.match * 1.0, quScore)
     const bestCoverage = Math.max(kw.coverage, sy.coverage, qu.coverage, al.coverage)
     const jaccard = jaccardMatch(tokens, [...keywords, ...synonyms, ...aliases], lang)
     const composite = (bestRaw * (0.5 + 0.5 * bestCoverage)) + (jaccard * 0.3)
@@ -332,9 +347,9 @@ export function searchLocal(query) {
 
   // Guard against `identity` dominating long, non-introductory questions:
   // identity aliases ("شيماء", "she", "work experience") appear inside many
-  // queries, so when the top intent is identity on a long query and the
+  // queries, so when the top intent is identity on a multi-token query and the
   // runner-up is close behind, demote identity and re-rank.
-  if (ranked.length > 1 && ranked[0].intent.id === 'identity' && tokens.length > 3) {
+  if (ranked.length > 1 && ranked[0].intent.id === 'identity' && tokens.length >= 3) {
     const gap = ranked[0].composite - ranked[1].composite
     if (gap < 0.3) {
       ranked[0].composite -= 0.2
